@@ -13,13 +13,13 @@ from Products.CMFPlone.interfaces import ISelectableConstrainTypes
 from zope.component import getMultiAdapter
 
 from genweb6.organs.namedfilebrowser import DisplayFile, Download
-from genweb6.organs.testing import GENWEB_ORGANS_FUNCTIONAL_TESTING
+from genweb6.organs.testing import GENWEB6_ORGANS_FUNCTIONAL_TESTING
 
 
 class OrgansFunctionalTestCase(unittest.TestCase):
     """Base class for integration tests."""
 
-    layer = GENWEB_ORGANS_FUNCTIONAL_TESTING
+    layer = GENWEB6_ORGANS_FUNCTIONAL_TESTING
 
     def setUp(self):
         # Suprimir ResourceWarnings de archivos blob no cerrados explícitamente

@@ -23,7 +23,7 @@ from zope.component import getMultiAdapter
 from Products.CMFPlone.interfaces import ISelectableConstrainTypes
 from zope.publisher.interfaces import NotFound
 
-from genweb6.organs.testing import GENWEB_ORGANS_FUNCTIONAL_TESTING
+from genweb6.organs.testing import GENWEB6_ORGANS_FUNCTIONAL_TESTING
 from genweb6.organs.browser import tools
 from genweb6.organs.namedfilebrowser import DisplayFile, Download
 
@@ -31,7 +31,7 @@ from genweb6.organs.namedfilebrowser import DisplayFile, Download
 class FunctionalTestCase(unittest.TestCase):
     """Base class for integration tests."""
 
-    layer = GENWEB_ORGANS_FUNCTIONAL_TESTING
+    layer = GENWEB6_ORGANS_FUNCTIONAL_TESTING
 
     def setUp(self):
         # Suprimir warnings molestos

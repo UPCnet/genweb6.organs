@@ -9,13 +9,13 @@ from plone.api.env import adopt_roles
 import datetime
 import warnings
 
-from genweb6.organs.testing import GENWEB_ORGANS_FUNCTIONAL_TESTING
+from genweb6.organs.testing import GENWEB6_ORGANS_FUNCTIONAL_TESTING
 
 
 class OrgansFunctionalTestCase(unittest.TestCase):
     """Base class for integration tests."""
 
-    layer = GENWEB_ORGANS_FUNCTIONAL_TESTING
+    layer = GENWEB6_ORGANS_FUNCTIONAL_TESTING
 
     def setUp(self):
         # Suprimir ResourceWarnings de archivos blob no cerrados explícitamente

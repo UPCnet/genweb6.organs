@@ -13,13 +13,13 @@
         <element value="genweb.organs.document"/>
     </property>
 
-    <property name="schema">genweb.organs6.content.punt.subpunt.ISubpunt</property>
+    <property name="schema">genweb6.organs.content.punt.subpunt.ISubpunt</property>
     <property name="klass">plone.dexterity.content.Container</property>
     <property name="add_permission">cmf.AddPortalContent</property>
     <property name="factory">genweb.organs.subpunt</property>
     <property name="link_target"></property>
     <property name="immediate_view">view</property>
-    <property name="add_view_expr">string:${folder_url}/++add++genweb6.organs.subpunt</property>
+    <property name="add_view_expr">string:${folder_url}/++add++genweb.organs.subpunt</property>
     <property name="schema_policy">dexterity</property>
 
     <property name="behaviors">
@@ -29,7 +29,7 @@
         <element value="plone.relateditems" />
         <element value="plone.translatable" />
         <element value="plone.excludefromnavigation" />
-        <element value="genweb.organs6.firma_documental.behaviors.firma_documental.IFirmaDocumental" />
+        <element value="genweb6.organs.firma_documental.behaviors.firma_documental.IFirmaDocumental" />
     </property>
 
     <property name="default_view">view</property>

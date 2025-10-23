@@ -12,13 +12,13 @@
         <element value="genweb.organs.sessio"/>
     </property>
 
-    <property name="schema">genweb.organs6.content.organgovern.organgovern.IOrgangovern</property>
+    <property name="schema">genweb6.organs.content.organgovern.organgovern.IOrgangovern</property>
     <property name="klass">plone.dexterity.content.Container</property>
     <property name="add_permission">genweb.organs.add.organs</property>
     <property name="factory">genweb.organs.organgovern</property>
     <property name="link_target"></property>
     <property name="immediate_view">view</property>
-    <property name="add_view_expr">string:${folder_url}/++add++genweb6.organs.organgovern</property>
+    <property name="add_view_expr">string:${folder_url}/++add++genweb.organs.organgovern</property>
     <property name="schema_policy">dexterity</property>
 
     <property name="behaviors">

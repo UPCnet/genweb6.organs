@@ -20,13 +20,13 @@ from plone.app.testing import login, logout, setRoles
 from Products.CMFPlone.interfaces import ISelectableConstrainTypes
 from zope.component import getMultiAdapter
 
-from genweb6.organs.testing import GENWEB_ORGANS_FUNCTIONAL_TESTING
+from genweb6.organs.testing import GENWEB6_ORGANS_FUNCTIONAL_TESTING
 
 
 class OrganTabsTestCase(unittest.TestCase):
     """Tests funcionales para visibilidad de pestañas del órgano."""
 
-    layer = GENWEB_ORGANS_FUNCTIONAL_TESTING
+    layer = GENWEB6_ORGANS_FUNCTIONAL_TESTING
 
     def setUp(self):
         """Configuración inicial del test."""

@@ -591,7 +591,7 @@ class MovePublicfilestoPrivate(BrowserView):
 
 
 class showColorOrgans(BrowserView):
-    # Registrar en ZCML: name='showColorOrgans', for='plone.dexterity.interfaces.IDexterityContent', permission='cmf.ManagePortal', layer='genweb.organs.interfaces.IGenweb6OrgansLayer'
+    # Registrar en ZCML: name='showColorOrgans', for='plone.dexterity.interfaces.IDexterityContent', permission='cmf.ManagePortal', layer='genweb6.organs.interfaces.IGenweb6OrgansLayer'
     def render(self):
         path = '/'.join(self.context.getPhysicalPath())
         all_brains = api.content.find(

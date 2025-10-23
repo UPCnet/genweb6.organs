@@ -10,13 +10,13 @@
     <property name="filter_content_types">True</property>
     <property name="allowed_content_types"></property>
 
-    <property name="schema">genweb.organs6.content.audio.audio.IAudio</property>
-    <property name="klass">genweb.organs6.content.Audio</property>
+    <property name="schema">genweb6.organs.content.audio.audio.IAudio</property>
+    <property name="klass">genweb6.organs.content.Audio</property>
     <property name="add_permission">cmf.AddPortalContent</property>
     <property name="factory">genweb.organs.audio</property>
     <property name="link_target"></property>
     <property name="immediate_view">view</property>
-    <property name="add_view_expr">string:${folder_url}/++add++genweb6.organs.audio</property>
+    <property name="add_view_expr">string:${folder_url}/++add++genweb.organs.audio</property>
     <property name="schema_policy">dexterity</property>
 
     <property name="behaviors">

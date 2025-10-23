@@ -8,7 +8,7 @@
 #
 
 import unittest
-from genweb6.organs.testing import GENWEB_ORGANS_FUNCTIONAL_TESTING
+from genweb6.organs.testing import GENWEB6_ORGANS_FUNCTIONAL_TESTING
 from zope.component import getMultiAdapter
 from plone.app.testing import TEST_USER_ID, TEST_USER_NAME
 from plone.app.testing import login, logout
@@ -24,7 +24,7 @@ from zope.publisher.interfaces import NotFound
 class FunctionalTestCase(unittest.TestCase):
     """Base class for integration tests."""
 
-    layer = GENWEB_ORGANS_FUNCTIONAL_TESTING
+    layer = GENWEB6_ORGANS_FUNCTIONAL_TESTING
 
     def setUp(self):
         import warnings

@@ -1635,8 +1635,8 @@ msgid "Total"
 msgstr "Total"
 
 #: ./genweb6/organs/configure.zcml:71
-msgid "UPC Organs de Govern (genweb.organs)"
-msgstr "UPC Organs de Govern (genweb.organs)"
+msgid "UPC Organs de Govern (genweb6.organs)"
+msgstr "UPC Organs de Govern (genweb6.organs)"
 
 #: ./genweb6/organs/firma_documental/controlpanel.py:44
 msgid "URL Còpies Autèntiques"

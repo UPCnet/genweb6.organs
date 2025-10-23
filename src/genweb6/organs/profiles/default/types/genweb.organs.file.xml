@@ -10,13 +10,13 @@
     <property name="filter_content_types">True</property>
     <property name="allowed_content_types"></property>
 
-    <property name="schema">genweb.organs6.content.file.file.IFile</property>
-    <property name="klass">genweb.organs6.content.File</property>
+    <property name="schema">genweb6.organs.content.file.file.IFile</property>
+    <property name="klass">genweb6.organs.content.File</property>
     <property name="add_permission">cmf.AddPortalContent</property>
     <property name="factory">genweb.organs.file</property>
     <property name="link_target"></property>
     <property name="immediate_view">view</property>
-    <property name="add_view_expr">string:${folder_url}/++add++genweb6.organs.file</property>
+    <property name="add_view_expr">string:${folder_url}/++add++genweb.organs.file</property>
     <property name="schema_policy">dexterity</property>
 
     <property name="behaviors">
@@ -25,7 +25,7 @@
         <element value="plone.textindexer" />
         <element value="plone.categorization" />
         <element value="plone.relateditems" />
-        <element value="genweb.organs6.firma_documental.behaviors.firma_documental.IFirmaDocumental" />
+        <element value="genweb6.organs.firma_documental.behaviors.firma_documental.IFirmaDocumental" />
     </property>
 
     <property name="default_view">view</property>

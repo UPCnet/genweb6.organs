@@ -13,13 +13,13 @@
         <element value="genweb.organs.document"/>
     </property>
 
-    <property name="schema">genweb.organs6.content.annex.annex.IAnnex</property>
-    <property name="klass">genweb.organs6.content.Annex</property>
+    <property name="schema">genweb6.organs.content.annex.annex.IAnnex</property>
+    <property name="klass">genweb6.organs.content.Annex</property>
     <property name="add_permission">cmf.AddPortalContent</property>
     <property name="factory">genweb.organs.annex</property>
     <property name="link_target"></property>
     <property name="immediate_view">view</property>
-    <property name="add_view_expr">string:${folder_url}/++add++genweb6.organs.annex</property>
+    <property name="add_view_expr">string:${folder_url}/++add++genweb.organs.annex</property>
     <property name="schema_policy">dexterity</property>
 
     <property name="behaviors">

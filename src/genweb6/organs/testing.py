@@ -99,14 +99,14 @@ class Genweb6OrgansLayer(PloneSandboxLayer):
         os.environ["PLONE_TESTING"] = "1"
 
 
-GENWEB_ORGANS_FIXTURE = Genweb6OrgansLayer()
+GENWEB6_ORGANS_FIXTURE = Genweb6OrgansLayer()
 
-GENWEB_ORGANS_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(GENWEB_ORGANS_FIXTURE,),
+GENWEB6_ORGANS_INTEGRATION_TESTING = IntegrationTesting(
+    bases=(GENWEB6_ORGANS_FIXTURE,),
     name="Genweb6OrgansLayer:Integration",
 )
 
-GENWEB_ORGANS_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(GENWEB_ORGANS_FIXTURE,),
+GENWEB6_ORGANS_FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(GENWEB6_ORGANS_FIXTURE,),
     name="Genweb6OrgansLayer:Functional",
 )

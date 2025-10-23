@@ -14,13 +14,13 @@
         <element value="genweb.organs.votacioacord"/>
     </property>
 
-    <property name="schema">genweb.organs6.content.acord.acord.IAcord</property>
+    <property name="schema">genweb6.organs.content.acord.acord.IAcord</property>
     <property name="klass">plone.dexterity.content.Container</property>
     <property name="add_permission">cmf.AddPortalContent</property>
     <property name="factory">genweb.organs.acord</property>
     <property name="link_target"></property>
     <property name="immediate_view">view</property>
-    <property name="add_view_expr">string:${folder_url}/++add++genweb6.organs.acord</property>
+    <property name="add_view_expr">string:${folder_url}/++add++genweb.organs.acord</property>
     <property name="schema_policy">dexterity</property>
 
     <property name="behaviors">
@@ -31,7 +31,7 @@
         <element value="plone.textindexer" />
         <element value="plone.excludefromnavigation" />
         <element value="plone.constraintypes" />
-        <element value="genweb.organs6.firma_documental.behaviors.firma_documental.IFirmaDocumental" />
+        <element value="genweb6.organs.firma_documental.behaviors.firma_documental.IFirmaDocumental" />
     </property>
 
     <property name="default_view">view</property>

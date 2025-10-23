@@ -393,7 +393,7 @@
         <div class="alert alert-warning" role="alert">
           <strong i18n:translate="">Alerta</strong>
           <span i18n:translate="">Encara no s'ha generat cap acta per signar.</span>
-          <a class="alert-link" tal:attributes="href python:context.absolute_url() + '/++add++genweb6.organs.acta/'">
+          <a class="alert-link" tal:attributes="href python:context.absolute_url() + '/++add++genweb.organs.acta/'">
             <span i18n:translate="">Afegeix un acta</span>
           </a>
         </div>

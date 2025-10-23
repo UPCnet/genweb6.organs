@@ -1650,7 +1650,7 @@ msgid "Total"
 msgstr ""
 
 #: ./genweb6/organs/configure.zcml:71
-msgid "UPC Organs de Govern (genweb.organs)"
+msgid "UPC Organs de Govern (genweb6.organs)"
 msgstr ""
 
 #: ./genweb6/organs/firma_documental/controlpanel.py:44

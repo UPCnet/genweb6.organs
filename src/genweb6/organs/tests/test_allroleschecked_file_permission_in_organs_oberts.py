@@ -5,7 +5,7 @@ import warnings
 from AccessControl import Unauthorized
 from genweb6.organs.browser import tools
 from genweb6.organs.namedfilebrowser import DisplayFile, Download
-from genweb6.organs.testing import GENWEB_ORGANS_FUNCTIONAL_TESTING
+from genweb6.organs.testing import GENWEB6_ORGANS_FUNCTIONAL_TESTING
 from plone import api
 from plone.app.testing import TEST_USER_ID, TEST_USER_NAME, login, logout, setRoles
 from Products.CMFPlone.interfaces import ISelectableConstrainTypes
@@ -16,7 +16,7 @@ from zope.publisher.interfaces import NotFound
 class FunctionalTestCase(unittest.TestCase):
     """Base class for integration tests."""
 
-    layer = GENWEB_ORGANS_FUNCTIONAL_TESTING
+    layer = GENWEB6_ORGANS_FUNCTIONAL_TESTING
 
     def setUp(self):
         # Suprimir ResourceWarnings de archivos blob no cerrados explícitamente

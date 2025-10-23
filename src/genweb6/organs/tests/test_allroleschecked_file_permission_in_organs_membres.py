@@ -1,6 +1,6 @@
 import unittest
 import warnings
-from genweb6.organs.testing import GENWEB_ORGANS_FUNCTIONAL_TESTING
+from genweb6.organs.testing import GENWEB6_ORGANS_FUNCTIONAL_TESTING
 from zope.component import getMultiAdapter
 from plone.app.testing import TEST_USER_ID, TEST_USER_NAME
 from plone.app.testing import login, logout
@@ -17,7 +17,7 @@ from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes
 class FunctionalTestCase(unittest.TestCase):
     """Functional tests for file permissions in restricted_to_members_organ (Plone 6)."""
 
-    layer = GENWEB_ORGANS_FUNCTIONAL_TESTING
+    layer = GENWEB6_ORGANS_FUNCTIONAL_TESTING
 
     def setUp(self):
         # Suprimir ResourceWarnings de archivos blob no cerrados explícitamente

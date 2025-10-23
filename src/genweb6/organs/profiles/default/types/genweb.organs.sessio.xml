@@ -14,13 +14,13 @@
         <element value="genweb.organs.acta"/>
     </property>
 
-    <property name="schema">genweb.organs6.content.sessio.sessio.ISessio</property>
+    <property name="schema">genweb6.organs.content.sessio.sessio.ISessio</property>
     <property name="klass">plone.dexterity.content.Container</property>
     <property name="add_permission">genweb.organs.add.sessions</property>
     <property name="factory">genweb.organs.sessio</property>
     <property name="link_target"></property>
     <property name="immediate_view">view</property>
-    <property name="add_view_expr">string:${folder_url}/++add++genweb6.organs.sessio</property>
+    <property name="add_view_expr">string:${folder_url}/++add++genweb.organs.sessio</property>
     <property name="schema_policy">dexterity</property>
 
     <property name="behaviors">

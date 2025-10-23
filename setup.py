@@ -12,8 +12,8 @@ long_description = '\n\n'.join([
 ])
 setup(
     name='genweb6.organs',
-    version='0.73.dev0',
-    description="Paquet Organs de Govern amb jQuery i que s'integra a Genweb.",
+    version='0.1',
+    description="Paquet Organs de Govern amb jQuery i que s'integra a Genweb 6.",
     long_description=long_description,
     classifiers=[
         "Environment :: Web Environment",
@@ -27,13 +27,13 @@ setup(
         "Operating System :: OS Independent",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    keywords='organs govern genweb',
+    keywords='organs govern genweb genweb6',
     author='Plone Team',
     author_email='plone.team@upcnet.es',
     url='https://github.com/UPCnet/genweb6.organs',
     license='GPL',
     packages=find_packages('src', exclude=['ez_setup']),
-    namespace_packages=['genweb'],
+    namespace_packages=['genweb6'],
     package_dir={'': 'src'},
     include_package_data=True,
     zip_safe=False,

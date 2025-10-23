@@ -340,7 +340,7 @@ Pero recuerda: **los permisos ya están 100% verificados** ✅
 
 ## 📝 Notas
 
-- Los tests usan `GENWEB_ORGANS_FUNCTIONAL_TESTING` layer
+- Los tests usan `GENWEB6_ORGANS_FUNCTIONAL_TESTING` layer
 - Prints informativos con emojis para seguimiento visual
 - Suprimen warnings de ResourceWarning y DeprecationWarning
 - Usan `self.request` del layer (no `TestRequest()`)

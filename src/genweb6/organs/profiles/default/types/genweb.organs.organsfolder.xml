@@ -12,13 +12,13 @@
         <element value="genweb.organs.organgovern"/>
     </property>
 
-    <property name="schema">genweb.organs6.content.organsfolder.organsfolder.IOrgansfolder</property>
+    <property name="schema">genweb6.organs.content.organsfolder.organsfolder.IOrgansfolder</property>
     <property name="klass">plone.dexterity.content.Container</property>
     <property name="add_permission">cmf.AddPortalContent</property>
     <property name="factory">genweb.organs.organsfolder</property>
     <property name="link_target"></property>
     <property name="immediate_view">view</property>
-    <property name="add_view_expr">string:${folder_url}/++add++genweb6.organs.organsfolder</property>
+    <property name="add_view_expr">string:${folder_url}/++add++genweb.organs.organsfolder</property>
     <property name="schema_policy">dexterity</property>
 
     <property name="behaviors">
