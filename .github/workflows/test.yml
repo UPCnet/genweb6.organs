@@ -62,31 +62,26 @@ jobs:
           buildout -c buildout-ci.cfg -N
           buildout -c buildout-ci.cfg -N
 
-      # - name: Run tests
+      - name: Run tests
+        run: |
+          bin/test
+
+      # - name: Generate coverage report
       #   run: |
-      #     bin/test
+      #     bin/coverage run --source=src/genweb6/organs bin/test -s genweb6.organs
+      #     bin/coverage report
+      #     bin/coverage html -d htmlcov
 
-      - name: Generate coverage report
-        env:
-          COVERAGE_PROCESS_START: .coveragerc
-        run: |
-          bin/coverage run --rcfile=.coveragerc bin/test
-          bin/coverage combine
-          bin/coverage report
-          bin/coverage html -d htmlcov
+      # - name: Upload coverage to artifacts
+      #   uses: actions/upload-artifact@v4
+      #   if: always()
+      #   with:
+      #     name: coverage-report
+      #     path: htmlcov/
+      #     retention-days: 30
 
-
-
-      - name: Upload coverage to artifacts
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: coverage-report
-          path: htmlcov/
-          retention-days: 30
-
-      - name: Comment coverage on PR
-        if: github.event_name == 'pull_request'
-        run: |
-          COVERAGE=$(bin/coverage report | grep TOTAL | awk '{print $4}')
-          echo "Coverage: $COVERAGE"
+      # - name: Comment coverage on PR
+      #   if: github.event_name == 'pull_request'
+      #   run: |
+      #     COVERAGE=$(coverage report | grep TOTAL | awk '{print $4}')
+      #     echo "Coverage: $COVERAGE"
