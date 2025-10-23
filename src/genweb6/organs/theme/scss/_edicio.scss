@@ -1,0 +1,58 @@
+// En edición los campos readonly estan en negrito, los igualo al resto de campos
+b.form-label {
+  font-weight: 300;
+}
+
+// Campos con formato de alert
+#formfield-form-widgets-infoAfectats,
+#formfield-form-widgets-infoAssistents {
+  position: relative;
+  padding: 1rem 1rem;
+  border: 3px solid transparent;
+  border-radius: .25rem;
+  animation-fill-mode: forwards !important;
+  animation-delay: 1s !important;
+  animation: 1.5s ease-in alert-animation;
+  color: var(--bs-info-text-emphasis);
+  background-color: var(--bs-info-bg-subtle);
+  border-color: var(--bs-info-border-subtle);
+
+  label.form-label {
+    font-weight: 700;
+    margin-bottom: 0rem !important;
+  }
+
+  textarea {
+    display: none !important;
+  }
+
+  div.form-text {
+    color: var(--bs-info-text-emphasis) !important;
+  }
+}
+
+body.template-mail_informar,
+body.template-mail_convocar,
+body.template-mail_message,
+body.template-presentation,
+body.template-butlleti,
+body.template-signsessio,
+body.template-excusar_assist_sessio {
+
+  #social_tags {
+    display: none !important;
+  }
+}
+
+div.widget-mode-display {
+
+  b {
+    margin-bottom: 0;
+  }
+
+  span.form-control {
+    padding: 0;
+    border: 0;
+    color: var(--bs-secondary-color);
+  }
+}

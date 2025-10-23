@@ -1,0 +1,38 @@
+<sharing xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+         i18n:domain="genweb6.organs">
+  <role
+      id="OG1-Secretari"
+      title="OG1-Secretari"
+      permission="Manage portal"
+      i18n:attributes="title"
+      />
+
+  <role
+      id="OG2-Editor"
+      title="OG2-Editor"
+      permission="Manage portal"
+      i18n:attributes="title"
+      />
+
+  <role
+      id="OG3-Membre"
+      title="OG3-Membre"
+      permission="Manage portal"
+      i18n:attributes="title"
+      />
+
+  <role
+      id="OG4-Afectat"
+      title="OG4-Afectat"
+      permission="Manage portal"
+      i18n:attributes="title"
+      />
+
+  <role
+      id="OG5-Convidat"
+      title="OG5-Convidat"
+      permission="Manage portal"
+      i18n:attributes="title"
+      />
+
+</sharing>

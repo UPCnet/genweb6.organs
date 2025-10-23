@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<object name="portal_controlpanel" meta_type="Plone Control Panel Tool">
+    <configlet
+        title="Organs"
+        action_id="genweb.organs"
+        appId="genweb.organs"
+        category="genweb-advanced"
+        condition_expr=""
+        url_expr="string:${portal_url}/organs-settings"
+        icon_expr="string:gear"
+        visible="True">
+        <permission>Manage Portal</permission>
+    </configlet>
+
+    <configlet
+        title="Organs Firma Documental"
+        action_id="genweb.organs.firmadocumental"
+        appId="genweb.organs.firmadocumental"
+        category="genweb-advanced"
+        condition_expr=""
+        url_expr="string:${portal_url}/organs-firmadocumental-settings"
+        icon_expr="string:gear"
+        visible="True">
+        <permission>Manage Portal</permission>
+    </configlet>
+
+</object>

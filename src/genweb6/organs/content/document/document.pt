@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xml:lang="ca" lang="ca"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="genweb6.organs">
+<body>
+
+<div metal:fill-slot="main" tal:condition="view/canView">
+  <div class="content-core">
+    <h1 class="documentFirstHeading mb-3" 
+        tal:condition="view/showTitle" 
+        tal:content="view/title">Document</h1>
+
+    <div tal:condition="context/description" class="mb-3">
+      <div tal:content="structure context/description">Descripció</div>
+    </div>
+
+    <!-- Contingut restringit (només per usuaris amb permís) -->
+    <tal:block tal:condition="view/viewDocumentReserved"
+         tal:define="alternateContent context/alternateContent">
+      <div class="mb-3" tal:condition="alternateContent">
+        <h3 class="h5 fw-semibold mb-2" i18n:translate="">Contingut restringit</h3>
+        <div tal:condition="context/alternateContent" tal:content="structure alternateContent/output">Contingut restringit</div>
+      </div>
+    </tal:block>
+
+    <!-- Contingut públic -->
+    <tal:block tal:condition="view/viewDocumentPublic"
+         tal:define="defaultContent context/defaultContent">
+      <div tal:condition="defaultContent">
+        <h3 class="h5 fw-semibold mt-3 mb-2" i18n:translate="">Contingut públic</h3>
+        <div tal:condition="context/defaultContent" tal:content="structure context/defaultContent/output">Contingut públic</div>
+      </div>
+    </tal:block>
+  </div>
+</div>
+
+</body>
+</html>

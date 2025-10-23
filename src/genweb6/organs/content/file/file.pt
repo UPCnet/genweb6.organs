@@ -1,0 +1,172 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ca"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="ca"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="genweb6.organs">
+<body>
+
+<!-- Contenido principal -->
+<div metal:fill-slot="main" tal:condition="view/canView"
+     tal:define="viewPublic view/viewPublic;
+                 viewReserved view/viewReserved;
+                 hihaPublic view/hihaPublic;
+                 hihaReserved view/hihaReserved;
+                 changePublic view/changePublic;
+                 changeReserved view/changeReserved;
+                 changeFile python:changePublic or changeReserved;
+                 absolute_url context/absolute_url;
+                 icon view/icon_type;
+                 pdf view/pdf_reserved;
+                 audio view/audio_reserved;
+                 video view/video_reserved;
+                 isPDFpublic view/isPDFpublic;
+                 isPDFprivat view/isPDFprivat;
+                 privateFileUploadedGdoc view/privateFileUploadedGdoc;
+                 publicFileUploadedGdoc view/publicFileUploadedGdoc;
+                 sessionIsClosed view/sessionIsClosed;">
+
+  <div class="content-core">
+
+    <!-- Título de la página -->
+    <h1 class="documentFirstHeading mb-3" tal:content="view/title">Fitxer</h1>
+
+    <!-- Descripció -->
+    <div tal:condition="context/description" class="mb-3">
+      <div tal:content="structure context/description">Descripció</div>
+    </div>
+
+    <!-- Bloque reservat -->
+    <section tal:condition="viewReserved">
+      <div tal:condition="hihaReserved"
+           class="mb-3">
+        <h2 class="h5 fw-bolder mb-3" i18n:translate=""
+            tal:condition="not:privateFileUploadedGdoc">Fitxer restringit</h2>
+        <h2 class="h5 fw-bolder mb-3" i18n:translate=""
+            tal:condition="privateFileUploadedGdoc">Fitxer restringit [Versió baixada del GDoc]</h2>
+
+        <div tal:define="reserved_content_type context/hiddenfile/contentType|nothing;
+                         reserved_file_download_url view/privateFileDownloadURL;
+                         reserved_file_view_url view/privateFileViewURL">
+
+          <div class="d-flex align-items-center justify-content-between mb-3">
+
+            <!-- Fila de metadatos y enlace -->
+            <p class="mb-0">
+              <i tal:attributes="class python:'bi bi-' + icon + ' text-danger me-1'" aria-hidden="true"></i>
+              <tal:block tal:condition="not:isPDFprivat">
+                <tal:name tal:content="context/hiddenfile/filename">Filename</tal:name>
+              </tal:block>
+              <tal:block tal:condition="isPDFprivat">
+                <a tal:attributes="href reserved_file_view_url; target string:_blank">
+                  <tal:name tal:content="context/hiddenfile/filename">Filename</tal:name>
+                </a>
+              </tal:block>
+              <span class="text-muted fs-s ms-2"
+                    tal:define="size context/hiddenfile/getSize; 
+                                kb python:round(size/1024, 2)">
+                (<span tal:replace="kb"></span> KB)
+              </span>
+              <a tal:attributes="href reserved_file_download_url"
+                 class="ms-2" title="Descarrega">
+                <i class="bi bi-download"></i>
+              </a>
+            </p>
+
+            <!-- Acciones de visibilidad -->
+            <div tal:condition="python: changeReserved and not sessionIsClosed">
+              <a class="btn btn-outline-secondary btn-sm confirmRedirect"
+                tal:attributes="data-redirect string:${absolute_url}/hiddenToVisible">
+                <i class="bi bi-arrow-clockwise"></i>
+                <span class="ms-1" i18n:translate="">Passar a públic</span>
+              </a>
+            </div>
+
+          </div>
+
+          <!-- Vista prèvia -->
+          <div>
+            <tal:block tal:condition="pdf">
+              <object type="application/pdf" width="100%" height="480"
+                      tal:attributes="data reserved_file_view_url"></object>
+            </tal:block>
+            <video tal:condition="video" controls class="w-100" style="max-height:320px;">
+              <source tal:attributes="src reserved_file_download_url; type reserved_content_type"/>
+            </video>
+            <audio tal:condition="audio" controls class="w-100">
+              <source tal:attributes="src reserved_file_download_url; type reserved_content_type"/>
+            </audio>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bloque públic -->
+    <section tal:condition="viewPublic">
+      <div tal:condition="hihaPublic">
+        <h2 class="h5 fw-bolder mb-3" i18n:translate="">Fitxer públic</h2>
+
+        <div tal:define="public_content_type context/visiblefile/contentType|nothing;
+                         public_file_download_url view/publicFileDownloadURL;
+                         public_file_view_url view/publicFileViewURL">
+
+          <div class="d-flex align-items-center justify-content-between mb-3">
+
+            <!-- Fila de metadatos y enlace -->
+            <p class="mb-0">
+              <i tal:attributes="class python:'bi bi-' + icon + ' text-info me-1'" aria-hidden="true"></i>
+              <tal:block tal:condition="not:isPDFpublic">
+                <tal:name tal:content="context/visiblefile/filename">Filename</tal:name>
+              </tal:block>
+              <tal:block tal:condition="isPDFpublic">
+                <a tal:attributes="href public_file_view_url; target string:_blank">
+                  <tal:name tal:content="context/visiblefile/filename">Filename</tal:name>
+                </a>
+              </tal:block>
+              <span class="text-muted fs-s ms-2"
+                    tal:define="size context/visiblefile/getSize; 
+                                kb python:round(size/1024, 2)">
+                (<span tal:replace="kb"></span> KB)
+              </span>
+              <a tal:attributes="href public_file_download_url"
+                 class="ms-2" title="Descarrega">
+                <i class="bi bi-download"></i>
+              </a>
+            </p>
+
+            <!-- Acciones de visibilidad -->
+            <div tal:condition="python: changePublic and not sessionIsClosed">
+              <a class="btn btn-outline-secondary btn-sm confirmRedirect"
+                tal:attributes="data-redirect string:${absolute_url}/visibleToHidden">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                <span class="ms-1" i18n:translate="">Passar a reservat</span>
+              </a>
+            </div>
+            
+          </div>
+
+          <!-- Vista prèvia -->
+          <div tal:condition="isPDFpublic">
+            <tal:block tal:condition="pdf">
+              <object type="application/pdf" width="100%" height="480"
+                      tal:attributes="data public_file_view_url"></object>
+            </tal:block>
+            <video tal:condition="video" controls class="w-100" style="max-height:320px;">
+              <source tal:attributes="src public_file_download_url; type public_content_type"/>
+            </video>
+            <audio tal:condition="audio" controls class="w-100">
+              <source tal:attributes="src public_file_download_url; type public_content_type"/>
+            </audio>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- JS: confirmar cambio de visibilidad -->
+  <script type="text/javascript" src="++theme++genweb6.organs/js/content/file.min.js"></script>
+</div>
+
+</body>
+</html>

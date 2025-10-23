@@ -1,0 +1,315 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:plone="http://namespaces.plone.org/plone"
+  i18n_domain="genweb6.organs">
+
+  <!-- Set overrides folder for Just-a-Bunch-Of-Templates product -->
+  <include package="z3c.jbot" file="meta.zcml" />
+
+  <browser:page
+    for="genweb6.organs.content.acta.acta.IActa"
+    name="printActa"
+    class=".views.ActaPrintView"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    for="genweb6.organs.content.acta.acta.IActa"
+    name="previewActa"
+    class=".views.ActaPreviewView"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    for="*"
+    name="allsessions"
+    class=".views.allSessions"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="zope2.Public"
+    />
+
+  <browser:page
+    for="*"
+    name="membres"
+    class=".views.showMembersOrgan"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="zope2.Public"
+    />
+
+  <browser:page
+    for="*"
+    name="changeTitle"
+    class=".changes.changeTitle"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    name="fcmoveTable"
+    class=".views.Move"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ModifyPortalContent" />
+
+  <browser:page
+    for="*"
+    name="removeElement"
+    class=".views.Delete"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ModifyPortalContent" />
+
+  <browser:page
+    for="*"
+    name="createElement"
+    class=".views.createElement"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ModifyPortalContent" />
+
+  <browser:page
+    for="*"
+    name="deleteElement"
+    class=".views.Delete"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ModifyPortalContent" />
+
+  <browser:page
+    for="genweb6.organs.content.sessio.sessio.ISessio"
+    name="updatePoints"
+    class=".views.ReloadPoints"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <browser:page
+    for="genweb6.organs.content.sessio.sessio.ISessio"
+    name="updateAcords"
+    class=".views.ReloadAcords"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <!-- Change bullet colors in presentation root objects  - No reloads page-->
+  <browser:page
+    for="*"
+    name="changeActualState"
+    class=".views.changeActualState"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <!-- Change bullet colors in presentation subparents objects - No reloads page-->
+  <browser:page
+    for="genweb6.organs.content.sessio.sessio.ISessio"
+    name="changeSubpuntState"
+    class=".views.changeSubpuntState"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <!-- API ACORDS WEBSERVICE -->
+  <browser:page
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    name="acord"
+    class=".webservice.Webservice"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View"
+    />
+
+  <!-- View needed item properties-->
+  <browser:page
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    name="findFileProperties"
+    class=".views.findFileProperties"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ManagePortal"
+    />
+
+  <permission
+    id="genweb.organs.VistaSecretariaGeneral"
+    title="genweb.organs: Vista Secretaria General"
+    />
+
+  <browser:page
+    for="*"
+    name="allorgans"
+    class=".views.allOrgans"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="genweb.organs.VistaSecretariaGeneral"
+    />
+
+  <browser:page
+    for="*"
+    name="exportallorgans"
+    class=".views.exportAllOrgans"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="genweb.organs.VistaSecretariaGeneral"
+    />
+
+  <browser:page
+    for="genweb6.organs.content.organgovern.organgovern.IOrgangovern"
+    name="orderSessions"
+    class=".views.ReorderSessions"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <browser:page
+    for="*"
+    name="reloadVoteStats"
+    class=".views.ReloadVoteStats"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="genweb.organs.add.vote"
+    />
+
+  <browser:page
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    name="migracioAnnexosActes"
+    class=".views.migracioAnnexosActes"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ManagePortal"
+    />
+
+  <browser:page
+    for="genweb6.organs.content.organgovern.organgovern.IOrgangovern"
+    name="getAcordsOrgangovern"
+    class=".views.getAcordsOrgangovern"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    for="genweb6.organs.content.organgovern.organgovern.IOrgangovern"
+    name="getActesOrgangovern"
+    class=".views.getActesOrgangovern"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    name="updateIndicadors"
+    class=".views.updateIndicadors"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ManagePortal"
+    />
+
+  <browser:page
+    for="*"
+    name="allorgansestatsllista"
+    class=".views.allOrgansEstatsLlista"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ManagePortal"
+    />
+
+  <browser:page
+    for="*"
+    name="getUsers"
+    class=".views.getUsers"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="change_migrated_to"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    class=".tools.changeMigrated"
+    permission="cmf.ManagePortal"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    />
+
+  <browser:page
+    name="change_proposal_after_migration"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    class=".tools.changeInitialProposalPoint"
+    permission="cmf.ManagePortal"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    />
+
+  <browser:page
+    name="change_file_mimetype_to_pdf"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    class=".tools.changeMimeType"
+    permission="cmf.ManagePortal"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    />
+
+  <browser:page
+    name="permissions_in_og_folders"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    class=".tools.listpermissions"
+    permission="cmf.ManagePortal"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    />
+
+  <browser:page
+    name="movefilestoprivateorpublic"
+    for="genweb6.organs.content.sessio.sessio.ISessio"
+    class=".tools.MovePublicfilestoPrivate"
+    permission="cmf.ManagePortal"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    />
+
+  <browser:page
+    name="showColorOrgans"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    class=".tools.showColorOrgans"
+    permission="cmf.ManagePortal"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    />
+
+  <browser:page
+    name="create_test_content"
+    for="zope.interface.Interface"
+    class=".tools.createTestContent"
+    permission="cmf.ManagePortal"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    />
+
+  <browser:page
+    name="test_file_acces_protection"
+    for="zope.interface.Interface"
+    class=".tools.testFilesAccess"
+    permission="cmf.ManagePortal"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    />
+
+  <subscriber
+    for="genweb6.organs.content.punt.punt.IPunt
+         zope.lifecycleevent.interfaces.IObjectRemovedEvent"
+    handler=".events.removeObject.removePunt"
+    />
+
+  <subscriber
+    for="genweb6.organs.content.punt.subpunt.ISubpunt
+         zope.lifecycleevent.interfaces.IObjectRemovedEvent"
+    handler=".events.removeObject.removeSubpunt"
+    />
+
+  <subscriber
+    for="genweb6.organs.content.acord.acord.IAcord
+         zope.lifecycleevent.interfaces.IObjectRemovedEvent"
+    handler=".events.removeObject.removeAcord"
+    />
+
+  <browser:page
+    name="gw_type_ahead_search"
+    for="*"
+    class=".search.search.TypeAheadSearch"
+    permission="zope2.View"
+    />
+
+  <!-- modified search to hide organs types based on state and role in searches
+      and search only in organs types -->
+  <browser:page
+    name="search"
+    class=".search.search.Search"
+    permission="zope2.View"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
+    template="search/search.pt"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    />
+
+</configure>

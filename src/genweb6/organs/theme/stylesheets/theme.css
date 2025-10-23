@@ -1,0 +1,770 @@
+@charset "UTF-8";
+/* line 2, ../scss/_edicio.scss */
+b.form-label {
+  font-weight: 300;
+}
+
+/* line 7, ../scss/_edicio.scss */
+#formfield-form-widgets-infoAfectats,
+#formfield-form-widgets-infoAssistents {
+  position: relative;
+  padding: 1rem 1rem;
+  border: 3px solid transparent;
+  border-radius: .25rem;
+  animation-fill-mode: forwards !important;
+  animation-delay: 1s !important;
+  animation: 1.5s ease-in alert-animation;
+  color: var(--bs-info-text-emphasis);
+  background-color: var(--bs-info-bg-subtle);
+  border-color: var(--bs-info-border-subtle);
+}
+/* line 20, ../scss/_edicio.scss */
+#formfield-form-widgets-infoAfectats label.form-label,
+#formfield-form-widgets-infoAssistents label.form-label {
+  font-weight: 700;
+  margin-bottom: 0rem !important;
+}
+/* line 25, ../scss/_edicio.scss */
+#formfield-form-widgets-infoAfectats textarea,
+#formfield-form-widgets-infoAssistents textarea {
+  display: none !important;
+}
+/* line 29, ../scss/_edicio.scss */
+#formfield-form-widgets-infoAfectats div.form-text,
+#formfield-form-widgets-infoAssistents div.form-text {
+  color: var(--bs-info-text-emphasis) !important;
+}
+
+/* line 42, ../scss/_edicio.scss */
+body.template-mail_informar #social_tags,
+body.template-mail_convocar #social_tags,
+body.template-mail_message #social_tags,
+body.template-presentation #social_tags,
+body.template-butlleti #social_tags,
+body.template-signsessio #social_tags,
+body.template-excusar_assist_sessio #social_tags {
+  display: none !important;
+}
+
+/* line 49, ../scss/_edicio.scss */
+div.widget-mode-display b {
+  margin-bottom: 0;
+}
+/* line 53, ../scss/_edicio.scss */
+div.widget-mode-display span.form-control {
+  padding: 0;
+  border: 0;
+  color: var(--bs-secondary-color);
+}
+
+/* line 3, ../scss/_homepage.scss */
+body.template-search .card-organ {
+  transition: all .25s ease-out;
+}
+/* line 6, ../scss/_homepage.scss */
+body.template-search .card-organ:hover {
+  transform: perspective(1px) scale(1.00775, 1.00775) translateZ(0px);
+  -webkit-font-smoothing: subpixel-antialiased;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px, rgba(0, 0, 0, 0.1) 0px 5px 10px, rgba(0, 0, 0, 0.05) 0px 10px 20px !important;
+  transition: 0.25s ease-in;
+  text-decoration: none;
+}
+/* line 16, ../scss/_homepage.scss */
+body.template-search .card-organ .card-ic i.bi {
+  font-size: 2.25rem;
+}
+/* line 21, ../scss/_homepage.scss */
+body.template-search .card-organ .card-ic-circle {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+/* line 25, ../scss/_homepage.scss */
+body.template-search .card-organ .card-ic-circle i.bi::before {
+  font-weight: 600 !important;
+}
+/* line 33, ../scss/_homepage.scss */
+body.template-search .meva-vinculacio a {
+  text-decoration: none;
+}
+/* line 36, ../scss/_homepage.scss */
+body.template-search .meva-vinculacio a:hover {
+  text-decoration: underline;
+}
+/* line 42, ../scss/_homepage.scss */
+body.template-search #search-spinner {
+  position: relative;
+  z-index: 1000;
+}
+/* line 46, ../scss/_homepage.scss */
+body.template-search #search-spinner .spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3em;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* line 1, ../scss/_generic.scss */
+.label-convocada,
+.label-tancada,
+.label-realitzada,
+.label-open_organ,
+.label-Públic,
+.label-Obert,
+.label-planificada,
+.label-restricted_to_affected_organ,
+.label-en_correccio,
+.label-restricted_to_members_organ {
+  padding: 1px 4px 2px;
+  border-radius: 3px !important;
+  font-weight: bold !important;
+  line-height: 14px !important;
+  color: white !important;
+  vertical-align: baseline !important;
+  white-space: nowrap !important;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25) !important;
+  text-align: center !important;
+}
+
+/* line 22, ../scss/_generic.scss */
+.label-convocada {
+  background-color: #8952ab !important;
+}
+
+/* line 26, ../scss/_generic.scss */
+.label-tancada {
+  background-color: #007bc0 !important;
+}
+
+/* line 30, ../scss/_generic.scss */
+.label-realitzada,
+.label-open_organ,
+.label-Públic,
+.label-Obert {
+  background-color: #456211 !important;
+}
+
+/* line 37, ../scss/_generic.scss */
+.label-planificada {
+  background-color: #FFA500 !important;
+}
+
+/* line 41, ../scss/_generic.scss */
+.label-restricted_to_affected_organ {
+  background-color: #FF5733 !important;
+}
+
+/* line 45, ../scss/_generic.scss */
+.label-en_correccio,
+.label-restricted_to_members_organ {
+  background-color: #a62e1f !important;
+}
+
+/* line 50, ../scss/_generic.scss */
+#workflow-transition-convocar {
+  display: none !important;
+}
+
+/* line 65, ../scss/_generic.scss */
+.portaltype-genweb-organs-organsfolder li#plone-contentmenu-workflow,
+.portaltype-genweb-organs-organsfolder li#plone-contentmenu-multilingual,
+.portaltype-genweb-organs-organgovern li#plone-contentmenu-workflow,
+.portaltype-genweb-organs-organgovern li#plone-contentmenu-multilingual,
+.portaltype-genweb-organs-punt li#plone-contentmenu-workflow,
+.portaltype-genweb-organs-punt li#plone-contentmenu-multilingual,
+.portaltype-genweb-organs-subpunt li#plone-contentmenu-workflow,
+.portaltype-genweb-organs-subpunt li#plone-contentmenu-multilingual,
+.portaltype-genweb-organs-file li#plone-contentmenu-workflow,
+.portaltype-genweb-organs-file li#plone-contentmenu-multilingual,
+.portaltype-genweb-organs-documen li#plone-contentmenu-workflow,
+.portaltype-genweb-organs-documen li#plone-contentmenu-multilingual,
+.portaltype-genweb-organs-acta li#plone-contentmenu-workflow,
+.portaltype-genweb-organs-acta li#plone-contentmenu-multilingual,
+.portaltype-genweb-organs-audio li#plone-contentmenu-workflow,
+.portaltype-genweb-organs-audio li#plone-contentmenu-multilingual,
+.portaltype-genweb-organs-annex li#plone-contentmenu-workflow,
+.portaltype-genweb-organs-annex li#plone-contentmenu-multilingual,
+.portaltype-genweb-organs-acord li#plone-contentmenu-workflow,
+.portaltype-genweb-organs-acord li#plone-contentmenu-multilingual {
+  display: none;
+}
+
+/* line 71, ../scss/_generic.scss */
+.text-bg-signada {
+  color: #fff !important;
+  background-color: RGBA(var(--bs-success-rgb), var(--bs-bg-opacity, 1)) !important;
+}
+
+/* line 76, ../scss/_generic.scss */
+.text-bg-pendent {
+  color: #fff !important;
+  background-color: RGBA(var(--bs-warning-rgb), var(--bs-bg-opacity, 1)) !important;
+}
+
+/* line 81, ../scss/_generic.scss */
+.text-bg-rebutjada {
+  color: #fff !important;
+  background-color: RGBA(var(--bs-danger-rgb), var(--bs-bg-opacity, 1)) !important;
+}
+
+/* line 88, ../scss/_generic.scss */
+.nav-tabs:not(.card-header-tabs) .nav-link.active {
+  color: white !important;
+  background: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+}
+
+/* line 97, ../scss/_generic.scss */
+.card-header .mb-0 {
+  margin-bottom: 0 !important;
+}
+
+/* line 102, ../scss/_generic.scss */
+.w-3 {
+  width: 3% !important;
+}
+
+/* line 106, ../scss/_generic.scss */
+.w-5 {
+  width: 5% !important;
+}
+
+/* line 110, ../scss/_generic.scss */
+.w-20 {
+  width: 20% !important;
+}
+
+/* line 114, ../scss/_generic.scss */
+.w-72 {
+  width: 72% !important;
+}
+
+/* line 118, ../scss/_generic.scss */
+.w-75 {
+  width: 75% !important;
+}
+
+/* line 122, ../scss/_generic.scss */
+.w-92 {
+  width: 92% !important;
+}
+
+/* line 126, ../scss/_generic.scss */
+.w-95 {
+  width: 95% !important;
+}
+
+/* line 130, ../scss/_generic.scss */
+.mw-50 {
+  max-width: 50% !important;
+}
+
+/* line 136, ../scss/_generic.scss */
+.bi.double-icon:after {
+  display: inline-block;
+  font-family: bootstrap-icons !important;
+  font-style: normal;
+  font-weight: 400 !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: -.125em;
+  -webkit-font-smoothing: antialiased;
+  color: var(--bs-danger);
+  background-color: var(--bs-body-bg);
+  position: relative;
+  margin-right: -7px;
+  left: -7px;
+  top: 4px;
+}
+/* line 157, ../scss/_generic.scss */
+.bi.double-icon.bi-file-earmark-pdf:after {
+  content: "\f63e";
+}
+/* line 164, ../scss/_generic.scss */
+.bi.double-icon.bi-file-earmark-text:after {
+  content: "\f38b";
+}
+
+/* line 174, ../scss/_generic.scss */
+.picked .bi.double-icon:after {
+  background-color: #e5f7ff !important;
+}
+
+/* line 180, ../scss/_generic.scss */
+#social_tags {
+  display: flex;
+  align-items: center;
+  margin-top: 0.4rem !important;
+}
+/* line 185, ../scss/_generic.scss */
+#social_tags a:not(#copy-universal-link) {
+  display: none !important;
+}
+/* line 189, ../scss/_generic.scss */
+#social_tags p {
+  margin-right: 0.5rem;
+}
+
+/* line 194, ../scss/_generic.scss */
+.spinner-block {
+  z-index: 1055;
+  pointer-events: all;
+}
+/* line 198, ../scss/_generic.scss */
+.spinner-block .spinner-border {
+  --bs-spinner-animation-speed: 1.5s;
+  --bs-spinner-border-width: 0.5em;
+  --bs-spinner-width: 4rem;
+  --bs-spinner-height: 4rem;
+}
+
+/* line 210, ../scss/_generic.scss */
+table.table-bordered thead th {
+  background-color: var(--bs-secondary-bg) !important;
+}
+
+/* line 220, ../scss/_generic.scss */
+#header .navbar-nav .nav-item {
+  display: none;
+}
+/* line 223, ../scss/_generic.scss */
+#header .navbar-nav .nav-item:first-child {
+  display: block;
+}
+
+@media print {
+  /* line 3, ../scss/_print.scss */
+  body {
+    width: 210mm;
+    height: 297mm;
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.75rem !important;
+    padding-left: 0rem !important;
+  }
+
+  /* line 11, ../scss/_print.scss */
+  html, body {
+    font-size: 15pt !important;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 130% !important;
+  }
+
+  /* line 17, ../scss/_print.scss */
+  li {
+    line-height: 130% !important;
+  }
+
+  /* line 21, ../scss/_print.scss */
+  #content-header {
+    padding-bottom: 50px;
+  }
+
+  /* line 25, ../scss/_print.scss */
+  #hero,
+  nav#portal-breadcrumbs,
+  .nav-collapse-eines,
+  #portal-personaltools-wrapper,
+  #portal-globalnav,
+  #portal-column-one,
+  .alert,
+  #edit-bar,
+  #viewlet-below-content-title,
+  #viewlet-above-content-title,
+  #content-header,
+  .header-image,
+  #cookies,
+  .extraInfo,
+  #commenting,
+  #viewlet-below-content > a,
+  input[type="submit"],
+  #content-core > button,
+  .linkNotificacions,
+  .btnActa,
+  #peu > div > div.row-fluid,
+  .reply-to-comment-button,
+  .bannerOrgans,
+  .sessionActions,
+  #expandAll,
+  #collapseAll,
+  button.label.dropdown-toggle,
+  button.remove.label.label-important,
+  div.sessionCustomActions,
+  .template-printacta #content-header,
+  .template-printdocument #content-header,
+  .template-printdocument #portal-footer-wrapper {
+    display: none !important;
+  }
+
+  /* line 60, ../scss/_print.scss */
+  #portal-column-content {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  /* line 65, ../scss/_print.scss */
+  #peu .col-md-8 {
+    width: 100% !important;
+  }
+
+  /* line 69, ../scss/_print.scss */
+  div.pageBreak {
+    page-break-before: always !important;
+  }
+
+  /* line 73, ../scss/_print.scss */
+  #portal-breadcrumbs {
+    display: inline !important;
+  }
+
+  /* line 77, ../scss/_print.scss */
+  a {
+    text-decoration: underline;
+    color: black;
+  }
+  /* line 81, ../scss/_print.scss */
+  a:hover {
+    text-decoration: none;
+  }
+
+  /* line 86, ../scss/_print.scss */
+  .plain a {
+    color: #555555;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8rem;
+  }
+
+  /* line 92, ../scss/_print.scss */
+  h2,
+  h3 {
+    color: #557C95;
+  }
+
+  /* line 97, ../scss/_print.scss */
+  h1 {
+    font-size: 1.6rem !important;
+    margin-top: 0px !important;
+  }
+
+  /* line 102, ../scss/_print.scss */
+  h2 {
+    font-size: 1.4rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+
+  /* line 107, ../scss/_print.scss */
+  h3 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3rem !important;
+  }
+
+  /* line 112, ../scss/_print.scss */
+  h4 {
+    font-size: 1.2rem !important;
+  }
+
+  /* line 116, ../scss/_print.scss */
+  .h4Print {
+    color: #557C95;
+  }
+
+  /* line 120, ../scss/_print.scss */
+  .caixa {
+    width: 9cm;
+    vertical-align: top;
+  }
+
+  /* line 125, ../scss/_print.scss */
+  table {
+    font-size: 0.8rem !important;
+    line-height: 120% !important;
+  }
+  /* line 129, ../scss/_print.scss */
+  table thead {
+    border-bottom: 5px solid var(--bs-primary) !important;
+  }
+  /* line 133, ../scss/_print.scss */
+  table tbody {
+    line-height: 130% !important;
+  }
+  /* line 136, ../scss/_print.scss */
+  table tbody > tr {
+    height: auto !important;
+  }
+
+  /* line 142, ../scss/_print.scss */
+  #portal-header,
+  #portal-footer-wrapper {
+    border: 0px;
+  }
+
+  /* line 147, ../scss/_print.scss */
+  section#content-area {
+    margin-top: 0px;
+  }
+
+  /* line 151, ../scss/_print.scss */
+  .h2butlleti {
+    line-height: inherit;
+  }
+}
+/* line 5, ../scss/portlets/_portlet_calendar.scss */
+.portlet.portlet-calendar .card-body table {
+  border: 0px solid transparent !important;
+  border-spacing: 2px !important;
+}
+/* line 9, ../scss/portlets/_portlet_calendar.scss */
+.portlet.portlet-calendar .card-body table td,
+.portlet.portlet-calendar .card-body table th {
+  padding: .35rem .25rem !important;
+}
+/* line 13, ../scss/portlets/_portlet_calendar.scss */
+.portlet.portlet-calendar .card-body table td.cal_has_events,
+.portlet.portlet-calendar .card-body table th.cal_has_events {
+  color: white;
+  border-top: 0px solid transparent !important;
+  border-bottom: 0px solid transparent !important;
+}
+/* line 18, ../scss/portlets/_portlet_calendar.scss */
+.portlet.portlet-calendar .card-body table td.cal_has_events button,
+.portlet.portlet-calendar .card-body table th.cal_has_events button {
+  color: white;
+  text-decoration: none;
+}
+/* line 23, ../scss/portlets/_portlet_calendar.scss */
+.portlet.portlet-calendar .card-body table td.cal_has_events:hover,
+.portlet.portlet-calendar .card-body table th.cal_has_events:hover {
+  filter: brightness(80%);
+}
+/* line 27, ../scss/portlets/_portlet_calendar.scss */
+.portlet.portlet-calendar .card-body table td.cal_has_events .event-multiple::before,
+.portlet.portlet-calendar .card-body table th.cal_has_events .event-multiple::before {
+  content: "+";
+  position: absolute;
+  font-size: 1rem;
+  bottom: -12px;
+  right: -10px;
+}
+/* line 41, ../scss/portlets/_portlet_calendar.scss */
+.portlet.portlet-calendar .text-end i::before {
+  font-weight: 600 !important;
+}
+/* line 49, ../scss/portlets/_portlet_calendar.scss */
+.portlet.portlet-calendar .text-end a,
+.portlet.portlet-calendar .calendar-event-list a {
+  text-decoration: none;
+}
+/* line 52, ../scss/portlets/_portlet_calendar.scss */
+.portlet.portlet-calendar .text-end a:hover,
+.portlet.portlet-calendar .calendar-event-list a:hover {
+  text-decoration: underline;
+}
+/* line 56, ../scss/portlets/_portlet_calendar.scss */
+.portlet.portlet-calendar .text-end a.text-dark,
+.portlet.portlet-calendar .calendar-event-list a.text-dark {
+  color: #212529 !important;
+}
+
+/* line 5, ../scss/content/_organgovern.scss */
+body.portaltype-genweb-organs-organgovern #contentOrgan .reorder {
+  top: -38px;
+}
+/* line 8, ../scss/content/_organgovern.scss */
+body.portaltype-genweb-organs-organgovern #contentOrgan .reorder a:hover i::before,
+body.portaltype-genweb-organs-organgovern #contentOrgan .reorder a:hover {
+  font-weight: 700 !important;
+}
+
+/* line 5, ../scss/content/_sessio.scss */
+body.template-presentation .openInfo,
+body.template-signsessio .openInfo,
+body.portaltype-genweb-organs-sessio .openInfo {
+  cursor: pointer;
+}
+/* line 11, ../scss/content/_sessio.scss */
+body.template-presentation #resultsVotesTab .btn-outline-info,
+body.template-signsessio #resultsVotesTab .btn-outline-info,
+body.portaltype-genweb-organs-sessio #resultsVotesTab .btn-outline-info {
+  cursor: help !important;
+}
+/* line 18, ../scss/content/_sessio.scss */
+body.template-presentation .sessionActions span,
+body.template-presentation .sessionActions a,
+body.template-signsessio .sessionActions span,
+body.template-signsessio .sessionActions a,
+body.portaltype-genweb-organs-sessio .sessionActions span,
+body.portaltype-genweb-organs-sessio .sessionActions a {
+  font-weight: normal !important;
+  max-width: 130px;
+}
+/* line 23, ../scss/content/_sessio.scss */
+body.template-presentation .sessionActions span i::before,
+body.template-presentation .sessionActions a i::before,
+body.template-signsessio .sessionActions span i::before,
+body.template-signsessio .sessionActions a i::before,
+body.portaltype-genweb-organs-sessio .sessionActions span i::before,
+body.portaltype-genweb-organs-sessio .sessionActions a i::before {
+  font-size: 2rem;
+}
+/* line 27, ../scss/content/_sessio.scss */
+body.template-presentation .sessionActions span.btn-success,
+body.template-presentation .sessionActions a.btn-success,
+body.template-signsessio .sessionActions span.btn-success,
+body.template-signsessio .sessionActions a.btn-success,
+body.portaltype-genweb-organs-sessio .sessionActions span.btn-success,
+body.portaltype-genweb-organs-sessio .sessionActions a.btn-success {
+  cursor: default;
+}
+/* line 30, ../scss/content/_sessio.scss */
+body.template-presentation .sessionActions span.btn-success:hover,
+body.template-presentation .sessionActions a.btn-success:hover,
+body.template-signsessio .sessionActions span.btn-success:hover,
+body.template-signsessio .sessionActions a.btn-success:hover,
+body.portaltype-genweb-organs-sessio .sessionActions span.btn-success:hover,
+body.portaltype-genweb-organs-sessio .sessionActions a.btn-success:hover {
+  background-color: var(--bs-btn-bg) !important;
+  border-color: var(--bs-btn-border-color) !important;
+}
+/* line 38, ../scss/content/_sessio.scss */
+body.template-presentation #sortable,
+body.template-signsessio #sortable,
+body.portaltype-genweb-organs-sessio #sortable {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+}
+/* line 44, ../scss/content/_sessio.scss */
+body.template-presentation #sortable .ui-state-grey,
+body.template-presentation #sortable .ui-state-grey-not_move,
+body.template-presentation #sortable .ui-state-grey-impersonate,
+body.template-signsessio #sortable .ui-state-grey,
+body.template-signsessio #sortable .ui-state-grey-not_move,
+body.template-signsessio #sortable .ui-state-grey-impersonate,
+body.portaltype-genweb-organs-sessio #sortable .ui-state-grey,
+body.portaltype-genweb-organs-sessio #sortable .ui-state-grey-not_move,
+body.portaltype-genweb-organs-sessio #sortable .ui-state-grey-impersonate {
+  border: 1px solid #eee;
+  position: relative;
+  font-weight: normal;
+  color: black;
+}
+/* line 55, ../scss/content/_sessio.scss */
+body.template-presentation #sortable .ui-state-grey:hover,
+body.template-signsessio #sortable .ui-state-grey:hover,
+body.portaltype-genweb-organs-sessio #sortable .ui-state-grey:hover {
+  background: #f9f9f9 none repeat scroll 0 0;
+  cursor: move;
+  position: relative;
+}
+/* line 60, ../scss/content/_sessio.scss */
+body.template-presentation #sortable .ui-state-grey:hover:before,
+body.template-signsessio #sortable .ui-state-grey:hover:before,
+body.portaltype-genweb-organs-sessio #sortable .ui-state-grey:hover:before {
+  cursor: move;
+  color: #007BC0;
+  position: absolute;
+  font-size: 15px;
+  bottom: 10px;
+  left: 10px;
+}
+/* line 70, ../scss/content/_sessio.scss */
+body.template-presentation #sortable .ui-state-grey.picked,
+body.template-signsessio #sortable .ui-state-grey.picked,
+body.portaltype-genweb-organs-sessio #sortable .ui-state-grey.picked {
+  background: #e5f7ff !important;
+}
+/* line 75, ../scss/content/_sessio.scss */
+body.template-presentation #sortable .ui-state-grey-file:hover,
+body.template-signsessio #sortable .ui-state-grey-file:hover,
+body.portaltype-genweb-organs-sessio #sortable .ui-state-grey-file:hover {
+  background: #f9f9f9 none repeat scroll 0 0 !important;
+  position: relative;
+}
+/* line 80, ../scss/content/_sessio.scss */
+body.template-presentation #sortable .einesSpan,
+body.template-signsessio #sortable .einesSpan,
+body.portaltype-genweb-organs-sessio #sortable .einesSpan {
+  position: absolute;
+  background: linear-gradient(to right, rgba(229, 247, 255, 0) 0%, #e5f7ff 30%, #e5f7ff 100%);
+}
+/* line 89, ../scss/content/_sessio.scss */
+body.template-presentation #sortable .titleSpan a:hover,
+body.template-signsessio #sortable .titleSpan a:hover,
+body.portaltype-genweb-organs-sessio #sortable .titleSpan a:hover {
+  text-decoration: underline;
+}
+/* line 97, ../scss/content/_sessio.scss */
+body.template-presentation #sortable .puntVoteButtons .btn.disabled,
+body.template-signsessio #sortable .puntVoteButtons .btn.disabled,
+body.portaltype-genweb-organs-sessio #sortable .puntVoteButtons .btn.disabled {
+  cursor: not-allowed;
+}
+/* line 105, ../scss/content/_sessio.scss */
+body.template-presentation .filesinTable .titleSpan,
+body.template-signsessio .filesinTable .titleSpan,
+body.portaltype-genweb-organs-sessio .filesinTable .titleSpan {
+  margin-left: calc(8% + 1rem);
+}
+/* line 110, ../scss/content/_sessio.scss */
+body.template-presentation .li_subgrups,
+body.template-signsessio .li_subgrups,
+body.portaltype-genweb-organs-sessio .li_subgrups {
+  padding-left: calc(8% + 1rem);
+}
+/* line 113, ../scss/content/_sessio.scss */
+body.template-presentation .li_subgrups .listFiles,
+body.template-signsessio .li_subgrups .listFiles,
+body.portaltype-genweb-organs-sessio .li_subgrups .listFiles {
+  padding-left: calc(5% + 1rem);
+}
+/* line 122, ../scss/content/_sessio.scss */
+body.template-presentation #previewDocModal .filesinTable .titleSpan,
+body.template-signsessio #previewDocModal .filesinTable .titleSpan,
+body.portaltype-genweb-organs-sessio #previewDocModal .filesinTable .titleSpan {
+  margin-left: calc(5% + 1rem);
+}
+/* line 127, ../scss/content/_sessio.scss */
+body.template-presentation #previewDocModal .li_subgrups,
+body.template-signsessio #previewDocModal .li_subgrups,
+body.portaltype-genweb-organs-sessio #previewDocModal .li_subgrups {
+  padding-left: calc(5% + 1rem);
+}
+/* line 130, ../scss/content/_sessio.scss */
+body.template-presentation #previewDocModal .li_subgrups .listFiles,
+body.template-signsessio #previewDocModal .li_subgrups .listFiles,
+body.portaltype-genweb-organs-sessio #previewDocModal .li_subgrups .listFiles {
+  padding-left: calc(5% + 1rem);
+}
+
+/* line 1, ../scss/content/_presentation.scss */
+body.template-presentation {
+  padding-left: 0 !important;
+}
+/* line 4, ../scss/content/_presentation.scss */
+body.template-presentation #back-to-top,
+body.template-presentation #portal-navbar,
+body.template-presentation #portal-searchbox,
+body.template-presentation #portal-navbar-mobile,
+body.template-presentation #portal-footer-wrapper,
+body.template-presentation #portal-breadcrumbs,
+body.template-presentation #edit-bar {
+  display: none !important;
+}
+/* line 14, ../scss/content/_presentation.scss */
+body.template-presentation a.icon-hover:hover {
+  color: var(--bs-primary-hover);
+}
+/* line 18, ../scss/content/_presentation.scss */
+body.template-presentation ul.items {
+  font-size: 1.75em;
+}
+/* line 22, ../scss/content/_presentation.scss */
+body.template-presentation .eines-lateral {
+  z-index: 1035;
+}

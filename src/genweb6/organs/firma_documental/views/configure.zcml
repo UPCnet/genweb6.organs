@@ -1,0 +1,120 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- General -->
+
+  <browser:page
+    name="updateInfoPortafirmes"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    class=".general.UpdateInfoPortafirmes"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View" />
+
+  <!-- Acta -->
+
+  <browser:page
+    name="signActa"
+    for="genweb6.organs.content.acta.acta.IActa"
+    class=".firmes.SignActa"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="genweb.organs.firmadocumental.sign" />
+
+  <browser:page
+    name="viewActa"
+    for="genweb6.organs.content.acta.acta.IActa"
+    class=".acta.ViewActa"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View" />
+
+  <browser:page
+    name="downloadActa"
+    for="genweb6.organs.content.acta.acta.IActa"
+    class=".acta.DownloadActa"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View" />
+
+  <browser:page
+    name="viewFile"
+    for="genweb6.organs.content.acta.acta.IActa"
+    class=".firmes.ViewFile"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View" />
+
+  <browser:page
+    name="viewFileGDoc"
+    for="genweb6.organs.content.file.file.IFile"
+    class=".firmes.ViewFile"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View" />
+
+  <browser:page
+    name="downloadFileGDoc"
+    for="genweb6.organs.content.file.file.IFile"
+    class=".firmes.DownloadFile"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View" />
+
+  <!-- <browser:page
+    name="viewFile"
+    for="genweb6.organs.content.acord.acord.IAcord"
+    class=".acta.ViewFile"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View" />
+
+  <browser:page
+    name="viewFile"
+    for="genweb6.organs.content.punt.punt.IPunt"
+    class=".acta.ViewFile"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View" />
+
+  <browser:page
+    name="viewFile"
+    for="genweb6.organs.content.punt.subpunt.ISubpunt"
+    class=".acta.ViewFile"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View" /> -->
+
+  <browser:page
+    name="downloadFile"
+    for="genweb6.organs.content.acta.acta.IActa"
+    class=".acta.DownloadFile"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View" />
+
+  <browser:page
+    name="viewAudio"
+    for="genweb6.organs.content.acta.acta.IActa"
+    class=".acta.ViewAudio"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View" />
+
+  <browser:page
+    name="downloadAudio"
+    for="genweb6.organs.content.acta.acta.IActa"
+    class=".acta.DownloadAudio"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View" />
+
+  <browser:page
+    name="signSessio"
+    for="genweb6.organs.content.sessio.sessio.ISessio"
+    class=".sessio.SignSessioView"
+    template="templates/sign_sessio.pt"
+    permission="genweb.organs.firmadocumental.managment" />
+
+  <browser:page
+    name="uploadFiles"
+    for="genweb6.organs.content.sessio.sessio.ISessio"
+    class=".firmes.UploadFiles"
+    permission="genweb.organs.firmadocumental.sign" />
+
+  <browser:page
+    name="resetFirm"
+    for="genweb6.organs.content.sessio.sessio.ISessio"
+    class=".firmes.ResetFirm"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="genweb.organs.firmadocumental.sign" />
+
+</configure>

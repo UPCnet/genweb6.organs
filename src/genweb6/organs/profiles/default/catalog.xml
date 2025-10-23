@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<object name="portal_catalog">
+
+  <index name="index_proposalPoint" meta_type="FieldIndex">
+    <indexed_attr value="index_proposalPoint"/>
+  </index>
+  <column value="index_proposalPoint"/>
+
+  <index name="migrated" meta_type="BooleanIndex">
+    <indexed_attr value="migrated"/>
+  </index>
+  <column value="migrated"/>
+
+  <index name="organType" meta_type="FieldIndex">
+    <indexed_attr value="organType"/>
+  </index>
+  <column value="organType"/>
+
+  <index name="index_agreement" meta_type="FieldIndex">
+    <indexed_attr value="index_agreement"/>
+  </index>
+  <column value="index_agreement"/>
+
+  <index name="visiblefields" meta_type="BooleanIndex">
+    <indexed_attr value="visiblefields"/>
+  </index>
+  <column value="visiblefields"/>
+
+  <index name="index_estatVotacio" meta_type="FieldIndex">
+    <indexed_attr value="index_estatVotacio"/>
+  </index>
+  <column value="index_estatVotacio"/>
+
+  <index name="id_firma" meta_type="FieldIndex">
+    <indexed_attr value="id_firma"/>
+  </index>
+  <column value="id_firma"/>
+
+  <index name="estatFirma" meta_type="FieldIndex">
+    <indexed_attr value="estatFirma"/>
+  </index>
+  <column value="estatFirma"/>
+
+</object>

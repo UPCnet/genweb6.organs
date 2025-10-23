@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<layers>
+  <layer
+    name="IGenweb6OrgansLayer"
+    interface="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+  />
+</layers>

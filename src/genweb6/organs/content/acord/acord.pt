@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xml:lang="ca" lang="ca"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="genweb6.organs">
+<body>
+
+<div metal:fill-slot="main" tal:condition="view/canView"
+     tal:define="defaultContent context/defaultContent;
+                 filesanddocs view/FilesandDocumentsInside;
+                 votacions view/VotacionsInside;">
+
+  <div class="content-core">
+
+    <!-- Título principal -->
+    <div class="d-flex align-items-center mb-3">
+      <h1 class="documentFirstHeading me-3 mb-0">
+        <span class="me-2" tal:content="string:${context/proposalPoint}.">1</span>
+        <span class="me-2" tal:content="context/Title">Títol del punt</span>
+        <span tal:content="view/AcordTitle">[Acord X]</span>
+      </h1>
+
+      <span class="btn badge bg-secondary disabled bg-secondaryString fs-xl"
+            tal:define="color view/getColor">
+        <i class="bi bi-circle-fill me-1" aria-hidden="true" 
+           tal:attributes="style string:color:${color};"></i>
+        <span tal:content="context/estatsLlista">Esborrany</span>
+      </span>
+    </div>    
+
+    <!-- Firma (si aplica) -->
+    <div class="mb-3" tal:condition="view/hasFirma">
+      <span tal:define="estatFirma view/estatFirma"
+            tal:attributes="class string:py-2 px-3 rounded-pill rounded-pill text-bg-${estatFirma} fw-bold fs-xs"
+            tal:content="estatFirma">PENDENT_SIGNANTS</span>
+    </div>
+
+    <!-- Descripció -->
+    <div tal:condition="defaultContent" class="mb-3">
+      <div tal:content="structure defaultContent/output">Descripció</div>
+    </div>
+
+    <!-- Fitxers i documents relacionats -->
+    <div class="card mb-3" tal:condition="filesanddocs">
+      <div class="card-header fw-bolder" i18n:translate="">Fitxers i documents</div>
+      <div class="card-body">
+        <ul class="list-unstyled m-0">
+          <li tal:repeat="item filesanddocs">
+            <a tal:define="title item/title"
+               class="text-decoration-none d-flex align-items-center"
+               tal:attributes="href item/absolute_url; 
+                               target python:item.get('new_tab') and '_blank' or None; 
+                               title title; 
+                               alt title">
+              <i tal:attributes="class string:${item/classCSS} me-1"></i>
+              <tal:omit-tag tal:content="title">Nom fitxer</tal:omit-tag>
+            </a>
+          </li>   
+        </ul>             
+      </div>
+    </div>
+
+    <!-- Esmenes / Votacions -->
+    <div class="card" tal:condition="votacions">
+      <div class="card-header fw-bolder" i18n:translate="">Esmenes / Votacions</div>
+      <div class="card-body">
+        <ul class="list-unstyled m-0">
+          <li tal:repeat="item votacions">
+            <a class="text-decoration-none"
+               tal:attributes="href item/absolute_url; 
+                               title item/title; 
+                               alt item/title">
+              <span tal:content="item/title">Votació</span>
+            </a>
+          </li>   
+        </ul>             
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

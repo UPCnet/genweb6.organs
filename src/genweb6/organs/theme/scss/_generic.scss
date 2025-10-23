@@ -1,0 +1,228 @@
+.label-convocada,
+.label-tancada,
+.label-realitzada,
+.label-open_organ,
+.label-Públic,
+.label-Obert,
+.label-planificada,
+.label-restricted_to_affected_organ,
+.label-en_correccio,
+.label-restricted_to_members_organ {
+  padding: 1px 4px 2px;
+  border-radius: 3px !important;
+  font-weight: bold !important;
+  line-height: 14px !important;
+  color: white !important;
+  vertical-align: baseline !important;
+  white-space: nowrap !important;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25) !important;
+  text-align: center !important;
+}
+
+.label-convocada {
+  background-color: #8952ab !important;
+}
+
+.label-tancada {
+  background-color: #007bc0 !important;
+}
+
+.label-realitzada,
+.label-open_organ,
+.label-Públic,
+.label-Obert {
+  background-color: #456211 !important;
+}
+
+.label-planificada {
+  background-color: #FFA500 !important;
+}
+
+.label-restricted_to_affected_organ {
+  background-color: #FF5733 !important;
+}
+
+.label-en_correccio,
+.label-restricted_to_members_organ {
+  background-color:  #a62e1f !important;
+}
+
+#workflow-transition-convocar {
+  display: none !important;
+}
+
+.portaltype-genweb-organs-organsfolder,
+.portaltype-genweb-organs-organgovern,
+.portaltype-genweb-organs-punt,
+.portaltype-genweb-organs-subpunt,
+.portaltype-genweb-organs-file,
+.portaltype-genweb-organs-documen,
+.portaltype-genweb-organs-acta,
+.portaltype-genweb-organs-audio,
+.portaltype-genweb-organs-annex,
+.portaltype-genweb-organs-acord {
+
+  li#plone-contentmenu-workflow,
+  li#plone-contentmenu-multilingual {
+    display: none;
+  }
+}
+
+.text-bg-signada {
+  color: #fff !important;
+  background-color: RGBA(var(--bs-success-rgb), var(--bs-bg-opacity, 1)) !important;
+}
+
+.text-bg-pendent {
+  color: #fff !important;
+  background-color: RGBA(var(--bs-warning-rgb), var(--bs-bg-opacity, 1)) !important;
+}
+
+.text-bg-rebutjada {
+  color: #fff !important;
+  background-color: RGBA(var(--bs-danger-rgb), var(--bs-bg-opacity, 1)) !important;
+}
+
+.nav-tabs:not(.card-header-tabs) {
+
+  .nav-link.active {
+    color: white !important;
+    background: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+  }
+}
+
+.card-header {
+
+  .mb-0 {
+    margin-bottom: 0 !important;
+  }
+}
+
+.w-3 {
+  width: 3% !important;
+}
+
+.w-5 {
+  width: 5% !important;
+}
+
+.w-20 {
+  width: 20% !important;
+}
+
+.w-72 {
+  width: 72% !important;
+}
+
+.w-75 {
+  width: 75% !important;
+}
+
+.w-92 {
+  width: 92% !important;
+}
+
+.w-95 {
+  width: 95% !important;
+}
+
+.mw-50 {
+  max-width: 50% !important;
+}
+
+.bi.double-icon {
+
+  &:after {
+    display: inline-block;
+    font-family: bootstrap-icons !important;
+    font-style: normal;
+    font-weight: 400 !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    vertical-align: -.125em;
+    -webkit-font-smoothing: antialiased;
+    color: var(--bs-danger);
+    background-color: var(--bs-body-bg);
+    position: relative;
+    margin-right: -7px;
+    left: -7px;
+    top: 4px;
+  }
+
+
+  &.bi-file-earmark-pdf {
+
+    &:after {
+      content: "\f63e";
+    }
+  }
+
+  &.bi-file-earmark-text {
+
+    &:after {
+      content: "\f38b";
+    }
+  }
+}
+
+.picked {
+
+  .bi.double-icon {
+
+    &:after {
+      background-color: #e5f7ff!important;
+    }
+  }
+}
+
+#social_tags {
+  display: flex;
+  align-items: center;
+  margin-top: 0.4rem !important;
+
+  a:not(#copy-universal-link) {
+    display: none !important;
+  }
+
+  p {
+    margin-right: 0.5rem;
+  }
+}
+
+.spinner-block {
+  z-index: 1055; 
+  pointer-events: all;
+
+  .spinner-border {
+    --bs-spinner-animation-speed: 1.5s;
+    --bs-spinner-border-width: 0.5em;
+    --bs-spinner-width: 4rem;
+    --bs-spinner-height: 4rem;
+  }
+}
+
+table.table-bordered {
+
+  thead {
+
+    th {
+      background-color: var(--bs-secondary-bg) !important;
+    }
+  }
+}
+
+#header { 
+
+  .navbar-nav {
+
+    .nav-item {
+      display: none;
+
+      &:first-child {
+        display: block;
+      }
+    }
+  }
+}

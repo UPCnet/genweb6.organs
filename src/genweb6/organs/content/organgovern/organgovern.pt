@@ -1,0 +1,254 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="genweb6.organs">
+<body>
+
+
+<metal:content-core fill-slot="content-core" tal:condition="view/canView"
+       tal:define="descripcioOrgan context/descripcioOrgan;
+                   membresOrgan context/membresOrgan;
+                   convidatsPermanentsOrgan context/convidatsPermanentsOrgan;
+                   activeClassMembres view/activeClassMembres;
+                   activeClassConvidats view/activeClassConvidats;
+                   activeClassMembresTab view/activeClassMembresTab;
+                   activeClassConvidatsTab view/activeClassConvidatsTab;
+                   sessions view/SessionsInside;
+                   viewActes view/viewActes;
+                   faqs view/getFAQs;
+                   expAcords view/viewExportAcords;
+                   hihaPersones view/hihaPersones;
+                   multipleTab view/multipleTab;
+                   viewOrdena view/viewOrdena">
+
+  <span tal:condition="view/canModify" class="d-flex justify-content-end align-items-center mb-3">
+    <tal:omit-tag i18n:translate="">Organ Govern type</tal:omit-tag>:
+    <span tal:attributes="class string:label-${context/organType} ms-2 py-2"
+        i18n:domain="genweb" i18n:translate="" tal:content="context/organType"></span>
+  </span>
+
+  <div style="width: 180px;" class="pull-right mb-3" tal:condition="context/logoOrgan">
+    <img tal:attributes="src string:${context/absolute_url}/@@images/logoOrgan" />
+  </div>
+
+  <div class="documentDescription description"
+       tal:condition="descripcioOrgan"
+       tal:content="structure descripcioOrgan/output"></div>
+
+  <div id="contentOrgan">
+
+    <ul id="tabs" class="nav nav-tabs mb-2" role="tablist">
+      <li class="nav-item" role="presentation" tal:condition="sessions">
+        <button class="nav-link active" id="sessions-tab" data-bs-toggle="tab" data-bs-target="#sessions-tab-panel" type="button" role="tab" aria-controls="sessions-tab-panel" aria-selected="true">
+          <i class="bi bi-list" aria-hidden="True"></i>
+          <tal:omit-tag i18n:translate="">Sessions</tal:omit-tag>
+        </button >
+      </li>
+      <li class="nav-item" role="presentation" tal:condition="hihaPersones">
+        <button class="nav-link" id="membres-tab" data-bs-toggle="tab" data-bs-target="#membres-tab-panel" type="button" role="tab" aria-controls="membres-tab-panel" aria-selected="false">
+          <i class="bi bi-people-fill" aria-hidden="True"></i>
+          <tal:omit-tag i18n:translate="">Organ Govern members</tal:omit-tag>
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="acords-tab" data-bs-toggle="tab" data-bs-target="#acords-tab-panel" type="button" role="tab" aria-controls="acords-tab-panel" aria-selected="false">
+          <i class="bi bi-check" aria-hidden="true"></i>
+          <tal:omit-tag i18n:translate="">Agreements list</tal:omit-tag>
+        </button>
+      </li>
+      <li class="nav-item" role="presentation" tal:condition="viewActes">
+        <button class="nav-link" id="actes-tab" data-bs-toggle="tab" data-bs-target="#actas-tab-panel" type="button" role="tab" aria-controls="actas-tab-panel" aria-selected="false">
+          <i class="bi bi-file-text" aria-hidden="true"></i>
+          <tal:omit-tag i18n:translate="">Actes</tal:omit-tag>
+        </button>
+      </li>
+      <li class="nav-item" role="presentation" tal:condition="faqs">
+        <button class="nav-link" id="faq-tab" data-bs-toggle="tab" data-bs-target="#faq-tab-panel" type="button" role="tab" aria-controls="faq-tab-panel" aria-selected="false">
+          <i class="bi bi-question-circle" aria-hidden="true"></i>
+          <tal:omit-tag i18n:translate="">FAQ membres</tal:omit-tag>
+        </button>
+      </li>
+    </ul>
+
+    <div tal:condition="viewOrdena" class="reorder position-relative text-end">
+      <a class="position-absolute end-0 text-decoration-none"
+         tal:attributes="href string:${context/absolute_url}/orderSessions">
+        <i class="bi bi-arrow-clockwise" aria-hidden="True"></i>
+        <tal:omit-tag>Numera sessions</tal:omit-tag>
+      </a>
+    </div>
+
+    <div class="tab-content" id="tabsContent">
+      <div class="tab-pane fade show active" id="sessions-tab-panel" tal:condition="sessions" role="tabpanel" aria-labelledby="sessions-tab" tabindex="0">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th style="vertical-align: middle;">
+                  <span i18n:translate="">Title / Code</span>
+                </th>
+                <th class="text-center align-middle">
+                  <tal:head i18n:translate="">Session date</tal:head>
+                </th>
+                <th class="text-center align-middle">
+                  <tal:head i18n:translate="">Session location</tal:head>
+                </th>
+                <th class="text-center align-middle">
+                  <tal:head i18n:translate="">State</tal:head>
+                </th>
+              </tr>
+            </thead>
+            <tal:objects repeat="item sessions">
+              <tr>
+                <td style="vertical-align: middle;">
+                    <i class="bi bi-list" aria-hidden="True"></i>
+                    <a tal:attributes="href item/absolute_url;" tal:content="item/title"> Item Title </a>
+                    [<span tal:content="item/sessionNumber" class="fs-s">
+                            Session Number
+                    </span>]
+                </td>
+                <td class="text-center align-middle">
+                  <span tal:content="item/dataSessio" >
+                          Data de la Sessio
+                  </span>
+                  <br/>
+                  <span tal:content="item/horaInici">
+                          Hora inici
+                  </span>
+                </td>
+                <td class="text-center align-middle">
+                  <span tal:content="item/llocConvocatoria">
+                          Lloc sessio
+                  </span>
+                </td>
+                <td class="text-center align-middle">
+                  <span tal:content="item/review_state"
+                        tal:attributes="class string:label-${item/review_state}"
+                        i18n:translate=""
+                        i18n:domain="genweb">
+                         Item State
+                  </span>
+                </td>
+              </tr>
+            </tal:objects>
+          </table>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="membres-tab-panel" role="tabpanel" aria-labelledby="membres-tab" tabindex="0">
+        <ul id="tabsSessions" class="nav nav-tabs mb-2" role="tablist" tal:condition="multipleTab">
+          <li role="presentation" tal:condition="membresOrgan">
+            <button tal:attributes="class string:nav-link${activeClassMembres}" id="tab1primary-tab" data-bs-toggle="tab" data-bs-target="#tab1primary-tab-panel" type="button" role="tab" aria-controls="tab1primary-tab-panel" aria-selected="true" i18n:translate="">Incoming members list</button>
+          </li>
+          <li role="presentation" tal:condition="convidatsPermanentsOrgan">
+            <button tal:attributes="class string:nav-link${activeClassConvidats}" id="tab2primary-tab" data-bs-toggle="tab" data-bs-target="#tab2primary-tab-panel" type="button" role="tab" aria-controls="tab2primary-tab-panel" aria-selected="false" i18n:translate="">Invited members</button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="tabsSessionContent">
+          <div tal:condition="membresOrgan" tal:attributes="class string:tab-pane fade${activeClassMembresTab}" id="tab1primary-tab-panel" aria-labelledby="tab1primary-tab" tabindex="0">
+            <div class="card mt-3">
+              <div class="card-body">
+                <span tal:replace="structure membresOrgan/output"></span>
+              </div>
+            </div>
+          </div>
+          <div tal:condition="convidatsPermanentsOrgan" tal:attributes="class string:tab-pane fade${activeClassConvidatsTab}" id="tab2primary-tab-panel" aria-labelledby="tab2primary-tab" tabindex="0">
+            <div class="card mt-3">
+              <div class="card-body">
+                <span tal:replace="structure convidatsPermanentsOrgan/output"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel with-nav-tabs panel-primary mt-3" tal:condition="not:multipleTab">
+          <div tal:condition="membresOrgan" tal:attributes="class string:tab-pane fade${activeClassMembresTab}" id="tab1primary-tab-panel" aria-labelledby="tab1primary-tab" tabindex="0">
+            <div class="card mt-3">
+              <div class="card-body">
+                <span tal:replace="structure membresOrgan/output"></span>
+              </div>
+            </div>
+          </div>
+          <div tal:condition="convidatsPermanentsOrgan" tal:attributes="class string:tab-pane fade${activeClassConvidatsTab}" id="tab2primary-tab-panel" aria-labelledby="tab2primary-tab" tabindex="0">
+            <div class="card mt-3">
+              <div class="card-body">
+                <span tal:replace="structure convidatsPermanentsOrgan/output"></span>
+              </div>
+            </div>          
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="acords-tab-panel" role="tabpanel" aria-labelledby="acords-tab" tabindex="0">
+        <div class="scrollit">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th class="text-center">
+                     <tal:data i18n:translate="">Titol</tal:data>
+                   </th>
+                  <th class="text-center">
+                    <tal:data i18n:translate="">Agreement</tal:data>
+                  </th>
+                  <th class="text-center">
+                    <tal:data i18n:translate="">State</tal:data>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="acordsTbody">
+
+              </tbody>
+            </table>
+            <div class="spinner-acords-tab spinner-block position-fixed top-0 start-0 vw-100 vh-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-25 d-none">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="btn-export-acords text-center" tal:condition="expAcords">
+          <a class="btn btn-primary" tal:attributes="href string:${context/absolute_url}/exportAcordsCSV" data-toggle="" data-target=""><i class="bi bi-download" aria-hidden="true"></i>&nbsp;<span>Exportar acords</span></a>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="actas-tab-panel" tal:condition="viewActes" role="tabpanel" aria-labelledby="actas-tab" tabindex="0">
+        <div class="scrollit">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th class="text-center align-middle">
+                     <tal:data i18n:translate="">Titol</tal:data>
+                   </th>
+                  <th class="text-center align-middle">
+                    <tal:data i18n:translate="">Data</tal:data>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="actesTbody">
+
+              </tbody>
+            </table>
+            <div class="spinner-actas-tab spinner-block position-fixed top-0 start-0 vw-100 vh-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-25 d-none">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="faq-tab-panel" tal:condition="faqs" role="tabpanel" aria-labelledby="faq-tab" tabindex="0">
+        <div class="faq_membres">
+          <p tal:content="structure faqs">FAQ membres</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="++theme++genweb6.organs/js/content/organgovern.min.js" ></script>
+
+</metal:content-core>
+
+</body>
+</html>

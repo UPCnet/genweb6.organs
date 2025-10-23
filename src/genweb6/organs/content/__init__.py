@@ -1,0 +1,76 @@
+# -*- coding: utf-8 -*-
+from zope.interface import implementer
+from plone.dexterity.content import Item
+
+from genweb6.organs.content.organgovern.organgovern import IOrgangovern
+from genweb6.organs.content.sessio.sessio import ISessio
+from genweb6.organs.content.punt.punt import IPunt
+from genweb6.organs.content.punt.subpunt import ISubpunt
+from genweb6.organs.content.acta.acta import IActa
+from genweb6.organs.content.organsfolder.organsfolder import IOrgansfolder
+from genweb6.organs.content.file.file import IFile
+from genweb6.organs.content.document.document import IDocument
+from genweb6.organs.content.audio.audio import IAudio
+from genweb6.organs.content.annex.annex import IAnnex
+from genweb6.organs.content.acord.acord import IAcord
+from genweb6.organs.content.votacio_acord.votacio_acord import IVotacioAcord
+
+
+@implementer(IOrgangovern)
+class Organgovern(Item):
+    pass
+
+
+@implementer(ISessio)
+class Sessio(Item):
+    pass
+
+
+@implementer(IPunt)
+class Punt(Item):
+    pass
+
+
+@implementer(ISubpunt)
+class Subpunt(Item):
+    pass
+
+
+@implementer(IActa)
+class Acta(Item):
+    pass
+
+
+@implementer(IOrgansfolder)
+class Organsfolder(Item):
+    pass
+
+
+@implementer(IFile)
+class File(Item):
+    pass
+
+
+@implementer(IDocument)
+class Document(Item):
+    pass
+
+
+@implementer(IAudio)
+class Audio(Item):
+    pass
+
+
+@implementer(IAnnex)
+class Annex(Item):
+    pass
+
+
+@implementer(IAcord)
+class Acord(Item):
+    pass
+
+
+@implementer(IVotacioAcord)
+class VotacioAcord(Item):
+    pass

@@ -1,0 +1,119 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      lang="en"
+      i18n:domain="genweb6.organs">
+
+<body>
+
+<metal:column_one fill-slot="column_one_slot" />
+<metal:content-core fill-slot="main">
+
+<tal:print tal:define="portal_state context/@@plone_portal_state; 
+                       portal_url portal_state/portal_url;">
+
+
+  <tal:block i18n:domain="genweb6.organs" tal:condition="view/canView"
+           tal:define="getActaLogo view/getActaLogo;
+                      signatura view/signatura;
+                      Title context/Title;
+                      modalitat view/sessionModality;
+                      llocConvocatoria context/llocConvocatoria;
+                      horaInici context/horaInici;
+                      horaFi context/horaFi;
+                      membresConvocats context/membresConvocats;
+                      membresConvidats context/membresConvidats;
+                      llistaExcusats context/llistaExcusats;
+                      assistents context/assistents;
+                      llistaNoAssistens context/llistaNoAssistens;
+                      ordenDelDia context/ordenDelDia;
+                      acta view/getActaContent">
+
+    <div class="row mb-4 mt-3">
+      <div class="col-6" tal:condition="getActaLogo">
+        <img style="height:67px;" tal:attributes="src getActaLogo" />
+      </div>
+      <div class="col-6">
+        <h1 class="text-end" style="margin-top: 0px;">
+          <img width="207px" height="46px" tal:attributes="src string:${portal_url}/++theme++genweb6.organs/img/logoUPC.png"/>
+        </h1>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+    <h1 class="h1Print"><tal:omit-tag tal:content="view/unitatTitle">UNITAT</tal:omit-tag> -
+    <tal:omit-tag tal:content="view/organGovernTitle">CONSELL DE GOVERN</tal:omit-tag></h1>
+    <h2> ACTA <tal:omit-tag tal:content="view/sessionTitle">CONSELL DE GOVERN</tal:omit-tag></h2>
+    <span style="margin-top: 15px;" i18n:translate=""> Amb la signatura d'aquesta acta es dóna validesa i integritat als documents que l'acompanyen. </span>
+    <hr/>
+    <div class="col-12" style="margin-bottom: 0px !important">
+      <tal:omit-tag tal:condition="modalitat">
+        <th style="display: inline-block;"><strong i18n:translate="">Modality of meet</strong><b>:</b></th>
+        <span i18n:translate="" tal:content="modalitat"></span>
+        <br/>
+      </tal:omit-tag>
+      <tal:omit-tag tal:condition="llocConvocatoria">
+        <th style="display: inline-block;"><strong i18n:translate="">Session location</strong><b>:</b></th>
+        <span tal:content="llocConvocatoria"></span>
+        <br/>
+      </tal:omit-tag>
+      <tal:omit-tag tal:condition="horaInici">
+        <th style="display: inline-block;"><strong i18n:translate="">Dia/Hora inici</strong><b>:</b></th>
+        <span tal:content="python:context.horaInici.strftime('%d/%m/%Y %H:%M')"></span>
+        <br/>
+      </tal:omit-tag>
+      <tal:omit-tag tal:condition="horaFi">
+        <th style="display: inline-block;"><strong i18n:translate="">Dia/Hora fi</strong><b>:</b></th>
+        <span tal:content="python:context.horaFi.strftime('%d/%m/%Y %H:%M')"></span>
+      </tal:omit-tag>
+    </div>
+    <div class="clearfix"></div>
+    <hr/>
+    <div class="col-12" style="margin-bottom: 0px !important; padding-left:0px !important; margin-left:0px !important;">
+      <div class="caixa col-12" tal:condition="membresConvocats">
+        <h4 i18n:translate=""> Assistants </h4>
+        <div tal:replace="structure membresConvocats/output"></div>
+      </div>
+      <div class="caixa col-12">
+        <tal:block tal:condition="membresConvidats">
+          <h4 i18n:translate=""> Invited members </h4>
+          <span tal:replace="structure membresConvidats/output"></span>
+          <br/>
+        </tal:block>
+        <tal:block tal:condition="llistaExcusats">
+          <h4 i18n:translate=""> Excused members </h4>
+          <span tal:replace="structure llistaExcusats/output"></span>
+          <br/>
+        </tal:block>
+        <tal:block tal:condition="llistaNoAssistens">
+          <h4 i18n:translate=""> Missing members </h4>
+          <span tal:replace="structure llistaNoAssistens/output"></span>
+        </tal:block>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <hr/>
+    <div tal:condition="acta">
+       <h3 style="padding-bottom: 15px;" i18n:translate=""> Ordre del dia </h3>
+      <span tal:replace="structure acta"></span>
+    </div>
+    <div class="clearfix"></div>
+    <hr/>
+    <div tal:condition="ordenDelDia">
+       <h3 style="padding-bottom: 15px;" i18n:translate=""> Desenvolupament de la sessio </h3>
+      <span tal:replace="structure ordenDelDia/output"></span>
+    </div>
+    <tal:block tal:condition="signatura">
+      <br/>
+      <span tal:replace="structure signatura"></span>
+    </tal:block>
+  </tal:block>
+
+</tal:print>
+
+</metal:content-core>
+
+</body>
+</html>

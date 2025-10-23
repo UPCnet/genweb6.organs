@@ -1,0 +1,19 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:cmf="http://namespaces.zope.org/cmf"
+  xmlns:i18n="http://namespaces.zope.org/i18n"
+  i18n_domain="genweb6.organs">
+
+  <include package=".sessio" />
+  <include package=".acord" />
+  <include package=".votacio_acord" />
+  <include package=".annex" />
+  <include package=".audio" />
+  <include package=".acta" />
+  <include package=".document" />
+  <include package=".file" />
+  <include package=".punt" />
+  <include package=".organgovern" />
+  <include package=".organsfolder" />
+
+</configure>

@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:monkey="http://namespaces.plone.org/monkey"
+    i18n_domain="genweb6.organs">
+
+    <include package="collective.monkeypatcher" />
+
+    <monkey:patch
+        description="Mostrar en el breadcrumb el enlace a un genweb.organs.organsFolder cuando es una vista por defecto de un directorio"
+        class="Products.CMFPlone.browser.navigation.PhysicalNavigationBreadcrumbs"
+        original="breadcrumbs"
+        replacement=".patches.breadcrumbs"
+        />
+
+    <monkey:patch
+        description="Para mejorar las votaciones hemos hecho una cache de 8 horas del multilingual ya que no se utiliza"
+        class="plone.app.multilingual.browser.viewlets.AlternateLanguagesViewlet"
+        original="get_alternate_languages"
+        replacement=".patches.get_alternate_languages"
+        />
+
+</configure>

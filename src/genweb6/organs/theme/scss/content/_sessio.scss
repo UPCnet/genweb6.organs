@@ -1,0 +1,135 @@
+body.template-presentation,
+body.template-signsessio,
+body.portaltype-genweb-organs-sessio {
+
+  .openInfo {
+    cursor: pointer;
+  }
+
+  #resultsVotesTab {
+    
+    .btn-outline-info {
+      cursor: help !important;
+    }
+  }
+
+  .sessionActions {
+
+    span,
+    a {
+      font-weight: normal !important;
+      max-width: 130px;
+
+      i::before {
+        font-size: 2rem;
+      }
+
+      &.btn-success {
+        cursor: default;
+
+        &:hover {
+          background-color: var(--bs-btn-bg) !important;
+          border-color: var(--bs-btn-border-color) !important;
+        }
+      }
+    }
+  }
+
+  #sortable {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+
+    .ui-state-grey, 
+    .ui-state-grey-not_move, 
+    .ui-state-grey-impersonate {
+      border: 1px solid #eee;
+      position: relative;
+      font-weight: normal;
+      color: black;
+    }
+  
+    .ui-state-grey {
+  
+      &:hover {
+        background: #f9f9f9 none repeat scroll 0 0;
+        cursor: move;
+        position: relative;
+  
+        &:before {
+          cursor: move;
+          color: #007BC0;
+          position: absolute;
+          font-size: 15px;
+          bottom: 10px;
+          left:10px;
+        }
+      }
+  
+      &.picked { 
+        background:#e5f7ff !important; 
+      }
+    }
+  
+    .ui-state-grey-file:hover {
+      background: #f9f9f9 none repeat scroll 0 0 !important;
+      position: relative;
+    }
+
+    .einesSpan {
+      position: absolute;
+      background: linear-gradient(to right, rgba(229, 247, 255, 0) 0%, rgba(229, 247, 255, 1) 30%, rgba(229, 247, 255, 1) 100%);
+    }
+
+    .titleSpan {
+
+      a {
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .puntVoteButtons {
+
+      .btn.disabled {
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .filesinTable {
+
+    .titleSpan {
+      margin-left: calc(8% + 1rem);
+    }
+  }
+
+  .li_subgrups {
+    padding-left: calc(8% + 1rem);
+
+    .listFiles {
+      padding-left: calc(5% + 1rem);
+    }
+  }
+
+  #previewDocModal {
+
+    .filesinTable {
+
+      .titleSpan {
+        margin-left: calc(5% + 1rem);
+      }
+    }
+
+    .li_subgrups {
+      padding-left: calc(5% + 1rem);
+
+      .listFiles {
+        padding-left: calc(5% + 1rem);
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+.portlet.portlet-calendar {
+
+  .card-body{
+
+    table {
+      border: 0px solid transparent !important;
+      border-spacing: 2px !important;
+
+      td,
+      th {
+        padding: .35rem .25rem !important;
+
+        &.cal_has_events {
+          color: white;
+          border-top: 0px solid transparent !important;
+          border-bottom: 0px solid transparent !important;
+
+          button {
+            color: white;
+            text-decoration: none;
+          }
+
+          &:hover {
+            filter: brightness(80%);
+          }
+
+          .event-multiple::before {
+            content: "+";
+            position: absolute;
+            font-size: 1rem;
+            bottom: -12px;
+            right: -10px;
+          }
+        }
+      }
+    }
+  }
+
+  .text-end {
+
+    i::before {
+      font-weight: 600 !important;
+    }
+  }
+
+  .text-end,
+  .calendar-event-list {
+
+    a {
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &.text-dark {
+        color: #212529 !important;
+      }
+    }
+  }
+}

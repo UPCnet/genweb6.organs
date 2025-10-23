@@ -1,0 +1,48 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="genweb6.organs">
+
+    <browser:page
+        name="sharing"
+        for="*"
+        class=".sharing.SharingView"
+        permission="plone.DelegateRoles"
+        layer=".interfaces.IGenweb6OrgansLayer"
+        />
+
+    <browser:page
+        name="updateSharingInfo"
+        for="*"
+        class=".sharing.SharingView"
+        attribute="updateSharingInfo"
+        permission="plone.DelegateRoles"
+        layer=".interfaces.IGenweb6OrgansLayer"
+        />
+
+    <!-- modified RSS to hide organs types based on state and role -->
+    <adapter
+        factory=".rss_custom.FolderFeed"
+        for="Products.CMFCore.interfaces._content.IFolderish" />
+
+    <!-- Modified download file to pass the session state -->
+    <browser:page
+        name="download"
+        for="*"
+        class=".namedfilebrowser.Download"
+        permission="zope2.View"
+        />
+
+    <!-- Modified download file to pass the session state -->
+    <browser:page
+        name="display-file"
+        for="*"
+        class=".namedfilebrowser.DisplayFile"
+        permission="zope2.View"
+        />
+
+
+
+
+</configure>

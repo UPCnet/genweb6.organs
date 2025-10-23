@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="genweb6.organs">
+
+    <include package="plone.app.portlets"  />
+
+    <plone:portlet
+        name="organs.calendar.portlet"
+        interface=".calendar.portlet_calendar.ICalendarOrgansPortlet"
+        assignment=".calendar.portlet_calendar.Assignment"
+        renderer=".calendar.portlet_calendar.Renderer"
+        addview=".calendar.portlet_calendar.AddForm"
+        />
+
+    <plone:portlet
+        name="organs.lamevavinculacio.portlet"
+        interface=".lamevavinculacio.lamevavinculacio.ILaMevaVinculacioOrgansPortlet"
+        assignment=".lamevavinculacio.lamevavinculacio.Assignment"
+        renderer=".lamevavinculacio.lamevavinculacio.Renderer"
+        addview=".lamevavinculacio.lamevavinculacio.AddForm"
+        />
+
+</configure>

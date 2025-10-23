@@ -1,0 +1,76 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: GenWebUPC\n"
+"POT-Creation-Date: 2017-04-24 10:30+0000\n"
+"PO-Revision-Date: 2017-04-24 18:10+0200\n"
+"Last-Translator: Roberto Diaz <roberto.diaz@upcnet.es>\n"
+"Language-Team: Plone Team@UPCnet <plone.team@upcnet.es>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: genweb\n"
+
+msgid "ConvocarSessio"
+msgstr "Summon session"
+
+msgid "ModificarSessio"
+msgstr "Modify session"
+
+msgid "PlanificarSessio"
+msgstr "Schedule session"
+
+msgid "RealitzarSessio"
+msgstr "It's done"
+
+msgid "TancarSessio"
+msgstr "Close session"
+
+msgid "ConvocantSessio"
+msgstr "Summon session"
+
+msgid "SessioTancada"
+msgstr "Session closed"
+
+msgid "SessioEnModificacio"
+msgstr "Modification Session"
+
+msgid "SessioEnPlanificacio"
+msgstr "Planning Session"
+
+msgid "SessioConvocada"
+msgstr "Summoned Session"
+
+msgid "SessioRealitzada"
+msgstr "Session done"
+
+msgid "convocada"
+msgstr "Summoned"
+
+msgid "realitzada"
+msgstr "Done"
+
+msgid "tancada"
+msgstr "Closed"
+
+msgid "planificada"
+msgstr "Planning"
+
+msgid "en_correccio"
+msgstr "Modification"
+
+msgid "open_organ"
+msgstr "Open"
+
+msgid "restricted_to_members_organ"
+msgstr "Restricted to members"
+
+msgid "restricted_to_affected_organ"
+msgstr "Restricted to affected"
+
+msgid "time_ever"
+msgstr "Any date"
+
+msgid "El valor ha de ser numèric."
+msgstr "The value must be numeric."

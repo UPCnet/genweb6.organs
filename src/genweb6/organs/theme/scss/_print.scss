@@ -1,0 +1,154 @@
+@media print {
+
+  body {
+    width: 210mm; 
+    height: 297mm;
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.75rem !important;
+    padding-left: 0rem !important;
+  }
+
+  html, body {
+    font-size: 15pt !important;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 130% !important;
+  }
+
+  li {
+    line-height: 130% !important;
+  }
+
+  #content-header {
+    padding-bottom: 50px;
+  }
+
+  #hero,
+  nav#portal-breadcrumbs,
+  .nav-collapse-eines,
+  #portal-personaltools-wrapper,
+  #portal-globalnav,
+  #portal-column-one,
+  .alert,
+  #edit-bar,
+  #viewlet-below-content-title,
+  #viewlet-above-content-title,
+  #content-header,
+  .header-image,
+  #cookies,
+  .extraInfo,
+  #commenting,
+  #viewlet-below-content > a,
+  input[type="submit"],
+  #content-core > button,
+  .linkNotificacions,
+  .btnActa,
+  #peu > div > div.row-fluid,
+  .reply-to-comment-button,
+  .bannerOrgans,
+  .sessionActions,
+  #expandAll,
+  #collapseAll,
+  button.label.dropdown-toggle,
+  button.remove.label.label-important,
+  div.sessionCustomActions,
+  .template-printacta #content-header,
+  .template-printdocument #content-header,
+  .template-printdocument #portal-footer-wrapper {
+    display: none !important;
+  }
+
+  #portal-column-content {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  #peu .col-md-8 {
+    width: 100% !important;
+  }
+
+  div.pageBreak {
+    page-break-before: always !important;
+  }
+
+  #portal-breadcrumbs {
+    display: inline !important;
+  }
+
+  a {
+    text-decoration: underline;
+    color: black;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  .plain a {
+    color: #555555;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8rem;
+  }
+
+  h2, 
+  h3 {
+    color: #557C95;
+  }
+
+  h1 {
+    font-size: 1.6rem !important;
+    margin-top: 0px !important;
+  }
+
+  h2 {
+    font-size: 1.4rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+
+  h3 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3rem !important;
+  }
+
+  h4 {
+    font-size: 1.2rem !important;
+  }
+
+  .h4Print {
+    color: #557C95;
+  }
+
+  .caixa {
+    width: 9cm;
+    vertical-align: top;
+  }
+
+  table {
+    font-size: 0.8rem !important;
+    line-height: 120% !important;
+
+    thead {
+      border-bottom: 5px solid var(--bs-primary) !important;
+    }
+
+    tbody {
+      line-height: 130% !important;
+
+      & > tr {
+        height: auto!important;
+      }
+    }
+  }
+
+  #portal-header,
+  #portal-footer-wrapper {
+    border: 0px;
+  }
+
+  section#content-area {
+    margin-top: 0px;
+  }
+
+  .h2butlleti {
+    line-height: inherit;
+  }
+}
