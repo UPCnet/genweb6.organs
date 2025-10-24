@@ -7,19 +7,19 @@ sesión, basado en el documento resumen_permisos_organs.html.
 ACCIONES POR ESTADO:
 
 PLANIFICADA:
-- OG1-Secretari/OG2-Editor: Convoca sessió, Excusa assistència,
-  Missatge membres, Mode presentació, Imprimeix, Creació àgil,
-  Numera punts/acords
-- OG1-Secretari: Pestanya Historial
+- OG1-Secretari/OG2-Editor: Convocar sesión, Excusa asistencia,
+  Mensaje miembros, Modo presentación, Imprimir, Creación ágil,
+  Numerar puntos/acuerdos
+- OG1-Secretari: Pestaña Historial
 - Resto: Sin acceso
 
 CONVOCADA:
-- OG1-Secretari/OG2-Editor: Realitza sessió, Excusa assistència
-- Todos con acceso: Mode presentació, Imprimeix
-- OG3-Membre/OG4-Afectat: Excusa assistència
+- OG1-Secretari/OG2-Editor: Realizar sesión, Excusa asistencia
+- Todos con acceso: Modo presentación, Imprimir
+- OG3-Membre/OG4-Afectat: Excusa asistencia
 
 EN_CORRECCIO:
-- OG1-Secretari: Creació àgil, Numera punts/acords
+- OG1-Secretari: Creación ágil, Numerar puntos/acuerdos
 - OG2-Editor: Sin estas acciones
 """
 import datetime
@@ -665,8 +665,8 @@ class SessionActionsByStateTestCase(unittest.TestCase):
         logout()
 
     def test_secretari_can_create_element_in_planificada(self):
-        """Test que OG1-Secretari puede acceder a creació àgil en PLANIFICADA."""
-        print("\n✅ Verificando acceso a 'createElement'- 'creació àgil' para OG1-Secretari")
+        """Test que OG1-Secretari puede acceder a creación ágil en PLANIFICADA."""
+        print("\n✅ Verificando acceso a 'createElement'- 'creación ágil' para OG1-Secretari")
 
         setRoles(self.portal, TEST_USER_ID, ['Member'])
         login(self.portal, TEST_USER_NAME)
@@ -680,16 +680,16 @@ class SessionActionsByStateTestCase(unittest.TestCase):
         try:
             view = self.session_planificada.restrictedTraverse('@@createElement')
             self.assertIsNotNone(view)
-            print("  ✓ OG1-Secretari puede acceder a createElement - 'creació àgil'")
+            print("  ✓ OG1-Secretari puede acceder a createElement - 'creación ágil'")
         except Exception as e:
             self.fail(
-                f"OG1-Secretari debería poder acceder a createElement - 'creació àgil': {e}")
+                f"OG1-Secretari debería poder acceder a createElement - 'creación ágil': {e}")
 
         logout()
 
     def test_membre_cannot_create_element(self):
-        """Test que OG3-Membre NO puede acceder a creació àgil."""
-        print("\n❌ Verificando que OG3-Membre NO puede acceder a createElement - 'creació àgil'")
+        """Test que OG3-Membre NO puede acceder a creación ágil."""
+        print("\n❌ Verificando que OG3-Membre NO puede acceder a createElement - 'creación ágil'")
 
         setRoles(self.portal, TEST_USER_ID, ['Member'])
         login(self.portal, TEST_USER_NAME)
@@ -703,12 +703,12 @@ class SessionActionsByStateTestCase(unittest.TestCase):
         from AccessControl import Unauthorized
         with self.assertRaises(Unauthorized):
             self.session_planificada.restrictedTraverse('@@createElement')
-        print("  ✓ OG3-Membre NO puede acceder a createElement - 'creació àgil'")
+        print("  ✓ OG3-Membre NO puede acceder a createElement - 'creación ágil'")
 
         logout()
 
     def test_secretari_can_update_acords_in_planificada(self):
-        """Test que OG1-Secretari puede numerar acords en PLANIFICADA."""
+        """Test que OG1-Secretari puede numerar acuerdos en PLANIFICADA."""
         print("\n✅ Verificando acceso a 'updateAcords' para OG1-Secretari")
 
         setRoles(self.portal, TEST_USER_ID, ['Member'])
@@ -730,7 +730,7 @@ class SessionActionsByStateTestCase(unittest.TestCase):
         logout()
 
     def test_membre_cannot_update_acords(self):
-        """Test que OG3-Membre NO puede numerar acords."""
+        """Test que OG3-Membre NO puede numerar acuerdos."""
         print("\n❌ Verificando que OG3-Membre NO puede acceder a 'updateAcords'")
 
         setRoles(self.portal, TEST_USER_ID, ['Member'])
@@ -756,23 +756,23 @@ class SessionActionsByStateTestCase(unittest.TestCase):
         print("=" * 60)
         print("PLANIFICADA:")
         print("  OG1-Secretari/OG2-Editor:")
-        print("    - Convoca sessió, Excusa assistència")
-        print("    - Missatge membres, Mode presentació, Imprimeix")
-        print("    - Creació àgil, Numera punts/acords")
+        print("    - Convocar sesión, Excusa asistencia")
+        print("    - Mensaje miembros, Modo presentación, Imprimir")
+        print("    - Creación ágil, Numerar puntos/acuerdos")
         print("  OG1-Secretari exclusivo:")
-        print("    - Pestanya Historial")
+        print("    - Pestaña Historial")
         print()
         print("CONVOCADA:")
         print("  OG1-Secretari/OG2-Editor:")
-        print("    - Realitza sessió, Excusa assistència")
+        print("    - Realizar sesión, Excusa asistencia")
         print("  Todos con acceso:")
-        print("    - Mode presentació, Imprimeix")
+        print("    - Modo presentación, Imprimir")
         print("  OG3-Membre/OG4-Afectat:")
-        print("    - Excusa assistència")
+        print("    - Excusa asistencia")
         print()
         print("EN_CORRECCIO:")
         print("  OG1-Secretari exclusivo:")
-        print("    - Creació àgil, Numera punts/acords")
+        print("    - Creación ágil, Numerar puntos/acuerdos")
         print("=" * 60)
 
         self.assertTrue(True)

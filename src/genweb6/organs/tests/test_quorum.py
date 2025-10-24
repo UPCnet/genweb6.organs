@@ -331,6 +331,260 @@ class QuorumTestCase(unittest.TestCase):
 
         logout()
 
+    def test_user_cannot_vote_twice_in_same_quorum(self):
+        """Test que un usuario no puede votar más de una vez en el mismo quorum."""
+        print("\n🔒 Verificando que un usuario NO puede votar más de una vez en el mismo quorum")
+        
+        # Abrir quorum como OG1-Secretari (solo secretarios pueden abrir)
+        setRoles(self.portal, TEST_USER_ID, ['Member'])
+        login(self.portal, TEST_USER_NAME)
+        api.user.grant_roles(
+            username=TEST_USER_ID,
+            obj=self.organ,
+            roles=['OG1-Secretari']
+        )
+        
+        # Abrir quorum
+        open_quorum_view = self.session.restrictedTraverse('@@openQuorum')
+        open_quorum_view()
+        
+        # Cambiar a OG3-Membre para votar
+        logout()
+        setRoles(self.portal, TEST_USER_ID, ['Member'])
+        login(self.portal, TEST_USER_NAME)
+        api.user.grant_roles(
+            username=TEST_USER_ID,
+            obj=self.organ,
+            roles=['OG3-Membre']
+        )
+        
+        # Verificar que el quorum está abierto y vacío
+        quorum_info = self.session.restrictedTraverse('@@view').getInfoQuorums()
+        self.assertEqual(len(quorum_info), 1)
+        self.assertEqual(quorum_info[1]['total'], 0)
+        self.assertEqual(len(quorum_info[1]['people']), 0)
+        print("  ✓ Quorum abierto y vacío inicialmente")
+        
+        # Primera votación - debe funcionar
+        add_quorum_view = self.session.restrictedTraverse('@@addQuorum')
+        add_quorum_view()
+        
+        # Verificar que el usuario fue añadido
+        quorum_info = self.session.restrictedTraverse('@@view').getInfoQuorums()
+        self.assertEqual(quorum_info[1]['total'], 1)
+        self.assertIn(TEST_USER_ID, quorum_info[1]['people'])
+        print("  ✓ Primera votación registrada correctamente")
+        
+        # Segunda votación - NO debe añadir al usuario de nuevo
+        add_quorum_view = self.session.restrictedTraverse('@@addQuorum')
+        add_quorum_view()
+        
+        # Verificar que el usuario NO fue añadido de nuevo
+        quorum_info = self.session.restrictedTraverse('@@view').getInfoQuorums()
+        self.assertEqual(quorum_info[1]['total'], 1)  # Sigue siendo 1, no 2
+        people_count = quorum_info[1]['people'].count(TEST_USER_ID)
+        self.assertEqual(people_count, 1)  # El usuario aparece solo una vez
+        print("  ✓ Segunda votación NO fue registrada (protección activa)")
+        
+        # Tercera votación - también debe ser ignorada
+        add_quorum_view = self.session.restrictedTraverse('@@addQuorum')
+        add_quorum_view()
+        
+        # Verificar que sigue siendo 1
+        quorum_info = self.session.restrictedTraverse('@@view').getInfoQuorums()
+        self.assertEqual(quorum_info[1]['total'], 1)
+        people_count = quorum_info[1]['people'].count(TEST_USER_ID)
+        self.assertEqual(people_count, 1)
+        print("  ✓ Tercera votación también fue ignorada")
+        
+        logout()
+
+    def test_different_users_can_vote_in_same_quorum(self):
+        """Test que diferentes usuarios pueden votar en el mismo quorum."""
+        print("\n👥 Verificando que diferentes usuarios pueden votar en el mismo quorum")
+        
+        # Crear segundo usuario
+        api.user.create(
+            username='testuser2',
+            email='testuser2@example.com',
+            password='secret123'
+        )
+        
+        # Abrir quorum como OG1-Secretari (solo secretarios pueden abrir)
+        setRoles(self.portal, TEST_USER_ID, ['Member'])
+        login(self.portal, TEST_USER_NAME)
+        api.user.grant_roles(
+            username=TEST_USER_ID,
+            obj=self.organ,
+            roles=['OG1-Secretari']
+        )
+        
+        # Abrir quorum
+        open_quorum_view = self.session.restrictedTraverse('@@openQuorum')
+        open_quorum_view()
+        
+        # Cambiar a OG3-Membre para votar
+        logout()
+        setRoles(self.portal, TEST_USER_ID, ['Member'])
+        login(self.portal, TEST_USER_NAME)
+        api.user.grant_roles(
+            username=TEST_USER_ID,
+            obj=self.organ,
+            roles=['OG3-Membre']
+        )
+        
+        # Usuario 1 vota
+        add_quorum_view = self.session.restrictedTraverse('@@addQuorum')
+        add_quorum_view()
+        
+        logout()
+        
+        # Usuario 2 vota
+        setRoles(self.portal, 'testuser2', ['Member'])
+        login(self.portal, 'testuser2')
+        api.user.grant_roles(
+            username='testuser2',
+            obj=self.organ,
+            roles=['OG3-Membre']
+        )
+        
+        # Usuario 2 vota
+        add_quorum_view = self.session.restrictedTraverse('@@addQuorum')
+        add_quorum_view()
+        
+        # Verificar que ambos usuarios están en el quorum
+        quorum_info = self.session.restrictedTraverse('@@view').getInfoQuorums()
+        self.assertEqual(quorum_info[1]['total'], 2)
+        self.assertIn(TEST_USER_ID, quorum_info[1]['people'])
+        self.assertIn('testuser2', quorum_info[1]['people'])
+        print("  ✓ Ambos usuarios pueden votar en el mismo quorum")
+        
+        # Usuario 2 intenta votar de nuevo - no debe funcionar
+        add_quorum_view = self.session.restrictedTraverse('@@addQuorum')
+        add_quorum_view()
+        
+        # Verificar que sigue siendo 2
+        quorum_info = self.session.restrictedTraverse('@@view').getInfoQuorums()
+        self.assertEqual(quorum_info[1]['total'], 2)
+        people_count = quorum_info[1]['people'].count('testuser2')
+        self.assertEqual(people_count, 1)
+        print("  ✓ Usuario 2 tampoco puede votar dos veces")
+        
+        logout()
+
+    def test_cannot_add_quorum_when_closed(self):
+        """Test que no se puede añadir quorum cuando está cerrado."""
+        print("\n🔒 Verificando que NO se puede añadir quorum cuando está cerrado")
+        
+        # Abrir quorum como OG1-Secretari (solo secretarios pueden abrir)
+        setRoles(self.portal, TEST_USER_ID, ['Member'])
+        login(self.portal, TEST_USER_NAME)
+        api.user.grant_roles(
+            username=TEST_USER_ID,
+            obj=self.organ,
+            roles=['OG1-Secretari']
+        )
+        
+        # Abrir quorum
+        open_quorum_view = self.session.restrictedTraverse('@@openQuorum')
+        open_quorum_view()
+        
+        # Cambiar a OG3-Membre para votar
+        logout()
+        setRoles(self.portal, TEST_USER_ID, ['Member'])
+        login(self.portal, TEST_USER_NAME)
+        api.user.grant_roles(
+            username=TEST_USER_ID,
+            obj=self.organ,
+            roles=['OG3-Membre']
+        )
+        
+        # Verificar que el quorum está abierto
+        quorum_info = self.session.restrictedTraverse('@@view').getInfoQuorums()
+        self.assertEqual(len(quorum_info), 1)
+        self.assertIsNone(quorum_info[1]['end'])  # No tiene fecha de cierre
+        print("  ✓ Quorum abierto correctamente")
+        
+        # Usuario vota (debe funcionar)
+        add_quorum_view = self.session.restrictedTraverse('@@addQuorum')
+        add_quorum_view()
+        
+        # Verificar que el usuario fue añadido
+        quorum_info = self.session.restrictedTraverse('@@view').getInfoQuorums()
+        self.assertEqual(quorum_info[1]['total'], 1)
+        self.assertIn(TEST_USER_ID, quorum_info[1]['people'])
+        print("  ✓ Votación en quorum abierto funcionó correctamente")
+        
+        # Cerrar quorum (como Manager)
+        logout()
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        login(self.portal, TEST_USER_NAME)
+        
+        close_quorum_view = self.session.restrictedTraverse('@@closeQuorum')
+        close_quorum_view()
+        
+        # Verificar que el quorum está cerrado
+        quorum_info = self.session.restrictedTraverse('@@view').getInfoQuorums()
+        self.assertIsNotNone(quorum_info[1]['end'])  # Tiene fecha de cierre
+        print("  ✓ Quorum cerrado correctamente")
+        
+        # Cambiar a usuario que puede añadir quorum
+        logout()
+        setRoles(self.portal, TEST_USER_ID, ['Member'])
+        login(self.portal, TEST_USER_NAME)
+        api.user.grant_roles(
+            username=TEST_USER_ID,
+            obj=self.organ,
+            roles=['OG3-Membre']
+        )
+        
+        # Intentar añadir quorum cuando está cerrado - NO debe funcionar
+        add_quorum_view = self.session.restrictedTraverse('@@addQuorum')
+        add_quorum_view()
+        
+        # Verificar que el usuario NO fue añadido de nuevo
+        quorum_info = self.session.restrictedTraverse('@@view').getInfoQuorums()
+        self.assertEqual(quorum_info[1]['total'], 1)  # Sigue siendo 1, no 2
+        people_count = quorum_info[1]['people'].count(TEST_USER_ID)
+        self.assertEqual(people_count, 1)  # El usuario aparece solo una vez
+        print("  ✓ NO se pudo añadir quorum cuando está cerrado (protección activa)")
+        
+        # Verificar que showOpenQuorum devuelve True (se puede abrir nuevo quorum)
+        view_obj = self.session.restrictedTraverse('@@view')
+        self.assertTrue(view_obj.showOpenQuorum())
+        print("  ✓ Se puede abrir un nuevo quorum después de cerrar el anterior")
+        
+        logout()
+
+    def test_cannot_add_quorum_when_no_quorum_exists(self):
+        """Test que no se puede añadir quorum cuando no existe ningún quorum."""
+        print("\n🔒 Verificando que NO se puede añadir quorum cuando no existe ningún quorum")
+        
+        # Crear usuario con rol OG3-Membre (puede añadir quorum)
+        setRoles(self.portal, TEST_USER_ID, ['Member'])
+        login(self.portal, TEST_USER_NAME)
+        api.user.grant_roles(
+            username=TEST_USER_ID,
+            obj=self.organ,
+            roles=['OG3-Membre']
+        )
+        
+        # Verificar que no hay quorums inicialmente
+        quorum_info = self.session.restrictedTraverse('@@view').getInfoQuorums()
+        self.assertEqual(len(quorum_info), 0)
+        print("  ✓ No hay quorums inicialmente")
+        
+        # Intentar añadir quorum sin abrir uno primero - NO debe funcionar
+        add_quorum_view = self.session.restrictedTraverse('@@addQuorum')
+        add_quorum_view()
+        
+        # Verificar que no se creó ningún quorum
+        quorum_info = self.session.restrictedTraverse('@@view').getInfoQuorums()
+        self.assertEqual(len(quorum_info), 0)
+        print("  ✓ NO se pudo añadir quorum sin abrir uno primero (protección activa)")
+        
+        logout()
+
     def test_zzz_quorum_summary(self):
         """Test resumen del sistema de quorum (al final por orden
         alfabético)."""
@@ -361,6 +615,16 @@ class QuorumTestCase(unittest.TestCase):
         print()
         print("Usuarios Anónimos:")
         print("  ✗ Sin ningún permiso de quorum")
+        print()
+        print("🔒 PROTECCIÓN ANTI-DUPLICADOS:")
+        print("  ✓ Un usuario NO puede votar más de una vez en el mismo quorum")
+        print("  ✓ Diferentes usuarios SÍ pueden votar en el mismo quorum")
+        print("  ✓ El sistema previene automáticamente votos duplicados")
+        print()
+        print("🔒 PROTECCIÓN DE ESTADO:")
+        print("  ✓ NO se puede añadir quorum cuando está cerrado")
+        print("  ✓ NO se puede añadir quorum sin abrir uno primero")
+        print("  ✓ Solo se puede votar en quorums abiertos")
         print("=" * 60)
 
         self.assertTrue(True)

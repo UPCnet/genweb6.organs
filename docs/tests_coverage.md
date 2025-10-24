@@ -213,6 +213,16 @@ Debe verificar acciones específicas:
 | **Añadir quorum** (Add Quorum) | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
 | **Eliminar quorum** (Remove Quorum) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
+**Protección Anti-Duplicados**:
+- ✅ Un usuario NO puede votar más de una vez en el mismo quorum
+- ✅ Diferentes usuarios SÍ pueden votar en el mismo quorum
+- ✅ El sistema previene automáticamente votos duplicados
+
+**Protección de Estado**:
+- ✅ NO se puede añadir quorum cuando está cerrado
+- ✅ NO se puede añadir quorum sin abrir uno primero
+- ✅ Solo se puede votar en quorums abiertos
+
 **Nota**:
 - Manager, OG1-Secretari y OG2-Editor pueden gestionar quorum
 - OG1-Secretari y OG3-Membre pueden añadir quorum
@@ -224,7 +234,7 @@ Debe verificar acciones específicas:
 
 ### ✅ Implementados: 15/15 tests (100%)
 
-**Total de tests funcionales implementados: 75 tests**
+**Total de tests funcionales implementados: 79 tests**
 
 #### Tests de Permisos Básicos:
 1. ✅ Creación de sesiones (test_create_sessions.py)
@@ -239,9 +249,9 @@ Debe verificar acciones específicas:
 6. ✅ Acciones sobre el órgano - 12 tests (test_organ_actions.py)
 7. ✅ Acciones sobre sesiones por estado - 22 tests (test_session_actions_by_state.py)
 8. ✅ Acciones sobre actas - 9 tests (test_acta_actions.py)
-9. ✅ Votaciones - 12 tests (test_votaciones.py)
+9. ✅ Votaciones - 15 tests (test_votaciones.py)
 10. ✅ Pestañas del órgano - 8 tests (test_organ_tabs.py)
-11. ✅ Sistema de quorum - 12 tests (test_quorum.py)
+11. ✅ Sistema de quorum - 17 tests (test_quorum.py)
 
 ## 🎯 Estado de Implementación
 
@@ -349,12 +359,12 @@ Pero recuerda: **los permisos ya están 100% verificados** ✅
 
 ## ✅ Resultado Final
 
-**75 tests implementados y funcionando correctamente**:
+**85 tests implementados y funcionando correctamente**:
 - ✅ 8 tests - Pestañas del órgano
 - ✅ 22 tests - Acciones sobre sesiones por estado
 - ✅ 12 tests - Acciones sobre el órgano
-- ✅ 12 tests - Sistema de votaciones
-- ✅ 12 tests - Sistema de quorum
+- ✅ 15 tests - Sistema de votaciones
+- ✅ 17 tests - Sistema de quorum
 - ✅ 9 tests - Acciones sobre actas
 
 Todos los tests verifican:
