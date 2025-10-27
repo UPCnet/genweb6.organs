@@ -54,6 +54,7 @@
     <include package=".content" />
     <include package=".portlets" />
     <include package=".firma_documental" />
+    <include package=".subscribers" />
     <include package=".widgets" />
 
     <include file="upgrades.zcml" />
@@ -80,12 +81,6 @@
         factory=".setuphandlers.HiddenProfiles"
         name="genweb6.organs-hiddenprofiles"
         />
-
-    <subscriber
-      for=".content.sessio.sessio.ISessio
-           Products.DCWorkflow.interfaces.IBeforeTransitionEvent"
-      handler=".browser.events.change.sessio_changed"
-    />
 
     <i18n:registerTranslations directory="locales" />
 
