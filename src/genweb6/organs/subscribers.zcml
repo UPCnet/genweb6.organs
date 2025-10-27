@@ -1,0 +1,48 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="genweb6.organs">
+
+    <subscriber
+        for=".content.sessio.sessio.ISessio
+            Products.DCWorkflow.interfaces.IBeforeTransitionEvent"
+        handler=".browser.events.change.sessio_changed"
+        />
+
+    <subscriber
+        for="genweb6.organs.content.file.file.IFile
+             zope.lifecycleevent.interfaces.IObjectAddedEvent"
+        handler=".subscribers.clean_pdf_on_upload_file"
+    />
+
+    <subscriber
+        for="genweb6.organs.content.file.file.IFile
+             zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+        handler=".subscribers.clean_pdf_on_upload_file"
+    />
+
+    <subscriber
+        for="genweb6.organs.content.acta.acta.IActa
+             zope.lifecycleevent.interfaces.IObjectAddedEvent"
+        handler=".subscribers.clean_pdf_on_upload_acta"
+    />
+
+    <subscriber
+        for="genweb6.organs.content.acta.acta.IActa
+             zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+        handler=".subscribers.clean_pdf_on_upload_acta"
+    />
+
+    <subscriber
+        for="genweb6.organs.content.annex.annex.IAnnex
+             zope.lifecycleevent.interfaces.IObjectAddedEvent"
+        handler=".subscribers.clean_pdf_on_upload_annex"
+    />
+
+    <subscriber
+        for="genweb6.organs.content.annex.annex.IAnnex
+             zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+        handler=".subscribers.clean_pdf_on_upload_annex"
+    />
+    
+</configure>

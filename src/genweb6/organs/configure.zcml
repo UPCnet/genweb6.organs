@@ -54,10 +54,10 @@
     <include package=".content" />
     <include package=".portlets" />
     <include package=".firma_documental" />
-    <include package=".subscribers" />
     <include package=".widgets" />
 
     <include file="upgrades.zcml" />
+    <include file="subscribers.zcml" />
 
     <genericsetup:registerProfile
         name="default"
