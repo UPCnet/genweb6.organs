@@ -140,8 +140,8 @@ class IOrgangovern(model.Schema):
         required=False,
     )
 
-    directives.write_permission(estatsLlista='genweb.organs.add.organs')
-    directives.write_permission(estatsLlista='genweb.organs.add.organs')
+    directives.read_permission(estatsLlista='genweb.organs.add.organs')
+    directives.write_permission(estatsLlista='cmf.ManagePortal')
     estatsLlista = RichTextField(
         title=_(u"Agreement and document labels"),
         description=_(u"Enter labels, separated by commas."),
