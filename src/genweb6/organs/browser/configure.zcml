@@ -312,4 +312,12 @@
     layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
     />
 
+  <browser:page
+    name="clean_pdfs_organs"
+    for="zope.interface.Interface"
+    permission="cmf.ManagePortal"
+    class=".views.CleanPDFsOrgansView"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    />
+    
 </configure>

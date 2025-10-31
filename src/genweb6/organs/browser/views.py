@@ -10,12 +10,17 @@ from operator import itemgetter
 from plone import api
 from plone.event.interfaces import IEventAccessor
 from plone.folder.interfaces import IExplicitOrdering
+from plone.namedfile.file import NamedBlobFile
+from plone.protect.interfaces import IDisableCSRFProtection
 from zope.interface import alsoProvides
 from zope.i18n import translate
 
 from genweb6.core.utils import json_response
+from genweb6.core.utils import genwebMetadadesConfig
+from genweb6.core.subscribers import is_signed_pdf
 from genweb6.organs import _
 from genweb6.organs import utils
+from genweb6.organs.firma_documental.utils import is_file_uploaded_to_gdoc
 from genweb6.organs.indicators.updating import update_indicators
 from genweb6.organs.utils import addEntryLog
 from genweb6.organs.utils import get_settings_property
@@ -29,6 +34,11 @@ import json
 import transaction
 import unicodedata
 import time
+import requests
+import logging
+
+logger = logging.getLogger("genweb6.organs")
+
 
 # Disable CSRF
 try:
@@ -1241,3 +1251,239 @@ class getUsers(BrowserView):
             return json.dumps(listUsers)
         else:
             return None
+
+
+class CleanPDFsOrgansView(BrowserView):
+    """Vista que recorre tots els arxius PDF dels organs públics i elimina els metadades usant l'API."""
+
+    def __call__(self):
+        # Registrar tiempo de inicio
+        start_time = time.time()
+        
+        alsoProvides(self.request, IDisableCSRFProtection)
+
+        settings = genwebMetadadesConfig()
+        api_url = settings.api_url
+        api_key = settings.api_key
+
+        headers = {
+            'accept': 'application/json;charset=utf-8',
+            'X-Api-Key': api_key
+        }
+
+        count_total = 0
+        count_cleaned = 0
+        count_signed = 0
+        count_problematic = 0
+        count_processed = 0  # Contador de PDFs procesados (total de iteraciones)
+        errors = []
+        problematic_pdfs = []
+
+        catalog = api.portal.get_tool('portal_catalog')
+        organs = catalog.searchResults(
+            portal_type='genweb.organs.organgovern',
+            organType='open_organ')
+
+        # Calcular el total de PDFs candidatos antes de empezar
+        logger.info("=" * 80)
+        logger.info("INICIANDO LIMPIEZA DE METADATOS DE PDFs")
+        logger.info("Calculando total de PDFs candidatos...")
+        
+        total_pdfs_to_process = 0
+        for organ in organs:
+            
+            brains = catalog.searchResults(
+                portal_type=['genweb.organs.acta', 'genweb.organs.annex', 'genweb.organs.file'],
+                path={'query': organ.getPath()})
+            for brain in brains:
+                obj = brain.getObject()
+                file_fields = []
+                if brain.portal_type == 'genweb.organs.file':
+                    if hasattr(obj, 'visiblefile') and obj.visiblefile:
+                        file_fields.append('visiblefile')
+                    if hasattr(obj, 'hiddenfile') and obj.hiddenfile:
+                        file_fields.append('hiddenfile')
+                elif brain.portal_type == 'genweb.organs.acta':
+                    if hasattr(obj, 'acta') and obj.acta:
+                        file_fields.append('acta')
+                elif brain.portal_type == 'genweb.organs.annex':
+                    if hasattr(obj, 'file') and obj.file:
+                        file_fields.append('file')
+                
+                for field_name in file_fields:
+                    file_obj = getattr(obj, field_name)
+                    if file_obj.filename.lower().endswith('.pdf'):
+                        total_pdfs_to_process += 1
+        
+        logger.info(f"Total de PDFs candidatos encontrados: {total_pdfs_to_process}")
+        logger.info("=" * 80)
+
+        # Si se pasa el parámetro 'check', solo mostrar el total y salir
+        if self.request.get('check', None) is not None:           
+            html = f"""
+                <h2>Total de PDFs a procesar</h2>
+                <p>{total_pdfs_to_process}</p>
+            """
+            
+            self.request.response.setHeader("Content-Type", "text/html; charset=utf-8")
+            return html
+        
+        # Procesar los PDFs
+        for organ in organs:
+            brains = catalog.searchResults(
+                portal_type=['genweb.organs.acta', 'genweb.organs.annex', 'genweb.organs.file'],
+                path={'query': organ.getPath()})
+
+            for brain in brains:
+                obj = brain.getObject()
+                
+                # Determinar qué campos de archivo procesar según el tipo de contenido
+                file_fields = []
+                if brain.portal_type == 'genweb.organs.file':
+                    # Para file, procesamos visiblefile y hiddenfile
+                    if hasattr(obj, 'visiblefile') and obj.visiblefile:
+                        file_fields.append('visiblefile')
+                    if hasattr(obj, 'hiddenfile') and obj.hiddenfile:
+                        file_fields.append('hiddenfile')
+                elif brain.portal_type == 'genweb.organs.acta':
+                    # Para acta, procesamos el campo acta
+                    if hasattr(obj, 'acta') and obj.acta:
+                        file_fields.append('acta')
+                elif brain.portal_type == 'genweb.organs.annex':
+                    # Para annex, procesamos el campo file
+                    if hasattr(obj, 'file') and obj.file:
+                        file_fields.append('file')
+                
+                # Si no hay campos de archivo válidos, continuar
+                if not file_fields:
+                    continue
+                
+                # Procesar cada campo de archivo
+                for field_name in file_fields:
+                    file_obj = getattr(obj, field_name)
+                    
+                    # Verificar que sea un PDF
+                    if not file_obj.filename.lower().endswith('.pdf'):
+                        continue
+                    
+                    # Incrementar contador de procesados
+                    count_processed += 1
+                    
+                    # Mostrar progreso cada 50 PDFs
+                    if count_processed % 50 == 0:
+                        percentage = (count_processed / total_pdfs_to_process * 100) if total_pdfs_to_process > 0 else 0
+                        elapsed_time = time.time() - start_time
+                        logger.info(f"[PROGRESO] {count_processed}/{total_pdfs_to_process} ({percentage:.1f}%) - Tiempo transcurrido: {elapsed_time:.1f}s")
+
+                    if is_file_uploaded_to_gdoc(obj):
+                        logger.info(f"[SKIPPED] {obj.absolute_url()} ({field_name}) - PDF ja pujat al gDOC")
+                        continue
+                    
+                    file_data = file_obj.data
+
+                    # Verificar si el PDF está firmado
+                    try:
+                        if is_signed_pdf(file_data):
+                            logger.info(f"[SKIPPED] {obj.absolute_url()} ({field_name}) - PDF signat")
+                            count_signed += 1
+                            continue
+                    except Exception as e:
+                        logger.warning(f"[PROBLEMATIC] {obj.absolute_url()} ({field_name}) - Error verificando firma: {e}")
+                        problematic_pdfs.append(f"{obj.absolute_url()} ({field_name}) - Error verificando firma: {str(e)}")
+                        count_problematic += 1
+                        continue
+
+                    count_total += 1
+
+                    try:
+                        filename = file_obj.filename
+                        #logger.info(f"[PROCESSING] {obj.absolute_url()} ({field_name}) - {filename}")
+
+                        files = {
+                            'fitxerPerNetejarMetadades': (filename, file_data, 'application/pdf')
+                        }
+
+                        response = requests.post(api_url, headers=headers, files=files, timeout=30)
+
+                        if response.status_code == 200:
+                            cleaned_data = response.content
+                            
+                            # Verificar que el contenido limpiado no esté vacío
+                            if len(cleaned_data) == 0:
+                                errors.append(f"{obj.absolute_url()} ({field_name}): API retornó contenido vacío")
+                                logger.warning(f"[FAIL] {obj.absolute_url()} ({field_name}) - API retornó contenido vacío")
+                                continue
+
+                            setattr(obj, field_name, NamedBlobFile(
+                                data=cleaned_data,
+                                contentType='application/pdf',
+                                filename=filename
+                            ))
+
+                            obj.reindexObject()
+                            count_cleaned += 1
+                            logger.info(f"[OK] {obj.absolute_url()} ({field_name})")
+                        else:
+                            error_msg = f"API error {response.status_code}"
+                            if hasattr(response, 'text'):
+                                error_msg += f": {response.text[:200]}"
+                            errors.append(f"{obj.absolute_url()} ({field_name}): {error_msg}")
+                            logger.warning(f"[FAIL] {obj.absolute_url()} ({field_name}) - {error_msg}")
+
+                    except requests.exceptions.Timeout:
+                        error_msg = "Timeout en la petición a la API"
+                        errors.append(f"{obj.absolute_url()} ({field_name}): {error_msg}")
+                        logger.warning(f"[TIMEOUT] {obj.absolute_url()} ({field_name})")
+                    except requests.exceptions.RequestException as e:
+                        error_msg = f"Error de conexión: {str(e)}"
+                        errors.append(f"{obj.absolute_url()} ({field_name}): {error_msg}")
+                        logger.warning(f"[CONNECTION_ERROR] {obj.absolute_url()} ({field_name}) - {error_msg}")
+                    except Exception as e:
+                        error_msg = f"Error inesperado: {str(e)}"
+                        errors.append(f"{obj.absolute_url()} ({field_name}): {error_msg}")
+                        logger.exception(f"[ERROR] {obj.absolute_url()} ({field_name}) - {error_msg}")
+
+        # Calcular duración total
+        end_time = time.time()
+        total_duration = end_time - start_time
+        hours = int(total_duration // 3600)
+        minutes = int((total_duration % 3600) // 60)
+        seconds = int(total_duration % 60)
+        
+        duration_str = ""
+        if hours > 0:
+            duration_str += f"{hours}h "
+        if minutes > 0 or hours > 0:
+            duration_str += f"{minutes}m "
+        duration_str += f"{seconds}s"
+        
+        logger.info("=" * 80)
+        logger.info("PROCESO FINALIZADO")
+        logger.info(f"Total de PDFs procesados: {count_processed}/{total_pdfs_to_process}")
+        logger.info(f"Duración total: {duration_str} ({total_duration:.2f} segundos)")
+        logger.info(f"PDFs limpiados exitosamente: {count_cleaned}")
+        logger.info(f"PDFs firmados (saltados): {count_signed}")
+        logger.info(f"PDFs problemáticos: {count_problematic}")
+        logger.info(f"Errores: {len(errors)}")
+        logger.info("=" * 80)
+
+        html = f"""
+            <h2>PDF Metadata Cleanup - Resultados</h2>
+            <h3>⏱️ Duración Total del Proceso</h3>
+            <p>{duration_str} ({total_duration:.2f} segundos)</p>
+            
+            <h3>📊 Resumen de Procesamiento</h3>
+            <p>Total PDFs procesados: <strong>{count_processed} / {total_pdfs_to_process}</strong></p>
+            <p>Total PDFs candidatos: <strong>{count_total + count_signed + count_problematic}</strong></p>
+            <p>Skipped (signed): <strong>{count_signed}</strong></p>
+            <p>Problematic PDFs: <strong>{count_problematic}</strong></p>
+            <p>Successfully cleaned: <strong style="color: green;">{count_cleaned}</strong></p>
+            <p>Errors: <strong style="color: red;">{len(errors)}</strong></p>
+            
+            {f'<h3>⚠️ PDFs problemáticos ({len(problematic_pdfs)}):</h3><pre>{"<br>".join(problematic_pdfs)}</pre>' if problematic_pdfs else ''}
+            {f'<h3>❌ Errores ({len(errors)}):</h3><pre>{"<br>".join(errors)}</pre>' if errors else ''}
+        """
+
+        transaction.commit()
+        self.request.response.setHeader("Content-Type", "text/html; charset=utf-8")
+        return html

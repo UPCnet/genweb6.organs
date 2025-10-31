@@ -635,3 +635,4 @@ def getFilesSessio(context):
                 files.append(file.getObject())
 
     return [file for file in files if file.visiblefile or file.hiddenfile]
+

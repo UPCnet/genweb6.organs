@@ -121,3 +121,20 @@ def hasFirmaActa(acta):
     else:
         info_firma = {}
         return False
+
+
+def is_file_uploaded_to_gdoc(obj):
+    info_firma = getattr(obj, 'info_firma', None) or {}
+    if not isinstance(info_firma, dict):
+        try:
+            info_firma = ast.literal_eval(info_firma)
+        except:
+            info_firma = json.loads(info_firma)
+
+    if obj.portal_type == 'genweb.organs.file':
+        return info_firma.get('public', {}).get('uploaded', False) or info_firma.get('private', {}).get('uploaded', False)
+
+    if obj.portal_type == 'genweb.organs.annex':
+        obj = obj.aq_parent
+
+    return 'unitatDocumental' in info_firma and 'enviatASignar' in info_firma and info_firma['enviatASignar']

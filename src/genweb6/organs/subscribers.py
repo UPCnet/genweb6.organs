@@ -1,8 +1,6 @@
 from genweb6.core.subscribers import clean_pdf_on_upload
 from genweb6.organs.utils import get_settings_property
-from genweb6.organs.content.organgovern.organgovern import IOrgangovern
-from genweb6.organs.content.sessio.sessio import ISessio
-from genweb6.organs.content.acord.acord import IAcord
+from genweb6.organs.firma_documental.utils import is_file_uploaded_to_gdoc
 from genweb6.organs.indicators.updating import (
     update_indicators,
     update_indicators_if_state)
@@ -41,14 +39,24 @@ def update_indicators_on_acord_review_state_change(obj, event):
         obj, service=get_settings_property('service_id'), indicator='acord-n')
 
 
+def is_file_in_open_organ(obj):
+    return obj.organType == 'open_organ'
+
+
 def clean_pdf_on_upload_file(obj, event):
-    clean_pdf_on_upload(obj, 'visiblefile')
-    clean_pdf_on_upload(obj, 'hiddenfile')
+    """Limpia PDFs de los campos visiblefile y hiddenfile si no están subidos al gDOC."""
+    if is_file_in_open_organ(obj) and not is_file_uploaded_to_gdoc(obj):
+        clean_pdf_on_upload(obj, 'visiblefile')
+        clean_pdf_on_upload(obj, 'hiddenfile')
 
 
 def clean_pdf_on_upload_acta(obj, event):
-    clean_pdf_on_upload(obj, 'acta')
+    """Limpia PDF del campo acta si no está subido al gDOC."""
+    if is_file_in_open_organ(obj) and not is_file_uploaded_to_gdoc(obj):
+        clean_pdf_on_upload(obj, 'acta')
 
 
 def clean_pdf_on_upload_annex(obj, event):
-    clean_pdf_on_upload(obj, 'file')
+    """Limpia PDF del campo file si no está subido al gDOC."""
+    if is_file_in_open_organ(obj) and not is_file_uploaded_to_gdoc(obj):
+        clean_pdf_on_upload(obj, 'file')
