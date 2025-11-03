@@ -271,12 +271,11 @@ class Edit(edit.DefaultEditForm):
 class View(BrowserView):
     index = ViewPageTemplateFile('sessio.pt')
 
-    def __init__(self, context, request):
-        super(View, self).__init__(context, request)
-        # Verify permissions when view is instantiated during traversal
-        self.canView()
-
-    def render(self):
+    def __call__(self):
+        # Verify permissions before rendering - this ensures Unauthorized is raised
+        # when the view is actually called (both in tests and normal browser access)
+        if not self.canView():
+            raise Unauthorized
         return self.index()
 
     def isAnon(self):

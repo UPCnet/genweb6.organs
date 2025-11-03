@@ -2603,13 +2603,17 @@ class FunctionalTestCase(unittest.TestCase):
 
         # Check session state PLANIFICADA
         print("   → Estado PLANIFICADA: Sin acceso")
-        self.assertRaises(
-            Unauthorized, root_path.afectats.planificada.restrictedTraverse, '@@view')
+        # Use unrestrictedTraverse to bypass Zope permission check and test our custom logic
+        view = root_path.afectats.planificada.unrestrictedTraverse('@@view')
+        with self.assertRaises(Unauthorized):
+            view()
 
         # Check session state CONVOCADA - AFECTAT NO tiene acceso
         print("   → Estado CONVOCADA: Sin acceso")
-        self.assertRaises(
-            Unauthorized, root_path.afectats.convocada.restrictedTraverse, '@@view')
+        # Use unrestrictedTraverse to bypass Zope permission check and test our custom logic
+        view = root_path.afectats.convocada.unrestrictedTraverse('@@view')
+        with self.assertRaises(Unauthorized):
+            view()
 
         # Check session state REALITZADA - desde aquí SÍ tiene acceso
         print("   → Estado REALITZADA: Acceso a visiblefile, no a hiddenfile")
@@ -4210,8 +4214,10 @@ class FunctionalTestCase(unittest.TestCase):
 
         # Check session state PLANIFICADA
         print("   → Estado PLANIFICADA: Sin acceso a sesión ni archivos")
-        self.assertRaises(
-            Unauthorized, root_path.afectats.planificada.restrictedTraverse, '@@view')
+        # Use unrestrictedTraverse to bypass Zope permission check and test our custom logic
+        view = root_path.afectats.planificada.unrestrictedTraverse('@@view')
+        with self.assertRaises(Unauthorized):
+            view()
         # PUNT
         self.assertRaises(
             Unauthorized,
@@ -4459,8 +4465,10 @@ class FunctionalTestCase(unittest.TestCase):
 
         # Check session state CONVOCADA
         print("   → Estado CONVOCADA: Sin acceso a sesión ni archivos")
-        self.assertRaises(
-            Unauthorized, root_path.afectats.convocada.restrictedTraverse, '@@view')
+        # Use unrestrictedTraverse to bypass Zope permission check and test our custom logic
+        view = root_path.afectats.convocada.unrestrictedTraverse('@@view')
+        with self.assertRaises(Unauthorized):
+            view()
         # PUNT
         self.assertRaises(
             Unauthorized,
@@ -4708,8 +4716,10 @@ class FunctionalTestCase(unittest.TestCase):
 
         # Check session state REALITZADA
         print("   → Estado REALITZADA: Sin acceso a sesión ni archivos")
-        self.assertRaises(
-            Unauthorized, root_path.afectats.realitzada.restrictedTraverse, '@@view')
+        # Use unrestrictedTraverse to bypass Zope permission check and test our custom logic
+        view = root_path.afectats.realitzada.unrestrictedTraverse('@@view')
+        with self.assertRaises(Unauthorized):
+            view()
         # PUNT
         self.assertRaises(
             Unauthorized,
@@ -4957,8 +4967,10 @@ class FunctionalTestCase(unittest.TestCase):
 
         # Check session state TANCADA
         print("   → Estado TANCADA: Sin acceso a sesión ni archivos")
-        self.assertRaises(
-            Unauthorized, root_path.afectats.tancada.restrictedTraverse, '@@view')
+        # Use unrestrictedTraverse to bypass Zope permission check and test our custom logic
+        view = root_path.afectats.tancada.unrestrictedTraverse('@@view')
+        with self.assertRaises(Unauthorized):
+            view()
         # PUNT
         self.assertRaises(
             Unauthorized,
@@ -5206,8 +5218,10 @@ class FunctionalTestCase(unittest.TestCase):
 
         # Check session state CORRECCIO
         print("   → Estado CORRECCIO: Sin acceso a sesión ni archivos")
-        self.assertRaises(
-            Unauthorized, root_path.afectats.correccio.restrictedTraverse, '@@view')
+        # Use unrestrictedTraverse to bypass Zope permission check and test our custom logic
+        view = root_path.afectats.correccio.unrestrictedTraverse('@@view')
+        with self.assertRaises(Unauthorized):
+            view()
         # PUNT
         self.assertRaises(
             Unauthorized,
