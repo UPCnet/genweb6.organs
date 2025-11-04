@@ -42,13 +42,10 @@ logger = logging.getLogger("genweb6.organs")
 
 # Disable CSRF
 try:
-    import pkg_resources
-    pkg_resources.get_distribution('plone4.csrffixes')
-except pkg_resources.DistributionNotFound:
-    CSRF = False
-else:
     from plone.protect.interfaces import IDisableCSRFProtection
     CSRF = True
+except ImportError:
+    CSRF = False
 
 
 def getOrdering(context):
@@ -64,6 +61,7 @@ def getOrdering(context):
 class createElement(BrowserView):
     """ This code is executed when pressing the two buttons in session view,
         to create an acord or a point at first level of the session """
+
     def __call__(self):
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         action = self.request.form.get('action')
@@ -84,7 +82,8 @@ class createElement(BrowserView):
                 else:
                     valor_cru = estatsLlista
                 estat_tag = valor_cru.split('</p>')[0]
-                estat_text = unicodedata.normalize("NFKD", estat_tag).rstrip(' ').replace('<p>', '').replace('</p>', '').replace('\\r\\n', '')
+                estat_text = unicodedata.normalize("NFKD", estat_tag).rstrip(
+                    ' ').replace('<p>', '').replace('</p>', '').replace('\\r\\n', '')
                 default_estat = ' '.join(estat_text.split()[:-1]).lstrip()
         except Exception:
             # If anything fails, default_estat remains None, which is fine.
@@ -142,14 +141,17 @@ class Delete(BrowserView):
     def __call__(self):
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         action = self.request.form.get('action')
-        itemid = self.request.form.get('id')  # Changed from 'item' to 'id' to match JavaScript
-        portal_type = self.request.form.get('type')  # Changed from 'portal_type' to 'type' to match JavaScript
+        # Changed from 'item' to 'id' to match JavaScript
+        itemid = self.request.form.get('id')
+        # Changed from 'portal_type' to 'type' to match JavaScript
+        portal_type = self.request.form.get('type')
 
         if action == 'delete' and itemid and portal_type:
             try:
                 if '/' in itemid:
                     # Es tracta de subpunt i inclou punt/subpunt a itemid (segon nivell)
-                    folder_path = '/'.join(self.context.getPhysicalPath()) + '/' + str('/'.join(itemid.split('/')[:-1]))
+                    folder_path = '/'.join(self.context.getPhysicalPath()
+                                           ) + '/' + str('/'.join(itemid.split('/')[:-1]))
                     itemid = str(''.join(itemid.split('/')[-1:]))
                 else:
                     # L'objecte a esborrar es a primer nivell
@@ -165,7 +167,9 @@ class Delete(BrowserView):
                     with api.env.adopt_roles(['OG1-Secretari']):
                         api.content.delete(deleteItem)
                     portal_catalog = api.portal.get_tool(name='portal_catalog')
-                    addEntryLog(self.context, None, _(u'Deleted via javascript'), deleteItem.Title() + ' - (' + itemid + ')')
+                    addEntryLog(
+                        self.context, None, _(u'Deleted via javascript'),
+                        deleteItem.Title() + ' - (' + itemid + ')')
                     folder_path = '/'.join(self.context.getPhysicalPath())
                     puntsOrdered = portal_catalog.searchResults(
                         portal_type=['genweb.organs.punt', 'genweb.organs.acord'],
@@ -187,7 +191,8 @@ class Delete(BrowserView):
                             subvalue = 1
                             for value in subpunts:
                                 newobjecte = value.getObject()
-                                newobjecte.proposalPoint = str(index) + str('.') + str(subvalue)
+                                newobjecte.proposalPoint = str(
+                                    index) + str('.') + str(subvalue)
                                 newobjecte.reindexObject()
                                 subvalue = subvalue + 1
                         index = index + 1
@@ -197,7 +202,8 @@ class Delete(BrowserView):
                     return json.dumps({'status': 'success'})
                 else:
                     self.request.response.setHeader('Content-Type', 'application/json')
-                    return json.dumps({'status': 'error', 'message': 'Element not found'})
+                    return json.dumps(
+                        {'status': 'error', 'message': 'Element not found'})
             except Exception as e:
                 self.request.response.setHeader('Content-Type', 'application/json')
                 return json.dumps({'status': 'error', 'message': str(e)})
@@ -247,7 +253,8 @@ class Move(BrowserView):
             for item in puntsOrdered:
                 objecte = item.getObject()
                 objecte.proposalPoint = str(index)
-                addEntryLog(self.context, None, _(u'Changed punt number with drag&drop'), str(objecte.id) + ' → ' + str(objecte.proposalPoint))
+                addEntryLog(self.context, None, _(u'Changed punt number with drag&drop'), str(
+                    objecte.id) + ' → ' + str(objecte.proposalPoint))
                 objecte.reindexObject()
 
                 if len(objecte.items()) > 0:
@@ -293,7 +300,8 @@ class Move(BrowserView):
                 if item.portal_type == 'genweb.organs.subpunt' or item.portal_type == 'genweb.organs.acord':
                     objecteSubPunt = item.getObject()
                     objecteSubPunt.proposalPoint = str(puntnumber) + '.' + str(subvalue)
-                    addEntryLog(self.context, None, _(u'Moved subpunt by drag&drop'), str(objecteSubPunt.id) + ' → ' + str(objecteSubPunt.proposalPoint))
+                    addEntryLog(self.context, None, _(u'Moved subpunt by drag&drop'), str(
+                        objecteSubPunt.id) + ' → ' + str(objecteSubPunt.proposalPoint))
                     objecteSubPunt.reindexObject()
                     subvalue = subvalue + 1
 
@@ -376,7 +384,8 @@ class ActaPrintView(BrowserView):
                 if value.agreement:
                     agreement = ' [Acord ' + str(value.agreement) + ']'
                 else:
-                    agreement = _(u"[Acord sense numerar]") if not getattr(value, 'omitAgreement', False) else ''
+                    agreement = _(u"[Acord sense numerar]") if not getattr(
+                        value, 'omitAgreement', False) else ''
             else:
                 agreement = ''
             results.append('<li>' + str(obj.Title) + ' ' + str(agreement))
@@ -395,7 +404,8 @@ class ActaPrintView(BrowserView):
                         agreement = ' [Acord ' + str(subpunt.agreement) + ']'
                     else:
                         agreement = ''
-                    results.append('<li>' + str(item.Title) + ' ' + str(agreement) + '</li>')
+                    results.append(
+                        '<li>' + str(item.Title) + ' ' + str(agreement) + '</li>')
                 results.append('</ol></li>')
             else:
                 results.append('</li>')
@@ -413,7 +423,9 @@ class ActaPrintView(BrowserView):
         estatSessio = utils.session_wf_state(self)
         organ_tipus = self.context.organType
 
-        if estatSessio == 'planificada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
+        if estatSessio == 'planificada' and utils.checkhasRol(
+            ['OG1-Secretari', 'OG2-Editor'],
+                roles):
             return True
         elif estatSessio == 'convocada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
             return True
@@ -436,6 +448,7 @@ class ActaPreviewView(ActaPrintView):
 
 class ReloadAcords(BrowserView):
     """ Numera acords de la vista de la sessio """
+
     def __call__(self):
         """ This call reassign the correct proposalPoints to the contents in this folder
         """
@@ -468,7 +481,8 @@ class ReloadAcords(BrowserView):
         else:
             numsessio = ''
 
-        addEntryLog(self.context, None, _(u'Reload proposalPoints manually'), '')  # add log
+        addEntryLog(self.context, None, _(
+            u'Reload proposalPoints manually'), '')  # add log
         # agafo items ordenats!
         puntsOrdered = portal_catalog.searchResults(
             portal_type=['genweb.organs.punt', 'genweb.organs.acord'],
@@ -509,6 +523,7 @@ class ReloadAcords(BrowserView):
 
 class ReloadPoints(BrowserView):
     """ Renumera els punts manualment """
+
     def __call__(self):
         """ This call reassign the correct Point number to the contents in this folder
         """
@@ -559,6 +574,7 @@ class changeActualState(BrowserView):
     """ Es fa servir a la vista sessio i presentacio. No cal fer reload perque
         es mostra el nou valor per JS
     """
+
     def __call__(self):
         # Disable CSRF
         if CSRF:
@@ -587,17 +603,27 @@ class changeActualState(BrowserView):
                     objecte = subpunt.getObject()
                     objecte.estatsLlista = estat
                     if objecte.portal_type == 'genweb.organs.subpunt':
-                        addEntryLog(self.context, None, _(u'Changed recursive color state of subpunt inside punt'), objecte.absolute_url_path() + ' -> ' + estat)  # add log
+                        addEntryLog(
+                            self.context, None,
+                            _(u'Changed recursive color state of subpunt inside punt'),
+                            objecte.absolute_url_path() + ' -> ' + estat)  # add log
                     else:
-                        addEntryLog(self.context, None, _(u'Changed recursive color state of acord inside punt'), objecte.absolute_url_path() + ' -> ' + estat)  # add log
+                        addEntryLog(
+                            self.context, None,
+                            _(u'Changed recursive color state of acord inside punt'),
+                            objecte.absolute_url_path() + ' -> ' + estat)  # add log
                 currentitem.estatsLlista = estat
                 transaction.commit()
-                addEntryLog(self.context, None, _(u'Changed punt color state'), itemid + ' → ' + estat)  # add log
+                addEntryLog(
+                    self.context, None, _(u'Changed punt color state'),
+                    itemid + ' → ' + estat)  # add log
             else:
                 # És un acord. Només es canvia aquest ja que dintre no conté elements
                 currentitem.estatsLlista = estat
                 transaction.commit()
-                addEntryLog(self.context, None, _(u'Changed acord color state'), itemid + ' → ' + estat)  # add log
+                addEntryLog(
+                    self.context, None, _(u'Changed acord color state'),
+                    itemid + ' → ' + estat)  # add log
         except:
             pass
         return
@@ -607,6 +633,7 @@ class changeSubpuntState(BrowserView):
     """ Es fa servir a la vista sessio i presentacio. No cal fer reload perque
         es mostra el nou valor per JS. Només canvia el subpunt actual, no recursiu.
     """
+
     def __call__(self):
         # Disable CSRF
         if CSRF:
@@ -615,7 +642,8 @@ class changeSubpuntState(BrowserView):
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         estat = self.request.form.get('estat')
         itemid = self.request.form.get('id')
-        object_path = '/'.join(self.context.getPhysicalPath()) + '/' + str(itemid.split('/')[0])
+        object_path = '/'.join(self.context.getPhysicalPath()
+                               ) + '/' + str(itemid.split('/')[0])
         item = str(itemid.split('/')[-1:][0])
         currentitem = portal_catalog.searchResults(
             portal_type=['genweb.organs.subpunt', 'genweb.organs.acord'],
@@ -626,9 +654,13 @@ class changeSubpuntState(BrowserView):
             currentitem[0].getObject().estatsLlista = estat
             transaction.commit()
             if currentitem[0].portal_type == 'genweb.organs.subpunt':
-                addEntryLog(self.context, None, _(u'Changed subpunt intern state color'), currentitem[0].getPath() + ' → ' + estat)  # add log
+                addEntryLog(
+                    self.context, None, _(u'Changed subpunt intern state color'),
+                    currentitem[0].getPath() + ' → ' + estat)  # add log
             else:
-                addEntryLog(self.context, None, _(u'Changed acord intern state color'), currentitem[0].getPath() + ' → ' + estat)  # add log
+                addEntryLog(
+                    self.context, None, _(u'Changed acord intern state color'),
+                    currentitem[0].getPath() + ' → ' + estat)  # add log
 
         return
 
@@ -671,38 +703,48 @@ class allSessions(BrowserView):
         for session in previous_sessions:
             obj = session._unrestrictedGetObject()
             roles = utils.getUserRoles(self, obj, api.user.get_current().id)
-            if utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'], roles) or obj.aq_parent.visiblefields:
+            if utils.checkhasRol(
+                ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat',
+                 'OG5-Convidat'],
+                    roles) or obj.aq_parent.visiblefields:
                 event = IEventAccessor(obj)
                 startDate = event.start.strftime('%d/%m/%Y')
                 endDate = event.end.strftime('%d/%m/%Y')
-                past.append(dict(
-                    id=obj.aq_parent.id,
-                    title=obj.aq_parent.title,
-                    date=startDate if startDate == endDate else startDate + " " + endDate,
-                    start=event.start.strftime('%H:%M'),
-                    end=event.end.strftime('%H:%M'),
-                    dateiso=event.start.strftime('%Y%m%d'),
-                    url=session.getPath(),
-                    breakline=obj.aq_parent.id=='ple-del-consell-social'))
+                past.append(
+                    dict(
+                        id=obj.aq_parent.id,
+                        title=obj.aq_parent.title,
+                        date=startDate
+                        if startDate == endDate else startDate + " " + endDate,
+                        start=event.start.strftime('%H:%M'),
+                        end=event.end.strftime('%H:%M'),
+                        dateiso=event.start.strftime('%Y%m%d'),
+                        url=session.getPath(),
+                        breakline=obj.aq_parent.id == 'ple-del-consell-social'))
 
         future = []
         current_year = datetime.datetime.now().strftime('%Y')
         for session in future_sessions:
             obj = session._unrestrictedGetObject()
             roles = utils.getUserRoles(self, obj, api.user.get_current().id)
-            if utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'], roles) or obj.aq_parent.visiblefields:
+            if utils.checkhasRol(
+                ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat',
+                 'OG5-Convidat'],
+                    roles) or obj.aq_parent.visiblefields:
                 event = IEventAccessor(obj)
                 startDate = event.start.strftime('%d/%m/%Y')
                 endDate = event.end.strftime('%d/%m/%Y')
-                future.append(dict(
-                    id=obj.aq_parent.id,
-                    title=obj.aq_parent.title,
-                    date=startDate if startDate == endDate else startDate + " " + endDate,
-                    start=event.start.strftime('%H:%M'),
-                    end=event.end.strftime('%H:%M'),
-                    dateiso=event.start.strftime('%Y%m%d'),
-                    url=session.getPath(),
-                    breakline=obj.aq_parent.id=='ple-del-consell-social'))
+                future.append(
+                    dict(
+                        id=obj.aq_parent.id, title=obj.aq_parent.title,
+                        date=startDate
+                        if startDate == endDate else startDate + " " + endDate,
+                        start=event.start.strftime('%H:%M'),
+                        end=event.end.strftime('%H:%M'),
+                        dateiso=event.start.strftime('%Y%m%d'),
+                        url=session.getPath(),
+                        breakline=obj.aq_parent.id
+                        == 'ple-del-consell-social'))
         return dict(
             future=sorted(future, key=itemgetter('dateiso'), reverse=False),
             past=sorted(past, key=itemgetter('dateiso'), reverse=False))
@@ -937,20 +979,23 @@ class exportAllOrgans(BrowserView):
             if organ['acronim']:
                 title += ' [' + organ['acronim'] + ']'
 
-            writer.writerow([organ['grandparent'] if 'grandparent' in organ else '',
-                             organ['parent'],
-                             title,
-                             translate(msgid=organ['organType'], domain='genweb6.organs', target_language='ca'),
-                             organ['secretaris'],
-                             organ['editors'],
-                             organ['membres'],
-                             organ['afectats'],
-                             organ['sessions_open_last_year'],
-            ])
+            writer.writerow(
+                [organ['grandparent'] if 'grandparent' in organ else '',
+                 organ['parent'],
+                 title,
+                 translate(
+                     msgid=organ['organType'],
+                     domain='genweb6.organs', target_language='ca'),
+                 organ['secretaris'],
+                 organ['editors'],
+                 organ['membres'],
+                 organ['afectats'],
+                 organ['sessions_open_last_year'],])
 
 
 class ReorderSessions(BrowserView):
     """ Reordena sessions de la vista d'organ"""
+
     def __call__(self):
         """ This call reassign the correct sessions for an organ
         """
@@ -996,12 +1041,14 @@ class ReloadVoteStats(BrowserView):
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         results = portal_catalog.unrestrictedSearchResults(
             UID=self.request.UID,
-            portal_type=['genweb.organs.votacioacord', 'genweb.organs.acord', 'genweb.organs.punt'])
+            portal_type=['genweb.organs.votacioacord', 'genweb.organs.acord',
+                         'genweb.organs.punt'])
 
         if results:
             votacio = results[0].getObject()
             roles = utils.getUserRoles(self, self.context, api.user.get_current().id)
-            viewList = utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor'], roles)
+            viewList = utils.checkhasRol(
+                ['Manager', 'OG1-Secretari', 'OG2-Editor'], roles)
             lang = self.context.language
 
             infoVotacio = votacio.infoVotacio
@@ -1115,9 +1162,11 @@ class getAcordsOrgangovern(BrowserView):
                 if value.agreement:
                     if len(value.agreement.split('/')) > 2:
                         try:
-                            num = value.agreement.split('/')[1].zfill(3) + value.agreement.split('/')[2].zfill(3) + value.agreement.split('/')[3].zfill(3)
+                            num = value.agreement.split('/')[1].zfill(3) + value.agreement.split('/')[
+                                2].zfill(3) + value.agreement.split('/')[3].zfill(3)
                         except:
-                            num = value.agreement.split('/')[1].zfill(3) + value.agreement.split('/')[2].zfill(3)
+                            num = value.agreement.split(
+                                '/')[1].zfill(3) + value.agreement.split('/')[2].zfill(3)
                         any = value.agreement.split('/')[0]
                     else:
                         num = value.agreement.split('/')[0].zfill(3)
@@ -1128,13 +1177,15 @@ class getAcordsOrgangovern(BrowserView):
                 if value.aq_parent.aq_parent.portal_type == 'genweb.organs.sessio':
                     wf_state = api.content.get_state(obj=value.aq_parent.aq_parent)
                     if username:
-                        roles = api.user.get_roles(username=username, obj=value.aq_parent.aq_parent)
+                        roles = api.user.get_roles(
+                            username=username, obj=value.aq_parent.aq_parent)
                     else:
                         roles = []
                 else:
                     wf_state = api.content.get_state(obj=value.aq_parent)
                     if username:
-                        roles = api.user.get_roles(username=username, obj=value.aq_parent)
+                        roles = api.user.get_roles(
+                            username=username, obj=value.aq_parent)
                     else:
                         roles = []
                 # Oculta acords from table depending on role and state
@@ -1169,7 +1220,9 @@ class getActesOrgangovern(BrowserView):
         """ Si es Manager/Secretari/Editor/Membre show actas
             Affectat i altres NO veuen MAI les ACTES """
         roles = utils.getUserRoles(self, self.context, api.user.get_current().id)
-        if utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
+        if utils.checkhasRol(
+            ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'],
+                roles):
             results = []
             portal_catalog = api.portal.get_tool(name='portal_catalog')
             folder_path = '/'.join(self.context.getPhysicalPath())
@@ -1197,7 +1250,10 @@ class getActesOrgangovern(BrowserView):
                                         absolute_url=value.absolute_url(),
                                         data=value.horaInici.strftime('%d/%m/%Y'),
                                         hiddenOrder=value.horaInici.strftime('%Y%m%d')))
-            return json.dumps(sorted(results, key=itemgetter('hiddenOrder'), reverse=True))
+            return json.dumps(
+                sorted(
+                    results, key=itemgetter('hiddenOrder'),
+                    reverse=True))
         else:
             return json.dumps([])
 
@@ -1223,12 +1279,8 @@ class allOrgansEstatsLlista(BrowserView):
 
         results = []
         for brain in all_brains:
-            results.append({
-                'id': brain.id,
-                'title': brain.Title,
-                'url': brain.getURL(),
-                'estats': getattr(brain.getObject().estatsLlista, 'raw', '').replace('<p>', '').replace('</p>', '').split('\r\n') if brain.getObject().estatsLlista else []
-            })
+            results.append({'id': brain.id, 'title': brain.Title, 'url': brain.getURL(), 'estats': getattr(brain.getObject(
+            ).estatsLlista, 'raw', '').replace('<p>', '').replace('</p>', '').split('\r\n') if brain.getObject().estatsLlista else []})
 
         return results
 
@@ -1259,7 +1311,7 @@ class CleanPDFsOrgansView(BrowserView):
     def __call__(self):
         # Registrar tiempo de inicio
         start_time = time.time()
-        
+
         alsoProvides(self.request, IDisableCSRFProtection)
 
         settings = genwebMetadadesConfig()
@@ -1288,12 +1340,13 @@ class CleanPDFsOrgansView(BrowserView):
         logger.info("=" * 80)
         logger.info("INICIANDO LIMPIEZA DE METADATOS DE PDFs")
         logger.info("Calculando total de PDFs candidatos...")
-        
+
         total_pdfs_to_process = 0
         for organ in organs:
-            
+
             brains = catalog.searchResults(
-                portal_type=['genweb.organs.acta', 'genweb.organs.annex', 'genweb.organs.file'],
+                portal_type=['genweb.organs.acta', 'genweb.organs.annex',
+                             'genweb.organs.file'],
                 path={'query': organ.getPath()})
             for brain in brains:
                 obj = brain.getObject()
@@ -1309,34 +1362,35 @@ class CleanPDFsOrgansView(BrowserView):
                 elif brain.portal_type == 'genweb.organs.annex':
                     if hasattr(obj, 'file') and obj.file:
                         file_fields.append('file')
-                
+
                 for field_name in file_fields:
                     file_obj = getattr(obj, field_name)
                     if file_obj.filename.lower().endswith('.pdf'):
                         total_pdfs_to_process += 1
-        
+
         logger.info(f"Total de PDFs candidatos encontrados: {total_pdfs_to_process}")
         logger.info("=" * 80)
 
         # Si se pasa el parámetro 'check', solo mostrar el total y salir
-        if self.request.get('check', None) is not None:           
+        if self.request.get('check', None) is not None:
             html = f"""
                 <h2>Total de PDFs a procesar</h2>
                 <p>{total_pdfs_to_process}</p>
             """
-            
+
             self.request.response.setHeader("Content-Type", "text/html; charset=utf-8")
             return html
-        
+
         # Procesar los PDFs
         for organ in organs:
             brains = catalog.searchResults(
-                portal_type=['genweb.organs.acta', 'genweb.organs.annex', 'genweb.organs.file'],
+                portal_type=['genweb.organs.acta', 'genweb.organs.annex',
+                             'genweb.organs.file'],
                 path={'query': organ.getPath()})
 
             for brain in brains:
                 obj = brain.getObject()
-                
+
                 # Determinar qué campos de archivo procesar según el tipo de contenido
                 file_fields = []
                 if brain.portal_type == 'genweb.organs.file':
@@ -1353,43 +1407,49 @@ class CleanPDFsOrgansView(BrowserView):
                     # Para annex, procesamos el campo file
                     if hasattr(obj, 'file') and obj.file:
                         file_fields.append('file')
-                
+
                 # Si no hay campos de archivo válidos, continuar
                 if not file_fields:
                     continue
-                
+
                 # Procesar cada campo de archivo
                 for field_name in file_fields:
                     file_obj = getattr(obj, field_name)
-                    
+
                     # Verificar que sea un PDF
                     if not file_obj.filename.lower().endswith('.pdf'):
                         continue
-                    
+
                     # Incrementar contador de procesados
                     count_processed += 1
-                    
+
                     # Mostrar progreso cada 50 PDFs
                     if count_processed % 50 == 0:
-                        percentage = (count_processed / total_pdfs_to_process * 100) if total_pdfs_to_process > 0 else 0
+                        percentage = (
+                            count_processed / total_pdfs_to_process * 100) if total_pdfs_to_process > 0 else 0
                         elapsed_time = time.time() - start_time
-                        logger.info(f"[PROGRESO] {count_processed}/{total_pdfs_to_process} ({percentage:.1f}%) - Tiempo transcurrido: {elapsed_time:.1f}s")
+                        logger.info(
+                            f"[PROGRESO] {count_processed}/{total_pdfs_to_process} ({percentage:.1f}%) - Tiempo transcurrido: {elapsed_time:.1f}s")
 
                     if is_file_uploaded_to_gdoc(obj):
-                        logger.info(f"[SKIPPED] {obj.absolute_url()} ({field_name}) - PDF ja pujat al gDOC")
+                        logger.info(
+                            f"[SKIPPED] {obj.absolute_url()} ({field_name}) - PDF ja pujat al gDOC")
                         continue
-                    
+
                     file_data = file_obj.data
 
                     # Verificar si el PDF está firmado
                     try:
                         if is_signed_pdf(file_data):
-                            logger.info(f"[SKIPPED] {obj.absolute_url()} ({field_name}) - PDF signat")
+                            logger.info(
+                                f"[SKIPPED] {obj.absolute_url()} ({field_name}) - PDF signat")
                             count_signed += 1
                             continue
                     except Exception as e:
-                        logger.warning(f"[PROBLEMATIC] {obj.absolute_url()} ({field_name}) - Error verificando firma: {e}")
-                        problematic_pdfs.append(f"{obj.absolute_url()} ({field_name}) - Error verificando firma: {str(e)}")
+                        logger.warning(
+                            f"[PROBLEMATIC] {obj.absolute_url()} ({field_name}) - Error verificando firma: {e}")
+                        problematic_pdfs.append(
+                            f"{obj.absolute_url()} ({field_name}) - Error verificando firma: {str(e)}")
                         count_problematic += 1
                         continue
 
@@ -1397,21 +1457,23 @@ class CleanPDFsOrgansView(BrowserView):
 
                     try:
                         filename = file_obj.filename
-                        #logger.info(f"[PROCESSING] {obj.absolute_url()} ({field_name}) - {filename}")
+                        # logger.info(f"[PROCESSING] {obj.absolute_url()} ({field_name}) - {filename}")
 
-                        files = {
-                            'fitxerPerNetejarMetadades': (filename, file_data, 'application/pdf')
-                        }
+                        files = {'fitxerPerNetejarMetadades': (
+                            filename, file_data, 'application/pdf')}
 
-                        response = requests.post(api_url, headers=headers, files=files, timeout=30)
+                        response = requests.post(
+                            api_url, headers=headers, files=files, timeout=30)
 
                         if response.status_code == 200:
                             cleaned_data = response.content
-                            
+
                             # Verificar que el contenido limpiado no esté vacío
                             if len(cleaned_data) == 0:
-                                errors.append(f"{obj.absolute_url()} ({field_name}): API retornó contenido vacío")
-                                logger.warning(f"[FAIL] {obj.absolute_url()} ({field_name}) - API retornó contenido vacío")
+                                errors.append(
+                                    f"{obj.absolute_url()} ({field_name}): API retornó contenido vacío")
+                                logger.warning(
+                                    f"[FAIL] {obj.absolute_url()} ({field_name}) - API retornó contenido vacío")
                                 continue
 
                             setattr(obj, field_name, NamedBlobFile(
@@ -1427,21 +1489,28 @@ class CleanPDFsOrgansView(BrowserView):
                             error_msg = f"API error {response.status_code}"
                             if hasattr(response, 'text'):
                                 error_msg += f": {response.text[:200]}"
-                            errors.append(f"{obj.absolute_url()} ({field_name}): {error_msg}")
-                            logger.warning(f"[FAIL] {obj.absolute_url()} ({field_name}) - {error_msg}")
+                            errors.append(
+                                f"{obj.absolute_url()} ({field_name}): {error_msg}")
+                            logger.warning(
+                                f"[FAIL] {obj.absolute_url()} ({field_name}) - {error_msg}")
 
                     except requests.exceptions.Timeout:
                         error_msg = "Timeout en la petición a la API"
-                        errors.append(f"{obj.absolute_url()} ({field_name}): {error_msg}")
+                        errors.append(
+                            f"{obj.absolute_url()} ({field_name}): {error_msg}")
                         logger.warning(f"[TIMEOUT] {obj.absolute_url()} ({field_name})")
                     except requests.exceptions.RequestException as e:
                         error_msg = f"Error de conexión: {str(e)}"
-                        errors.append(f"{obj.absolute_url()} ({field_name}): {error_msg}")
-                        logger.warning(f"[CONNECTION_ERROR] {obj.absolute_url()} ({field_name}) - {error_msg}")
+                        errors.append(
+                            f"{obj.absolute_url()} ({field_name}): {error_msg}")
+                        logger.warning(
+                            f"[CONNECTION_ERROR] {obj.absolute_url()} ({field_name}) - {error_msg}")
                     except Exception as e:
                         error_msg = f"Error inesperado: {str(e)}"
-                        errors.append(f"{obj.absolute_url()} ({field_name}): {error_msg}")
-                        logger.exception(f"[ERROR] {obj.absolute_url()} ({field_name}) - {error_msg}")
+                        errors.append(
+                            f"{obj.absolute_url()} ({field_name}): {error_msg}")
+                        logger.exception(
+                            f"[ERROR] {obj.absolute_url()} ({field_name}) - {error_msg}")
 
         # Calcular duración total
         end_time = time.time()
@@ -1449,17 +1518,18 @@ class CleanPDFsOrgansView(BrowserView):
         hours = int(total_duration // 3600)
         minutes = int((total_duration % 3600) // 60)
         seconds = int(total_duration % 60)
-        
+
         duration_str = ""
         if hours > 0:
             duration_str += f"{hours}h "
         if minutes > 0 or hours > 0:
             duration_str += f"{minutes}m "
         duration_str += f"{seconds}s"
-        
+
         logger.info("=" * 80)
         logger.info("PROCESO FINALIZADO")
-        logger.info(f"Total de PDFs procesados: {count_processed}/{total_pdfs_to_process}")
+        logger.info(
+            f"Total de PDFs procesados: {count_processed}/{total_pdfs_to_process}")
         logger.info(f"Duración total: {duration_str} ({total_duration:.2f} segundos)")
         logger.info(f"PDFs limpiados exitosamente: {count_cleaned}")
         logger.info(f"PDFs firmados (saltados): {count_signed}")
@@ -1471,7 +1541,7 @@ class CleanPDFsOrgansView(BrowserView):
             <h2>PDF Metadata Cleanup - Resultados</h2>
             <h3>⏱️ Duración Total del Proceso</h3>
             <p>{duration_str} ({total_duration:.2f} segundos)</p>
-            
+
             <h3>📊 Resumen de Procesamiento</h3>
             <p>Total PDFs procesados: <strong>{count_processed} / {total_pdfs_to_process}</strong></p>
             <p>Total PDFs candidatos: <strong>{count_total + count_signed + count_problematic}</strong></p>
@@ -1479,7 +1549,7 @@ class CleanPDFsOrgansView(BrowserView):
             <p>Problematic PDFs: <strong>{count_problematic}</strong></p>
             <p>Successfully cleaned: <strong style="color: green;">{count_cleaned}</strong></p>
             <p>Errors: <strong style="color: red;">{len(errors)}</strong></p>
-            
+
             {f'<h3>⚠️ PDFs problemáticos ({len(problematic_pdfs)}):</h3><pre>{"<br>".join(problematic_pdfs)}</pre>' if problematic_pdfs else ''}
             {f'<h3>❌ Errores ({len(errors)}):</h3><pre>{"<br>".join(errors)}</pre>' if errors else ''}
         """
