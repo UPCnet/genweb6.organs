@@ -38,7 +38,7 @@
                           actesInside view/ActesInside">
 
     <!-- Token CSRF para formularios AJAX -->
-    <tal:csrf tal:replace="structure context/@@authenticator" />
+    <!-- <tal:csrf tal:replace="structure context/@@authenticator" /> -->
 
     <!-- Estado de firma -->
     <tal:block tal:condition="actesInside">

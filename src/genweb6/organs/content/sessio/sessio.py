@@ -37,6 +37,14 @@ import datetime
 import transaction
 from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from zope.interface import alsoProvides
+
+# Disable CSRF
+try:
+    from plone.protect.interfaces import IDisableCSRFProtection
+    CSRF = True
+except ImportError:
+    CSRF = False
 
 
 sessionModalities = SimpleVocabulary(
@@ -272,6 +280,11 @@ class View(BrowserView):
     index = ViewPageTemplateFile('sessio.pt')
 
     def __call__(self):
+        # Deshabilitar CSRF para esta vista de solo lectura que normaliza datos
+        # durante el renderizado (conversión de strings a dicts para compatibilidad)
+        if CSRF:
+            alsoProvides(self.request, IDisableCSRFProtection)
+
         # Verify permissions before rendering - this ensures Unauthorized is raised
         # when the view is actually called (both in tests and normal browser access)
         if not self.canView():
@@ -1331,6 +1344,10 @@ class View(BrowserView):
 class OpenQuorum(BrowserView):
 
     def __call__(self):
+        # Disable CSRF
+        if CSRF:
+            alsoProvides(self.request, IDisableCSRFProtection)
+
         if not isinstance(self.context.infoQuorums, dict):
             self.context.infoQuorums = ast.literal_eval(self.context.infoQuorums)
 
@@ -1365,6 +1382,10 @@ class OpenQuorum(BrowserView):
 class CloseQuorum(BrowserView):
 
     def __call__(self):
+        # Disable CSRF
+        if CSRF:
+            alsoProvides(self.request, IDisableCSRFProtection)
+
         if not isinstance(self.context.infoQuorums, dict):
             self.context.infoQuorums = ast.literal_eval(self.context.infoQuorums)
 
@@ -1380,6 +1401,10 @@ class CloseQuorum(BrowserView):
 class RemoveQuorums(BrowserView):
 
     def __call__(self):
+        # Disable CSRF
+        if CSRF:
+            alsoProvides(self.request, IDisableCSRFProtection)
+
         self.context.infoQuorums = {}
         self.context.reindexObject()
         transaction.commit()
@@ -1388,6 +1413,10 @@ class RemoveQuorums(BrowserView):
 class AddQuorum(BrowserView):
 
     def __call__(self):
+        # Disable CSRF
+        if CSRF:
+            alsoProvides(self.request, IDisableCSRFProtection)
+
         if not isinstance(self.context.infoQuorums, dict):
             self.context.infoQuorums = ast.literal_eval(self.context.infoQuorums)
 
