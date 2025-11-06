@@ -15,10 +15,11 @@ from genweb6.organs.firma_documental.views.general import viewGDoc
 from genweb6.organs.firma_documental.webservices import ClientFirma, ClientFirmaException, uploadFileGdoc
 from plone.app.uuid.utils import uuidToObject
 from plone.namedfile.file import NamedBlobFile
+from zope.interface import alsoProvides
 
-#import Acquisition.ImplicitAcquisitionWrapper
 from Acquisition import ImplicitAcquisitionWrapper
 from Products.statusmessages.interfaces import IStatusMessage
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 import ast
 import datetime
@@ -29,10 +30,26 @@ import pdfkit
 import requests
 import transaction
 
+# Disable CSRF
+try:
+    from plone.protect.interfaces import IDisableCSRFProtection
+    CSRF = True
+except ImportError:
+    CSRF = False
+
 logger = logging.getLogger(__name__)
 
 
 class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
+
+    index = ViewPageTemplateFile('templates/sign_sessio.pt')
+
+    def __call__(self):
+        # Deshabilitar CSRF para esta vista de solo lectura que normaliza datos
+        # durante el renderizado (conversión de strings a dicts para compatibilidad)
+        if CSRF:
+            alsoProvides(self.request, IDisableCSRFProtection)
+        return self.index()
 
     def canView(self):
         if utils.isManager(self):
