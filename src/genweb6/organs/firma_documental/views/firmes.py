@@ -15,6 +15,7 @@ from genweb6.organs.firma_documental.views.general import downloadGDoc
 from genweb6.organs.firma_documental.views.general import viewGDoc
 from genweb6.organs.firma_documental.utils import hasFirmaActa, estatFirmaActa
 from genweb6.organs.firma_documental.webservices import ClientFirma, ClientFirmaException, uploadFileGdoc
+from genweb6.organs.utils import purge_cache_varnish
 
 import ast
 import datetime
@@ -634,4 +635,5 @@ class ResetFirm(BrowserView):
             logger.error('Error al reiniciar la firma en %s: %s', self.context.absolute_url(), str(e))
 
         transaction.commit()
+        purge_cache_varnish(self)
         return self.request.response.redirect(self.context.absolute_url())

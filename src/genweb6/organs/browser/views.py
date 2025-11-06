@@ -25,6 +25,7 @@ from genweb6.organs.indicators.updating import update_indicators
 from genweb6.organs.utils import addEntryLog
 from genweb6.organs.utils import get_settings_property
 from genweb6.organs.utils import getLdapUserData
+from genweb6.organs.utils import purge_cache_varnish
 
 import ast
 import csv
@@ -305,6 +306,7 @@ class Move(BrowserView):
                     objecteSubPunt.reindexObject()
                     subvalue = subvalue + 1
 
+        purge_cache_varnish(self)
         # This line is only to bypass the CSRF WARNING
         # WARNING plone.protect error parsing dom, failure to add csrf token to response for url ...
         return "Moved element"
@@ -518,6 +520,7 @@ class ReloadAcords(BrowserView):
 
             index = index + 1
 
+        purge_cache_varnish(self)
         return self.request.response.redirect(self.context.absolute_url())
 
 
@@ -567,6 +570,7 @@ class ReloadPoints(BrowserView):
 
             index = index + 1
 
+        purge_cache_varnish(self)
         return self.request.response.redirect(self.context.absolute_url())
 
 
@@ -624,6 +628,8 @@ class changeActualState(BrowserView):
                 addEntryLog(
                     self.context, None, _(u'Changed acord color state'),
                     itemid + ' → ' + estat)  # add log
+
+            purge_cache_varnish(self)
         except:
             pass
         return
@@ -662,6 +668,7 @@ class changeSubpuntState(BrowserView):
                     self.context, None, _(u'Changed acord intern state color'),
                     currentitem[0].getPath() + ' → ' + estat)  # add log
 
+            purge_cache_varnish(self)
         return
 
 

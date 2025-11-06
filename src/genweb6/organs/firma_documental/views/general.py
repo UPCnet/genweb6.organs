@@ -8,6 +8,7 @@ from plone.app.uuid.utils import uuidToObject
 from genweb6.organs import _
 from genweb6.organs import utils
 from genweb6.organs.firma_documental import utils as utilsFD
+from genweb6.organs.utils import purge_cache_varnish
 
 import json
 import logging
@@ -143,6 +144,6 @@ class UpdateInfoPortafirmes(BrowserView):
 
             # if firma.estat_firma.lower() == 'signada':
             #     self.timbrarFiles(context=firma)
-
+            purge_cache_varnish(self)
         except Exception as e:
             logger.exception("ERROR updateInfoPortafirmes. Exception: " + str(e))
