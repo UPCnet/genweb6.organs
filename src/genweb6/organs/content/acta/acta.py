@@ -28,7 +28,14 @@ import transaction
 
 from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from zope.interface import alsoProvides
 
+# Disable CSRF
+try:
+    from plone.protect.interfaces import IDisableCSRFProtection
+    CSRF = True
+except ImportError:
+    CSRF = False
 # Define las funciones defaultFactory para cada campo
 
 
@@ -344,6 +351,9 @@ class View(BrowserView, UtilsFirmaDocumental):
     index = ViewPageTemplateFile("acta.pt")
 
     def __call__(self):
+        # Deshabilitar CSRF
+        if CSRF:
+            alsoProvides(self.request, IDisableCSRFProtection)
         return self.index()
 
     def isAnon(self):
