@@ -26,6 +26,14 @@ from genweb6.organs import utils
 
 import transaction
 import unicodedata
+from zope.interface import alsoProvides
+
+# Disable CSRF
+try:
+    from plone.protect.interfaces import IDisableCSRFProtection
+    CSRF = True
+except ImportError:
+    CSRF = False
 
 
 class IMessage(model.Schema):
@@ -78,6 +86,9 @@ class Message(form.Form):
     def update(self):
         """  Disable the view if username has no roles.
              Send Message if user is Editor / Secretari / Manager """
+        if CSRF:
+            alsoProvides(self.request, IDisableCSRFProtection)
+
         if api.user.is_anonymous() is True:
             raise Unauthorized
         else:
@@ -143,12 +154,14 @@ class Message(form.Form):
             moreData = html_content + '<br/>' + customBody + '<strong>' + sessiontitle + '</strong>'
 
             if session.modality is not None:
-                moreData += "<br/>Modalitat de la sessió: " + translate(msgid=session.modality, domain='genweb6.organs', target_language='ca')
+                moreData += "<br/>Modalitat de la sessió: " + translate(
+                    msgid=session.modality, domain='genweb6.organs', target_language='ca')
 
             moreData += '<br/>Lloc: ' + place
 
             if session.linkSala is not None:
-                moreData += "<br/>Enllaç a la sessió: <a href='" + session.linkSala + "' target='_blank'>" + session.linkSala + "</a>"
+                moreData += "<br/>Enllaç a la sessió: <a href='" + \
+                    session.linkSala + "' target='_blank'>" + session.linkSala + "</a>"
 
             moreData += "<br/>Data: " + sessiondate + \
                 "<br/>Hora d'inici: " + starthour + \
@@ -167,12 +180,15 @@ class Message(form.Form):
             moreData = html_content + '<br/>' + customBody + '<strong>' + sessiontitle + '</strong>'
 
             if session.modality is not None:
-                "<br/>Modalidad de la sesión: " + translate(msgid=session.modality, domain='genweb6.organs', target_language='es')
+                "<br/>Modalidad de la sesión: " + translate(
+                    msgid=session.modality, domain='genweb6.organs',
+                    target_language='es')
 
             moreData += '<br/>Lugar: ' + place
 
             if session.linkSala is not None:
-                moreData += "<br/>Enlace a la sesión: <a href='" + session.linkSala + "' target='_blank'>" + session.linkSala + "</a>"
+                moreData += "<br/>Enlace a la sesión: <a href='" + \
+                    session.linkSala + "' target='_blank'>" + session.linkSala + "</a>"
 
             moreData += "<br/>Fecha: " + sessiondate + \
                 "<br/>Hora de inicio: " + starthour + \
@@ -191,12 +207,14 @@ class Message(form.Form):
             moreData = html_content + '<br/>' + customBody + '<strong>' + sessiontitle + '</strong>'
 
             if session.modality is not None:
-                moreData += "<br/>Session modality: " + translate(msgid=session.modality, domain='genweb6.organs', target_language='en')
+                moreData += "<br/>Session modality: " + translate(
+                    msgid=session.modality, domain='genweb6.organs', target_language='en')
 
             moreData += '<br/>Place: ' + place
 
             if session.linkSala is not None:
-                moreData += "<br/>Link to the session: <a href='" + session.linkSala + "' target='_blank'>" + session.linkSala + "</a>"
+                moreData += "<br/>Link to the session: <a href='" + \
+                    session.linkSala + "' target='_blank'>" + session.linkSala + "</a>"
 
             moreData += "<br/>Date: " + sessiondate + \
                 "<br/>Start date: " + starthour + \
@@ -208,7 +226,8 @@ class Message(form.Form):
         self.widgets["sender"].value = organ.fromMail if organ.fromMail else ""
         self.widgets["fromTitle"].value = fromMessage
         self.widgets["recipients"].value = organ.adrecaLlista if organ.adrecaLlista else ""
-        self.widgets["message"].value = RichTextValue(bodyMail, "text/html", "text/x-html-safe")
+        self.widgets["message"].value = RichTextValue(
+            bodyMail, "text/html", "text/x-html-safe")
 
         self.widgets["membresConvocats"].value = organ.membresOrgan if organ.membresOrgan else ""
         self.widgets["membresConvidats"].value = organ.convidatsPermanentsOrgan if organ.convidatsPermanentsOrgan else ""
@@ -220,6 +239,9 @@ class Message(form.Form):
             in properties and redirect to the
             front page, showing a status message to say
             the message was received. """
+        if CSRF:
+            alsoProvides(self.request, IDisableCSRFProtection)
+
         formData, errors = self.extractData()
         lang = self.context.language
         if 'recipients' not in formData or 'fromTitle' not in formData or 'message' not in formData:
@@ -232,7 +254,8 @@ class Message(form.Form):
             IStatusMessage(self.request).addStatusMessage(message, type="error")
             return
         # replace hidden fields to maintain correct urls...
-        body = formData['message'].raw.replace('----@@----http:/', 'http://').replace('----@@----https:/', 'https://')
+        body = formData['message'].raw.replace(
+            '----@@----http:/', 'http://').replace('----@@----https:/', 'https://')
 
         root_url = api.portal.get().absolute_url() + "/" + lang
         body = body.replace('resolveuid/', root_url + "/resolveuid/")
@@ -251,11 +274,15 @@ class Message(form.Form):
                 msg_type='text/html')
 
             api.content.transition(obj=self.context, transition='convocar')
-            addEntryLog(self.context, None, _(u'Sending mail convocatoria'), formData['recipients'])
+            addEntryLog(
+                self.context, None, _(u'Sending mail convocatoria'),
+                formData['recipients'])
             self.context.plone_utils.addPortalMessage(
                 _(u"Missatge enviat correctament"), 'info')
         except:
-            addEntryLog(self.context, None, _(u'Missatge no enviat'), formData['recipients'])
+            addEntryLog(
+                self.context, None, _(u'Missatge no enviat'),
+                formData['recipients'])
             self.context.plone_utils.addPortalMessage(
                 _(u"Missatge no enviat. Comprovi els destinataris del missatge"), 'error')
 
