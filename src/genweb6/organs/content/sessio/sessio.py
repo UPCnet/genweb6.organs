@@ -294,6 +294,14 @@ class View(BrowserView):
         # when the view is actually called (both in tests and normal browser access)
         if not self.canView():
             raise Unauthorized
+
+        # OPTIMIZATION: Pre-calcular datos que se reutilizan en toda la vista
+        # para evitar llamadas redundantes
+        self._cached_organ = utils.get_organ(self.context)
+        self._cached_username = api.user.get_current().id
+        self._cached_roles = utils.getUserRoles(
+            self, self.context, self._cached_username)
+
         return self.index()
 
     def isAnon(self):
@@ -301,8 +309,11 @@ class View(BrowserView):
 
     def viewHistory(self):
         # Només els Secretaris i Managers poden veure el LOG
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         if utils.checkhasRol(['Manager', 'OG1-Secretari'], roles):
             return True
         else:
@@ -310,8 +321,11 @@ class View(BrowserView):
 
     def viewExcusesAndPoints(self):
         # Només els Secretaris i Editors poden veure les excuses
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         if utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor'], roles):
             return True
         else:
@@ -325,8 +339,12 @@ class View(BrowserView):
                 return False
 
         # But if not migrated, check permissions...
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados si existen
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
+
         review_state = api.content.get_state(self.context)
         value = False
         if review_state in ['planificada', 'convocada', 'realitzada', 'en_correccio'] and 'OG1-Secretari' in roles:
@@ -339,8 +357,11 @@ class View(BrowserView):
     def showOrdreDiaIAssistencia(self):
         review_state = api.content.get_state(self.context)
         value = False
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         has_roles = utils.checkhasRol(
             ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles)
         if review_state in ['planificada', 'convocada'] and has_roles:
@@ -350,8 +371,11 @@ class View(BrowserView):
     def showEnviarButton(self):
         review_state = api.content.get_state(self.context)
         value = False
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         has_roles = utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor'], roles)
         if review_state in [
                 'planificada', 'convocada', 'realitzada', 'en_correccio'] and has_roles:
@@ -380,8 +404,11 @@ class View(BrowserView):
     def showPublicarButton(self):
         review_state = api.content.get_state(self.context)
         value = False
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         has_roles = utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor'], roles)
         if review_state in ['realitzada', 'en_correccio'] and has_roles:
             value = True
@@ -389,9 +416,17 @@ class View(BrowserView):
 
     def getColor(self, data):
         # assign custom colors on organ states
+        # OPTIMIZATION: Pasar organ cacheado para evitar recalcularlo
+        organ = getattr(self, '_cached_organ', None)
+        if organ:
+            return utils.getColor(data, organ)
         return utils.getColor(data)
 
     def estatsCanvi(self, data):
+        # OPTIMIZATION: Pasar organ cacheado para evitar recalcularlo
+        organ = getattr(self, '_cached_organ', None)
+        if organ:
+            return utils.estatsCanvi(data, organ)
         return utils.estatsCanvi(data)
 
     def hihaPunts(self):
@@ -418,8 +453,11 @@ class View(BrowserView):
 
         results = []
 
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         for obj in values:
 
             canOpenVote = False
@@ -660,8 +698,11 @@ class View(BrowserView):
 
     def canViewTabActes(self):
         # Permissions to view acta
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         if 'Manager' in roles:
             return True
         estatSessio = utils.session_wf_state(self)
@@ -850,8 +891,12 @@ class View(BrowserView):
         return self.context.absolute_url()
 
     def filesinsidePunt(self, item):
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
+
         session_path = '/'.join(self.context.getPhysicalPath()) + '/' + item['id']
         portal_catalog = api.portal.get_tool(name='portal_catalog')
 
@@ -1018,8 +1063,11 @@ class View(BrowserView):
     def canView(self):
         # Permissions to view SESSIONS
         # If manager Show all
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         if 'Manager' in roles:
             return True
         estatSessio = utils.session_wf_state(self)
@@ -1073,25 +1121,37 @@ class View(BrowserView):
                 raise Unauthorized
 
     def canViewManageVote(self):
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         return utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor'], roles)
 
     def canViewVoteButtons(self):
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         return utils.checkhasRol(['OG1-Secretari', 'OG3-Membre'], roles)
 
     def canViewResultsVote(self):
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         return 'Manager' in roles or utils.checkhasRol(
             ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre'],
             roles)
 
     def canViewLinkSala(self):
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         return 'Manager' in roles or utils.checkhasRol(
             ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'],
             roles)
@@ -1279,13 +1339,19 @@ class View(BrowserView):
         return self.context.infoQuorums
 
     def canViewManageQuorumButtons(self):
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         return utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor'], roles)
 
     def canViewAddQuorumButtons(self):
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         return utils.checkhasRol(['OG1-Secretari', 'OG3-Membre'], roles)
 
     def checkHasQuorum(self):
@@ -1336,9 +1402,16 @@ class View(BrowserView):
 
     def canViewSignButton(self):
         estatSessio = utils.session_wf_state(self)
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
-        organ = utils.get_organ(self.context)
+        # OPTIMIZATION: Reutilizar roles y organ cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
+
+        organ = getattr(self, '_cached_organ', None)
+        if organ is None:
+            organ = utils.get_organ(self.context)
+
         return (
             organ.visiblegdoc
             and estatSessio in ['realitzada', 'en_correccio']

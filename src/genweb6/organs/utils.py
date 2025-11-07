@@ -459,13 +459,15 @@ def SubPuntsInside(self):
     return results
 
 
-def getColor(self):
+def getColor(self, organ=None):
     # Get custom colors on passed organ states
+    # OPTIMIZATION: Aceptar organ pre-calculado para evitar get_organ repetidos
     color = '#777777'
     try:
         obj = self._unrestrictedGetObject()
         estat = obj.estatsLlista
-        organ = get_organ(obj)
+        if organ is None:
+            organ = get_organ(obj)
         values = organ.estatsLlista.raw
         for value in values.split('</p>'):
             if value != '':
@@ -481,9 +483,11 @@ def getColor(self):
     return color
 
 
-def estatsCanvi(self):
+def estatsCanvi(self, organ=None):
     # Returns real names from estats
-    organ = get_organ(self._unrestrictedGetObject())
+    # OPTIMIZATION: Aceptar organ pre-calculado para evitar get_organ repetidos
+    if organ is None:
+        organ = get_organ(self._unrestrictedGetObject())
     values = organ.estatsLlista
     # Soporte Plone 6: si es RichTextValue, usar .raw
     from plone.app.textfield.value import RichTextValue
@@ -641,5 +645,5 @@ def getFilesSessio(context):
 def purge_cache_varnish(self):
     ram.caches.clear()
     paths = []
-    paths.append('_purge_all')    
+    paths.append('_purge_all')
     purge_varnish_paths(self, paths)
