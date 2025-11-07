@@ -610,12 +610,12 @@ class changeActualState(BrowserView):
                         addEntryLog(
                             self.context, None,
                             _(u'Changed recursive color state of subpunt inside punt'),
-                            objecte.absolute_url_path() + ' -> ' + estat)  # add log
+                            objecte.absolute_url() + ' -> ' + estat)  # add log
                     else:
                         addEntryLog(
                             self.context, None,
                             _(u'Changed recursive color state of acord inside punt'),
-                            objecte.absolute_url_path() + ' -> ' + estat)  # add log
+                            objecte.absolute_url() + ' -> ' + estat)  # add log
                 currentitem.estatsLlista = estat
                 transaction.commit()
                 addEntryLog(
@@ -662,11 +662,11 @@ class changeSubpuntState(BrowserView):
             if currentitem[0].portal_type == 'genweb.organs.subpunt':
                 addEntryLog(
                     self.context, None, _(u'Changed subpunt intern state color'),
-                    currentitem[0].getPath() + ' → ' + estat)  # add log
+                    currentitem[0].absolute_url() + ' → ' + estat)  # add log
             else:
                 addEntryLog(
                     self.context, None, _(u'Changed acord intern state color'),
-                    currentitem[0].getPath() + ' → ' + estat)  # add log
+                    currentitem[0].absolute_url() + ' → ' + estat)  # add log
 
             purge_cache_varnish(self)
         return
