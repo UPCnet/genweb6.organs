@@ -37,7 +37,7 @@ types = SimpleVocabulary(
 )
 
 
-defaultEstats = _(u"<p>Esborrany Yellow</p><p>Pendent d'aprovació Orange</p><p>Aprovat Green</p><p>No aprovat Red</p><p>Derogat DarkRed</p><p>Informatiu LightSkyBlue</p><p>Informat MediumBlue</p>")
+defaultEstats = _(u"<p>Pendent d'aprovació Orange</p><p>Aprovat Green</p><p>No aprovat Red</p><p>Informat favorablement BlueViolet</p><p>Retirat Red</p><p>Ajornat OrangeRed</p><p>Informat MediumBlue</p>")
 
 
 class IOrgangovern(model.Schema):
