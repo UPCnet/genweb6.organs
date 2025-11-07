@@ -14,12 +14,12 @@
 
     <h2 i18n:translate="">Sessions i acords dels òrgans col·legiats</h2>
 
-    <div class="row mb-5 list-agenda"
+    <div class="row mb-4 list-agenda"
         tal:define="organ_govern view/getLatestCDG;
                     consell_social view/getLatestCS;
                     claustre view/getLatestCU">
 
-      <div class="col-md-4" tal:condition="organ_govern">
+      <div class="col-md-4 mb-3" tal:condition="organ_govern">
         <a tal:attributes="href organ_govern/url" class="card card-organ text-bg-light text-decoration-none h-100">
           <img src="++theme++genweb6.organs/img/foto_consell_govern.jpg" class="card-img-top" alt="Consell de Govern" />
           <div class="card-body d-flex justify-content-between align-items-center">
@@ -34,7 +34,7 @@
         </a>
       </div>
 
-      <div class="col-md-4" tal:condition="consell_social">
+      <div class="col-md-4 mb-3" tal:condition="consell_social">
         <a tal:attributes="href consell_social/url" class="card card-organ text-bg-light text-decoration-none h-100">
           <img src="++theme++genweb6.organs/img/foto_consell_social.jpg" class="card-img-top" alt="Consell Social" />
           <div class="card-body d-flex justify-content-between align-items-center">
@@ -49,7 +49,7 @@
         </a>
       </div>
 
-      <div class="col-md-4" tal:condition="claustre">
+      <div class="col-md-4 mb-3" tal:condition="claustre">
         <a tal:attributes="href claustre/url" class="card card-organ text-bg-light text-decoration-none h-100">
           <img src="++theme++genweb6.organs/img/foto_claustre.jpg" class="card-img-top" alt="Claustre Universitari" />
           <div class="card-body d-flex justify-content-between align-items-center">
@@ -96,11 +96,11 @@
         <input type="hidden" name="advanced_search" value="False" />
         <input type="hidden" name="created.range:record" value="min" />
         <div class="row mb-3 g-2 align-items-end">
-          <div class="col-10">
+          <div class="col-md-10 col-sm-12">
             <input type="text" class="form-control" id="searchText" name="SearchableText" placeholder="Cercar..."
               tal:attributes="value request/SearchableText|nothing" />
           </div>
-          <div class="col-2">
+          <div class="col-md-2 col-sm-12">
             <button type="submit" class="btn btn btn-primary w-100">
               <i class="bi bi-search me-2"></i>
               <span i18n:translate="">Cerca</span>

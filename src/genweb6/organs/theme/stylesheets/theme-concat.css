@@ -330,11 +330,11 @@ table.table-bordered thead th {
 }
 
 /* line 220, ../scss/_generic.scss */
-#header .navbar-nav .nav-item {
+#header .navbar-nav .nav-item:not(.nav-action) {
   display: none;
 }
 /* line 223, ../scss/_generic.scss */
-#header .navbar-nav .nav-item:first-child {
+#header .navbar-nav .nav-item:not(.nav-action):first-child {
   display: block;
 }
 
@@ -693,49 +693,57 @@ body.portaltype-genweb-organs-sessio #sortable .einesSpan {
   position: absolute;
   background: linear-gradient(to right, rgba(229, 247, 255, 0) 0%, #e5f7ff 30%, #e5f7ff 100%);
 }
-/* line 89, ../scss/content/_sessio.scss */
+@media (max-width: 767.98px) {
+  /* line 80, ../scss/content/_sessio.scss */
+  body.template-presentation #sortable .einesSpan,
+  body.template-signsessio #sortable .einesSpan,
+  body.portaltype-genweb-organs-sessio #sortable .einesSpan {
+    position: relative;
+  }
+}
+/* line 93, ../scss/content/_sessio.scss */
 body.template-presentation #sortable .titleSpan a:hover,
 body.template-signsessio #sortable .titleSpan a:hover,
 body.portaltype-genweb-organs-sessio #sortable .titleSpan a:hover {
   text-decoration: underline;
 }
-/* line 97, ../scss/content/_sessio.scss */
+/* line 101, ../scss/content/_sessio.scss */
 body.template-presentation #sortable .puntVoteButtons .btn.disabled,
 body.template-signsessio #sortable .puntVoteButtons .btn.disabled,
 body.portaltype-genweb-organs-sessio #sortable .puntVoteButtons .btn.disabled {
   cursor: not-allowed;
 }
-/* line 105, ../scss/content/_sessio.scss */
+/* line 109, ../scss/content/_sessio.scss */
 body.template-presentation .filesinTable .titleSpan,
 body.template-signsessio .filesinTable .titleSpan,
 body.portaltype-genweb-organs-sessio .filesinTable .titleSpan {
   margin-left: calc(8% + 1rem);
 }
-/* line 110, ../scss/content/_sessio.scss */
+/* line 114, ../scss/content/_sessio.scss */
 body.template-presentation .li_subgrups,
 body.template-signsessio .li_subgrups,
 body.portaltype-genweb-organs-sessio .li_subgrups {
   padding-left: calc(8% + 1rem);
 }
-/* line 113, ../scss/content/_sessio.scss */
+/* line 117, ../scss/content/_sessio.scss */
 body.template-presentation .li_subgrups .listFiles,
 body.template-signsessio .li_subgrups .listFiles,
 body.portaltype-genweb-organs-sessio .li_subgrups .listFiles {
   padding-left: calc(5% + 1rem);
 }
-/* line 122, ../scss/content/_sessio.scss */
+/* line 126, ../scss/content/_sessio.scss */
 body.template-presentation #previewDocModal .filesinTable .titleSpan,
 body.template-signsessio #previewDocModal .filesinTable .titleSpan,
 body.portaltype-genweb-organs-sessio #previewDocModal .filesinTable .titleSpan {
   margin-left: calc(5% + 1rem);
 }
-/* line 127, ../scss/content/_sessio.scss */
+/* line 131, ../scss/content/_sessio.scss */
 body.template-presentation #previewDocModal .li_subgrups,
 body.template-signsessio #previewDocModal .li_subgrups,
 body.portaltype-genweb-organs-sessio #previewDocModal .li_subgrups {
   padding-left: calc(5% + 1rem);
 }
-/* line 130, ../scss/content/_sessio.scss */
+/* line 134, ../scss/content/_sessio.scss */
 body.template-presentation #previewDocModal .li_subgrups .listFiles,
 body.template-signsessio #previewDocModal .li_subgrups .listFiles,
 body.portaltype-genweb-organs-sessio #previewDocModal .li_subgrups .listFiles {

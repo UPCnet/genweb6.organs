@@ -66,7 +66,7 @@
     </div>
 
     <!-- ITEMS -->
-    <ul class="list-unstyled fs-3">
+    <ul class="list-unstyled fs-3 me-4 me-md-0">
       <tal:documents repeat="item items">
         <tal:block tal:define="agreement item/agreement">
           <li tal:attributes="id item/id"

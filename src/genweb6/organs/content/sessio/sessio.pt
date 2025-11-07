@@ -242,7 +242,7 @@
                   <i class="bi bi-calendar-event text-primary me-2"></i>
                   <span i18n:translate="">Session start date and time</span>
                 </dt>
-                <dd class="col-sm-8 text-end" tal:condition="horaInici">
+                <dd class="col-sm-8 text-md-end" tal:condition="horaInici">
                   <span tal:content="horaInici"></span>
                 </dd>
 
@@ -250,7 +250,7 @@
                   <i class="bi bi-calendar-check text-primary me-2"></i>
                   <span i18n:translate="">Session end date and time</span>
                 </dt>
-                <dd class="col-sm-8 text-end" tal:condition="horaFi">
+                <dd class="col-sm-8 text-md-end" tal:condition="horaFi">
                   <span tal:content="horaFi"></span>
                 </dd>
 
@@ -258,7 +258,7 @@
                   <i class="bi bi-camera-video text-primary me-2"></i>
                   <span i18n:translate="">Modality of meet</span>
                 </dt>
-                <dd class="col-sm-8 text-end" tal:condition="modality">
+                <dd class="col-sm-8 text-md-end" tal:condition="modality">
                   <span i18n:translate="" tal:content="modality"></span>
                 </dd>
 
@@ -266,7 +266,7 @@
                   <i class="bi bi-geo-alt text-primary me-2"></i>
                   <span i18n:translate="">Session location</span>
                 </dt>
-                <dd class="col-sm-8 text-end" tal:condition="llocConvocatoria">
+                <dd class="col-sm-8 text-md-end" tal:condition="llocConvocatoria">
                   <span tal:content="llocConvocatoria"></span>
                 </dd>
 
@@ -275,7 +275,7 @@
                     <i class="bi bi-link text-primary me-2"></i>
                     <span i18n:translate="">Enllac a la sala</span>
                   </dt>
-                  <dd class="col-sm-8 text-end" tal:condition="canViewLinkSala">
+                  <dd class="col-sm-8 text-md-end" tal:condition="canViewLinkSala">
                     <a tal:attributes="href linkSala" tal:content="linkSala" target="_blank"></a>
                   </dd>
                 </tal:block>
@@ -284,7 +284,7 @@
                   <i class="bi bi-building text-primary me-2"></i>
                   <span i18n:translate="">Organ de govern</span>
                 </dt>
-                <dd class="col-sm-8 text-end" tal:condition="organTitle">
+                <dd class="col-sm-8 text-md-end" tal:condition="organTitle">
                   <span tal:content="organTitle"></span>
                 </dd>
 
@@ -292,7 +292,7 @@
                   <i class="bi bi-hash text-primary me-2"></i>
                   <span i18n:translate="">Session number</span>
                 </dt>
-                <dd class="col-sm-8 text-end" tal:condition="sessionNumber">
+                <dd class="col-sm-8 text-md-end" tal:condition="sessionNumber">
                   <span tal:content="sessionNumber"></span>
                 </dd>
 
@@ -300,7 +300,7 @@
                   <i class="bi bi-info-circle text-primary me-2"></i>
                   <span i18n:translate="">Estat de la sessio</span>
                 </dt>
-                <dd class="col-sm-8 text-end">
+                <dd class="col-sm-8 text-md-end">
                   <span i18n:domain="genweb" i18n:translate="" tal:content="status"
                         tal:attributes="class string:label-${item/state}"></span>
                 </dd>
@@ -889,7 +889,7 @@ P Conclusions</code>
 
     <div tal:condition="view/hihaPunts">
       <div tal:condition="items" class="dades mt-4">
-        <div class="d-flex align-middle justify-content-between mb-4">
+        <div class="d-flex flex-wrap flex-md-nowrap align-middle justify-content-between mb-4 row-gap-2">
           <h2 class="sessionOrdreDia mb-0" i18n:translate="">Ordre del dia</h2>
           <div class="d-flex text-end">
             <button id="expandAll" class="btn btn-outline-primary">
@@ -1103,7 +1103,7 @@ P Conclusions</code>
                   <tal:block-contenidos tal:define="files python:view.filesinsidePunt(item);
                                                     subpunts python:view.SubpuntsInside(item);
                                                     contenidos python:files or subpunts">
-                    <div class="puntTitle col-12 d-flex flex-nowrap align-items-baseline"
+                    <div class="puntTitle col-12 d-flex flex-wrap flex-md-nowrap justify-content-between justify-content-md-start align-items-baseline"
                          tal:attributes="id string:punt-${item/id}">
                       <div class="fletxaSpan me-2 w-3">
                         <button type="button" class="btn px-0 py-0 btn-expand-collapse collapsed"
@@ -1433,7 +1433,7 @@ P Conclusions</code>
                               </div>
                             </div>
 
-                            <div class="subpuntTitle col-12 d-flex flex-nowrap align-items-baseline"
+                            <div class="subpuntTitle col-12 d-flex flex-wrap flex-md-nowrap justify-content-between justify-content-md-start align-items-baseline"
                                  tal:attributes="id string:subpunt-${itemSubpunt/id}">
                               <div class="numberSpan me-2 w-5">
                                 <span class="proposalNumberSubpunt text-primary fw-bold"

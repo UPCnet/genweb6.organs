@@ -217,7 +217,7 @@ table.table-bordered {
 
   .navbar-nav {
 
-    .nav-item {
+    .nav-item:not(.nav-action) {
       display: none;
 
       &:first-child {
