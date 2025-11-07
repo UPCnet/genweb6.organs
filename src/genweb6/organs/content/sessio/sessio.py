@@ -63,14 +63,19 @@ def is_numeric(value):
 
 @provider(IContextAwareDefaultFactory)
 def numSessio(context):
+    # Optimización: filtrar por año directamente en el catálogo usando start
+    year = datetime.datetime.today().year
+    year_start = datetime.datetime(year, 1, 1)
+    year_end = datetime.datetime(year, 12, 31, 23, 59, 59)
+
+    # Usar el índice start del catálogo para filtrar por año sin getObject()
     sessions = api.content.find(
         portal_type='genweb.organs.sessio',
-        context=context)
-    total = 0
-    year = datetime.datetime.today().strftime('%Y')
-    for session in sessions:
-        if session.getObject().start.strftime('%Y') == year:
-            total = total + 1
+        context=context,
+        start={'query': (year_start, year_end), 'range': 'min:max'})
+
+    # Ya no necesitamos hacer getObject() para cada sesión
+    total = len(sessions)
     return '{0}'.format(str(total + 1).zfill(2))
 
 

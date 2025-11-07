@@ -69,8 +69,12 @@ class Search(BrowserView):
         for obj in values:
             organ = obj.getObject()
             all_roles = api.user.get_roles(username=username, obj=organ)
-            roles = [o for o in all_roles if o in ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat']]
-            if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'], roles):
+            roles = [o for o in all_roles if o in ['OG1-Secretari',
+                                                   'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat']]
+            if utils.checkhasRol(
+                ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat',
+                 'OG5-Convidat'],
+                    roles):
                 results.append(dict(
                     url=organ.absolute_url(),
                     title=obj.Title,
@@ -79,37 +83,49 @@ class Search(BrowserView):
         return results
 
     def getLatestCDG(self):
-        return self._getLatestSession('consell-de-govern/consell-de-govern', 'Consell de Govern')
+        return self._getLatestSession(
+            'consell-de-govern/consell-de-govern', 'Consell de Govern')
 
     def getLatestCS(self):
         return self._getLatestSession('cs/ple-del-consell-social', 'Consell Social')
 
     def getLatestCU(self):
-        return self._getLatestSession('claustre-universitari/claustre-universitari', 'Claustre Universitari')
+        return self._getLatestSession(
+            'claustre-universitari/claustre-universitari', 'Claustre Universitari')
 
     def _getLatestSession(self, rel_path, label):
         root_path = '/'.join(api.portal.get().getPhysicalPath())
         lang = api.portal.get_tool('portal_languages').getDefaultLanguage()
         portal_catalog = api.portal.get_tool(name='portal_catalog')
+
+        # Filtrar por review_state directamente en el catálogo
+        # para evitar get_state()
+        # Excluir 'planificada' usando una búsqueda más eficiente
         items = portal_catalog.searchResults(
             portal_type=['genweb.organs.sessio'],
             path=f'{root_path}/{lang}/{rel_path}',
+            review_state=[
+                'convocada', 'realitzada', 'en_correccio', 'tancada'],
             sort_on='created',
-            sort_order='reverse')
-            
+            sort_order='reverse',
+            sort_limit=10)  # Limitar resultados
+
         results = []
         for item in items:
             itemObj = item._unrestrictedGetObject()
-            estatSessio = api.content.get_state(obj=itemObj)
-            if estatSessio != 'planificada':
-                num = itemObj.numSessio.zfill(3)
-                any = itemObj.start.strftime('%Y%m%d')
-                results.append(dict(title=item.Title, url=itemObj.absolute_url(), hiddenOrder=int(any + num)))
+            # Ya no necesitamos verificar estado,
+            # está filtrado en el catálogo
+            num = itemObj.numSessio.zfill(3)
+            any = itemObj.start.strftime('%Y%m%d')
+            results.append(dict(
+                title=item.Title,
+                url=itemObj.absolute_url(),
+                hiddenOrder=int(any + num)))
 
         if results:
             results = sorted(results, key=itemgetter('hiddenOrder'), reverse=True)
             return dict(title=results[0]['title'], url=results[0]['url'])
-        
+
         return None
 
     def results(self, query=None, batch=True, b_size=100, b_start=0, old=False):
@@ -140,11 +156,13 @@ class Search(BrowserView):
         request = self.request
         catalog = api.portal.get_tool(name='portal_catalog')
         valid_indexes = tuple(catalog.indexes())
-        valid_keys = ('sort_on', 'sort_order', 'sort_limit', 'fq', 'fl', 'facet') + valid_indexes
+        valid_keys = ('sort_on', 'sort_order', 'sort_limit',
+                      'fq', 'fl', 'facet') + valid_indexes
         text = query.get('SearchableText', None)
         if text is None:
             text = request.form.get('SearchableText', '')
-        if not text and not any(k in request.form for k in ['portal_type', 'organ', 'period']):
+        if not text and not any(k in request.form
+                                for k in ['portal_type', 'organ', 'period']):
             return {}
         # Construye el query
         for k, v in request.form.items():
@@ -265,7 +283,8 @@ class TypeAheadSearch(BrowserView):
         siteProperties = getattr(portalProperties, 'site_properties', None)
         useViewAction = []
         if siteProperties is not None:
-            useViewAction = siteProperties.getProperty('typesUseViewActionInListings', [])
+            useViewAction = siteProperties.getProperty(
+                'typesUseViewActionInListings', [])
 
         # SIMPLE CONFIGURATION
         MAX_TITLE = 40
