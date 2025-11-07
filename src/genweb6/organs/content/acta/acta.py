@@ -51,38 +51,66 @@ def get_richtext_content(field_value):
     return field_value or ''
 
 
+def isSessio(context):
+    return context.portal_type == 'genweb.organs.sessio'
+
+
 @provider(IContextAwareDefaultFactory)
 def membres_convidats_default_factory(context):
-    parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
-    source = getattr(parent, 'membresConvidats', None)
-    return get_richtext_content(source)
+    if isSessio(context):
+        source = context.membresConvidats
+    else:
+        parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+        source = getattr(parent, 'membresConvidats', None)
+    try:
+        return get_richtext_content(source)
+    except:
+        return None
 
 
 @provider(IContextAwareDefaultFactory)
 def membres_convocats_default_factory(context):
-    parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
-    source = getattr(parent, 'assistents', None)
-    return get_richtext_content(source)
-
+    if isSessio(context):
+        source = context.assistents
+    else:
+        parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+        source = getattr(parent, 'assistents', None)
+    try:
+        return get_richtext_content(source)
+    except:
+        return None
 
 @provider(IContextAwareDefaultFactory)
 def llista_excuses_default_factory(context):
-    parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
-    source = getattr(parent, 'llistaExcusats', None)
-    return get_richtext_content(source)
-
+    if isSessio(context):
+        source = context.llistaExcusats
+    else:
+        parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+        source = getattr(parent, 'llistaExcusats', None)
+    try:
+        return get_richtext_content(source)
+    except:
+        return None
 
 @provider(IContextAwareDefaultFactory)
 def llista_no_assistens_default_factory(context):
-    parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
-    source = getattr(parent, 'noAssistents', None)
-    return get_richtext_content(source)
-
+    if isSessio(context):
+        source = context.noAssistents
+    else:
+        parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+        source = getattr(parent, 'noAssistents', None)
+    try:
+        return get_richtext_content(source)
+    except:
+        return None
 
 @provider(IContextAwareDefaultFactory)
 def lloc_convocatoria_default_factory(context):
-    parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
-    return getattr(parent, 'llocConvocatoria', None)
+    if isSessio(context):
+        return context.llocConvocatoria
+    else:
+        parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+        return getattr(parent, 'llocConvocatoria', None)
 
 
 @provider(IContextAwareDefaultFactory)
@@ -92,20 +120,15 @@ def hora_inici_default_factory(context):
     Durante la creación o migración, si no hay parent válido,
     retorna None.
     """
-    parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
-    if parent is None:
-        return None
-
-    try:
-        acc = IEventAccessor(parent)
+    if isSessio(context):
+        acc = IEventAccessor(context)
         return acc.start
-    except (TypeError, ComponentLookupError):
-        # Si el parent no es IEventAccessor, intentar con context
+    else:
         try:
-            acc = IEventAccessor(context)
+            parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+            acc = IEventAccessor(parent)
             return acc.start
         except (TypeError, ComponentLookupError):
-            # Si tampoco funciona, retornar None
             return None
 
 
@@ -116,20 +139,15 @@ def hora_fi_default_factory(context):
     Durante la creación o migración, si no hay parent válido,
     retorna None.
     """
-    parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
-    if parent is None:
-        return None
-
-    try:
-        acc = IEventAccessor(parent)
+    if isSessio(context):
+        acc = IEventAccessor(context)
         return acc.end
-    except (TypeError, ComponentLookupError):
-        # Si el parent no es IEventAccessor, intentar con context
+    else:
         try:
-            acc = IEventAccessor(context)
+            parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+            acc = IEventAccessor(parent)
             return acc.end
         except (TypeError, ComponentLookupError):
-            # Si tampoco funciona, retornar None
             return None
 
 
