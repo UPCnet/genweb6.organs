@@ -43,7 +43,8 @@ class Presentation(BrowserView):
                         if item.agreement:
                             agreement = _(u'[Acord ') + item.agreement + ']'
                         else:
-                            agreement = _(u'[Acord sense numeracio]') if not getattr(item, 'omitAgreement', False) else False
+                            agreement = _(u'[Acord sense numeracio]') if not getattr(
+                                item, 'omitAgreement', False) else False
                     else:
                         agreement = False
                     results.append(dict(title=obj.Title,
@@ -65,7 +66,8 @@ class Presentation(BrowserView):
                         if item.agreement:
                             agreement = _(u'[Acord ') + item.agreement + ']'
                         else:
-                            agreement = _(u'[Acord sense numeracio]') if not getattr(item, 'omitAgreement', False) else False
+                            agreement = _(u'[Acord sense numeracio]') if not getattr(
+                                item, 'omitAgreement', False) else False
                     else:
                         agreement = False
                     results.append(dict(title=obj.Title,
@@ -100,7 +102,8 @@ class Presentation(BrowserView):
                     if item.agreement:
                         agreement = _(u'[Acord ') + item.agreement + ']'
                     else:
-                        agreement = _(u'[Acord sense numeracio]') if not getattr(item, 'omitAgreement', False) else False
+                        agreement = _(u'[Acord sense numeracio]') if not getattr(
+                            item, 'omitAgreement', False) else False
                 else:
                     agreement = False
                 results.append(dict(title=obj.Title,
@@ -118,7 +121,8 @@ class Presentation(BrowserView):
                     if item.agreement:
                         agreement = _(u'[Acord ') + item.agreement + ']'
                     else:
-                        agreement = _(u'[Acord sense numeracio]') if not getattr(item, 'omitAgreement', False) else False
+                        agreement = _(u'[Acord sense numeracio]') if not getattr(
+                            item, 'omitAgreement', False) else False
                 else:
                     agreement = False
                 results.append(dict(title=obj.Title,
@@ -148,9 +152,9 @@ class Presentation(BrowserView):
             visibleRaw = None
             hiddenRaw = None
             hasPublic = hasPrivate = isGODocument = isGOFile = file = raw_content = listFile = False
-            visibleUrl = obj.getObject().absolute_url()
+            visibleUrl = obj._unrestrictedGetObject().absolute_url()
             anonymous = api.user.is_anonymous()
-            file = obj.getObject()
+            file = obj._unrestrictedGetObject()
             if anonymous:
                 if obj.portal_type == 'genweb.organs.file':
                     classCSS = 'bi bi-file-earmark-pdf'
@@ -210,7 +214,10 @@ class Presentation(BrowserView):
                     roles = api.user.get_roles(username=username, obj=self.context)
                     classCSS = 'bi bi-file-earmark-pdf'
                     if file.visiblefile and file.hiddenfile:
-                        if utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
+                        if utils.checkhasRol(
+                            ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
+                             'OG5-Convidat'],
+                                roles):
                             hasPublic = True
                             hasPrivate = True
                             visibleUrl = file.absolute_url() + '/@@display-file/visiblefile/' + file.visiblefile.filename
@@ -223,7 +230,10 @@ class Presentation(BrowserView):
                             hiddenUrl = ''
                             classCSS = 'bi bi-file-earmark-pdf text-success'
                     elif file.hiddenfile:
-                        if utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
+                        if utils.checkhasRol(
+                            ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
+                             'OG5-Convidat'],
+                                roles):
                             hasPublic = False
                             hasPrivate = True
                             visibleUrl = ''
@@ -242,7 +252,10 @@ class Presentation(BrowserView):
                     roles = api.user.get_roles(username=username, obj=self.context)
                     classCSS = 'bi bi-file-earmark-text'
                     if file.alternateContent and file.defaultContent:
-                        if utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
+                        if utils.checkhasRol(
+                            ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
+                             'OG5-Convidat'],
+                                roles):
                             hasPublic = True
                             hasPrivate = True
                             visibleRaw = file.defaultContent
@@ -255,14 +268,20 @@ class Presentation(BrowserView):
                             hiddenRaw = None
                             classCSS = 'bi bi-file-earmark-text text-success'
                     elif file.defaultContent:
-                        if utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
+                        if utils.checkhasRol(
+                            ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
+                             'OG5-Convidat'],
+                                roles):
                             hasPublic = False
                             hasPrivate = True
                             visibleRaw = file.defaultContent
                             hiddenRaw = None
                             classCSS = 'bi bi-file-earmark-text text-success'
                     elif file.alternateContent:
-                        if utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
+                        if utils.checkhasRol(
+                            ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
+                             'OG5-Convidat'],
+                                roles):
                             hasPublic = False
                             hasPrivate = True
                             visibleRaw = None
@@ -379,7 +398,10 @@ class Presentation(BrowserView):
                 return False
             else:
                 roles = api.user.get_roles(username=username, obj=self.context)
-                if utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
+                if utils.checkhasRol(
+                    ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
+                     'OG5-Convidat'],
+                        roles):
                     return True
                 else:
                     return False

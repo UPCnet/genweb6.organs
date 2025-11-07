@@ -26,7 +26,9 @@ def sessio_changed(session, event):
         # message = (old) + ' →2 ' + (new)
         addEntryLog(session, None, _(u'Changed workflow state'), new)  # add log
     except:
-        addEntryLog(session, None, _(u'New session created'), session.Title())  # add log
+        addEntryLog(
+            session, None, _(u'New session created'),
+            session.Title())  # add log
 
     if event.transition is None:
         # Quan crees element també executa aquesta acció, i ID no existeix
@@ -43,9 +45,12 @@ def sessio_changed(session, event):
             organ = get_organ(session)
             if organ.visiblegdoc:
                 estat_firma = estatFirma(session)
-                if event.status['review_state'] == 'realitzada' and (not estat_firma or estat_firma['class'] != 'signada'):
-                    IStatusMessage(getRequest()).addStatusMessage(
-                        _(u'No es pot tancar la sessió si no està signada l\'acta.'), 'alert')
+                if event.status['review_state'] == 'realitzada' and (
+                        not estat_firma or estat_firma['class'] != 'signada'):
+                    IStatusMessage(
+                        getRequest()).addStatusMessage(
+                        _(u'No es pot tancar la sessió si no està signada l\'acta.'),
+                        'alert')
                     raise Redirect(session.absolute_url())
             member = api.user.get(username='admin')
             user = member.getUser()
@@ -70,7 +75,7 @@ def estatFirma(context):
         path={'query': folder_path, 'depth': 1}
     )
     for acta in actes:
-        acta_obj = acta.getObject()
+        acta_obj = acta._unrestrictedGetObject()
         if hasFirmaActa(acta_obj):
             return estatFirmaActa(acta_obj)
 

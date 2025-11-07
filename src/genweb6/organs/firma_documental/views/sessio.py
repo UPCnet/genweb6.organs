@@ -56,13 +56,17 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
             return True
 
         organ = utils.get_organ(self.context)
-        carpeta_unitat = organ.aq_parent 
+        carpeta_unitat = organ.aq_parent
 
         if carpeta_unitat.id == 'consell-de-govern':
-            if organ.id in ['consell-de-govern', 'comissio-de-desenvolupament-estatutari', 'comissio-de-docencia-i-politica-academica', 
-                            'comissio-deconomia-i-infraestructures', 'comissio-de-personal-i-accio-social', 
-                            'comissio-permanent-del-consell-de-govern', 'comissio-de-politica-linguistica', 
-                            'comissio-de-recerca', 'comissio-de-politica-academica-docent-i-linguistica' ]:
+            if organ.id in [
+                'consell-de-govern', 'comissio-de-desenvolupament-estatutari',
+                'comissio-de-docencia-i-politica-academica',
+                'comissio-deconomia-i-infraestructures',
+                'comissio-de-personal-i-accio-social',
+                'comissio-permanent-del-consell-de-govern',
+                'comissio-de-politica-linguistica', 'comissio-de-recerca',
+                    'comissio-de-politica-academica-docent-i-linguistica']:
                 return True
 
         elif carpeta_unitat.id == 'claustre-universitari':
@@ -78,7 +82,9 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
                 return True
 
         elif carpeta_unitat.id == 'cs':
-            if organ.id in ['ple-del-consell-social', 'comissio-economica-del-consell-social', 'comissio-academica-del-consell-social']:
+            if organ.id in ['ple-del-consell-social',
+                            'comissio-economica-del-consell-social',
+                            'comissio-academica-del-consell-social']:
                 return True
 
         session = utils.get_session(self.context)
@@ -86,10 +92,10 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
         if acc.end is not None:
             fecha_limite = datetime.datetime(2025, 9, 1, tzinfo=acc.end.tzinfo)
             if acc.end < fecha_limite:
-                IStatusMessage(self.request).addStatusMessage(
+                IStatusMessage(
+                    self.request).addStatusMessage(
                     u"No es pot enviar a signar i desar documentació de sessions anteriors a 01/09/2025 a través d'aquesta funcionalitat. En cas necessari contacta amb Secretaria General",
-                    type="warning"
-                )
+                    type="warning")
                 return self.request.response.redirect(session.absolute_url())
 
         return True
@@ -178,21 +184,17 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
                 agreement = False
                 isPunt = True
 
-            results.append(dict(title=obj.Title,
-                                portal_type=obj.portal_type,
-                                absolute_url=item.absolute_url(),
-                                item_path=item.absolute_url_path(),
-                                proposalPoint=item.proposalPoint,
-                                agreement=agreement,
-                                state=item.estatsLlista,
-                                css=self.getColor(obj),
-                                estats=self.estatsCanvi(obj),
-                                id=obj.id,
-                                show=True,
-                                isPunt=isPunt,
-                                classe=classe,
-                                items_inside=inside,
-                                info_firma=item.info_firma if hasattr(item, 'info_firma') else None))
+            results.append(
+                dict(
+                    title=obj.Title, portal_type=obj.portal_type,
+                    absolute_url=item.absolute_url(),
+                    item_path=item.absolute_url_path(),
+                    proposalPoint=item.proposalPoint, agreement=agreement,
+                    state=item.estatsLlista, css=self.getColor(obj),
+                    estats=self.estatsCanvi(obj),
+                    id=obj.id, show=True, isPunt=isPunt, classe=classe,
+                    items_inside=inside, info_firma=item.info_firma
+                    if hasattr(item, 'info_firma') else None))
         return results
 
     def SubpuntsInside(self, data):
@@ -244,9 +246,13 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
                 return True
             if not isinstance(file_obj.info_firma, dict):
                 file_obj.info_firma = ast.literal_eval(file_obj.info_firma)
-            if file_obj.visiblefile and not file_obj.info_firma.get('public', {}).get('uploaded', False):
+            if file_obj.visiblefile and not file_obj.info_firma.get(
+                    'public', {}).get(
+                    'uploaded', False):
                 return True
-            if file_obj.hiddenfile and not file_obj.info_firma.get('private', {}).get('uploaded', False):
+            if file_obj.hiddenfile and not file_obj.info_firma.get(
+                    'private', {}).get(
+                    'uploaded', False):
                 return True
 
         return False
@@ -262,7 +268,7 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
                   'depth': 1})
         results = []
         for obj in values:
-            value = obj.getObject()
+            value = obj._unrestrictedGetObject()
 
             for attr in ['visiblefile', 'hiddenfile']:
                 classCSS = 'bi bi-file-earmark-pdf'  # Es un file
@@ -304,7 +310,6 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
 
         return results
 
-
     def activeActa(self):
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         folder_path = '/'.join(self.context.getPhysicalPath())
@@ -333,21 +338,27 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
             if values:
                 results = []
                 for obj in values:
-                    audio = obj.getObject().file
-                    results.append(dict(title=obj.Title,
-                                        absolute_url=obj.getURL(),
-                                        download_url=acta.absolute_url() + '/@@download/file/' + audio.filename,
-                                        content_type=audio.contentType))
+                    audio = obj._unrestrictedGetObject().file
+                    results.append(
+                        dict(
+                            title=obj.Title, absolute_url=obj.getURL(),
+                            download_url=acta.absolute_url() +
+                            '/@@download/file/' + audio.filename,
+                            content_type=audio.contentType))
                 return results
         else:
             if acta.info_firma['audios']:
                 results = []
                 for pos in acta.info_firma['audios']:
                     audio = acta.info_firma['audios'][pos]
-                    results.append(dict(title=audio['title'],
-                                        absolute_url=acta.absolute_url() + '/viewAudio?pos=' + str(pos),
-                                        download_url=acta.absolute_url() + '/downloadAudio?pos=' + str(pos),
-                                        content_type=audio['contentType']))
+                    results.append(
+                        dict(
+                            title=audio['title'],
+                            absolute_url=acta.absolute_url() +
+                            '/viewAudio?pos=' + str(pos),
+                            download_url=acta.absolute_url() +
+                            '/downloadAudio?pos=' + str(pos),
+                            content_type=audio['contentType']))
                 return results
 
         return False
@@ -366,23 +377,28 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
             if values:
                 results = []
                 for obj in values:
-                    annex = obj.getObject().file
-                    results.append(dict(title=obj.Title,
-                                        absolute_url=obj.getURL(),
-                                        download_url=acta.absolute_url() + '/@@download/file/' + annex.filename,
-                                        filename=annex.filename,
-                                        sizeKB=annex.getSize() / 1024))
+                    annex = obj._unrestrictedGetObject().file
+                    results.append(
+                        dict(
+                            title=obj.Title, absolute_url=obj.getURL(),
+                            download_url=acta.absolute_url() + '/@@download/file/' +
+                            annex.filename, filename=annex.filename,
+                            sizeKB=annex.getSize() / 1024))
                 return results
         else:
             if 'adjunts' in acta.info_firma and acta.info_firma['adjunts']:
                 results = []
                 for pos in acta.info_firma['adjunts']:
                     annex = acta.info_firma['adjunts'][pos]
-                    results.append(dict(title=annex['title'],
-                                        absolute_url=acta.absolute_url() + '/viewFile?pos=' + str(pos),
-                                        download_url=acta.absolute_url() + '/downloadFile?pos=' + str(pos),
-                                        filename=annex['filename'],
-                                        sizeKB=annex['sizeKB']))
+                    results.append(
+                        dict(
+                            title=annex['title'],
+                            absolute_url=acta.absolute_url() +
+                            '/viewFile?pos=' + str(pos),
+                            download_url=acta.absolute_url() +
+                            '/downloadFile?pos=' + str(pos),
+                            filename=annex['filename'],
+                            sizeKB=annex['sizeKB']))
                 return results
 
         return False
@@ -417,6 +433,6 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
         return False
 
     def checkSerieGDoc(self):
-          return {'visible_gdoc': True,
+        return {'visible_gdoc': True,
                 'valid_serie': True,
                 'msg_error': ''}

@@ -164,7 +164,7 @@ class Delete(BrowserView):
                     id=itemid)
 
                 if element:
-                    deleteItem = element[0].getObject()
+                    deleteItem = element[0]._unrestrictedGetObject()
                     with api.env.adopt_roles(['OG1-Secretari']):
                         api.content.delete(deleteItem)
                     portal_catalog = api.portal.get_tool(name='portal_catalog')
@@ -179,7 +179,7 @@ class Delete(BrowserView):
                               'depth': 1})
                     index = 1
                     for item in puntsOrdered:
-                        objecte = item.getObject()
+                        objecte = item._unrestrictedGetObject()
                         objecte.proposalPoint = index
                         objecte.reindexObject()
 
@@ -191,7 +191,7 @@ class Delete(BrowserView):
                                 path={'query': search_path, 'depth': 1})
                             subvalue = 1
                             for value in subpunts:
-                                newobjecte = value.getObject()
+                                newobjecte = value._unrestrictedGetObject()
                                 newobjecte.proposalPoint = str(
                                     index) + str('.') + str(subvalue)
                                 newobjecte.reindexObject()
@@ -252,7 +252,7 @@ class Move(BrowserView):
                       'depth': 1})
             index = 1
             for item in puntsOrdered:
-                objecte = item.getObject()
+                objecte = item._unrestrictedGetObject()
                 objecte.proposalPoint = str(index)
                 addEntryLog(self.context, None, _(u'Changed punt number with drag&drop'), str(
                     objecte.id) + ' → ' + str(objecte.proposalPoint))
@@ -266,7 +266,7 @@ class Move(BrowserView):
                         path={'query': search_path, 'depth': 1})
                     subvalue = 1
                     for value in subpunts:
-                        newobjecte = value.getObject()
+                        newobjecte = value._unrestrictedGetObject()
                         newobjecte.proposalPoint = str(index) + str('.') + str(subvalue)
                         newobjecte.reindexObject()
                         subvalue = subvalue + 1
@@ -299,7 +299,7 @@ class Move(BrowserView):
             # Change proposalpoints dels subpunts ordenats
             for item in subpuntsOrdered:
                 if item.portal_type == 'genweb.organs.subpunt' or item.portal_type == 'genweb.organs.acord':
-                    objecteSubPunt = item.getObject()
+                    objecteSubPunt = item._unrestrictedGetObject()
                     objecteSubPunt.proposalPoint = str(puntnumber) + '.' + str(subvalue)
                     addEntryLog(self.context, None, _(u'Moved subpunt by drag&drop'), str(
                         objecteSubPunt.id) + ' → ' + str(objecteSubPunt.proposalPoint))
@@ -401,7 +401,7 @@ class ActaPrintView(BrowserView):
 
                 results.append('<ol>')
                 for item in valuesInside:
-                    subpunt = item.getObject()
+                    subpunt = item._unrestrictedGetObject()
                     if subpunt.portal_type == 'genweb.organs.acord':
                         agreement = ' [Acord ' + str(subpunt.agreement) + ']'
                     else:
@@ -494,7 +494,7 @@ class ReloadAcords(BrowserView):
         idacord = 1
         index = 1
         for item in puntsOrdered:
-            objecte = item.getObject()
+            objecte = item._unrestrictedGetObject()
             if item.portal_type == 'genweb.organs.acord':
                 printid = '{0}'.format(str(idacord).zfill(2))
                 objecte.agreement = acronim + any + numsessio + printid
@@ -510,7 +510,7 @@ class ReloadAcords(BrowserView):
 
                 subvalue = 1
                 for value in subpunts:
-                    newobjecte = value.getObject()
+                    newobjecte = value._unrestrictedGetObject()
                     subvalue = subvalue + 1
                     if value.portal_type == 'genweb.organs.acord':
                         printid = '{0}'.format(str(idacord).zfill(2))
@@ -551,7 +551,7 @@ class ReloadPoints(BrowserView):
                   'depth': 1})
         index = 1
         for item in puntsOrdered:
-            objecte = item.getObject()
+            objecte = item._unrestrictedGetObject()
             objecte.proposalPoint = str(index)
             objecte.reindexObject()
 
@@ -563,7 +563,7 @@ class ReloadPoints(BrowserView):
                     path={'query': search_path, 'depth': 1})
                 subvalue = 1
                 for value in subpunts:
-                    newobjecte = value.getObject()
+                    newobjecte = value._unrestrictedGetObject()
                     newobjecte.proposalPoint = str(index) + str('.') + str(subvalue)
                     newobjecte.reindexObject()
                     subvalue = subvalue + 1
@@ -604,7 +604,7 @@ class changeActualState(BrowserView):
                     path={'query': object_path + '/' + id,
                           'depth': 1})
                 for subpunt in items_inside:
-                    objecte = subpunt.getObject()
+                    objecte = subpunt._unrestrictedGetObject()
                     objecte.estatsLlista = estat
                     if objecte.portal_type == 'genweb.organs.subpunt':
                         addEntryLog(
@@ -657,7 +657,7 @@ class changeSubpuntState(BrowserView):
             path={'query': object_path,
                   'depth': 1})
         if currentitem:
-            currentitem[0].getObject().estatsLlista = estat
+            currentitem[0]._unrestrictedGetObject().estatsLlista = estat
             transaction.commit()
             if currentitem[0].portal_type == 'genweb.organs.subpunt':
                 addEntryLog(
@@ -1013,7 +1013,7 @@ class ReorderSessions(BrowserView):
         year = datetime.datetime.now().year
 
         for brain in brains:
-            obj = brain.getObject()
+            obj = brain._unrestrictedGetObject()
             if obj.getParentNode().id == self.context.id:
                 if obj.start.year == year:
                     sessions_to_reorder.append(obj)
@@ -1114,7 +1114,7 @@ class migracioAnnexosActes(BrowserView):
         values = portal_catalog.searchResults(portal_type='genweb.organs.acta')
         for value in values:
             try:
-                acta = value.getObject()
+                acta = value._unrestrictedGetObject()
                 if acta.file:
                     api.content.create(
                         title=acta.file.filename,
@@ -1252,7 +1252,7 @@ class getActesOrgangovern(BrowserView):
                           'depth': 3})
 
                 for obj in values:
-                    value = obj.getObject()
+                    value = obj._unrestrictedGetObject()
                     results.append(dict(title=value.title,
                                         absolute_url=value.absolute_url(),
                                         data=value.horaInici.strftime('%d/%m/%Y'),
@@ -1356,7 +1356,7 @@ class CleanPDFsOrgansView(BrowserView):
                              'genweb.organs.file'],
                 path={'query': organ.getPath()})
             for brain in brains:
-                obj = brain.getObject()
+                obj = brain._unrestrictedGetObject()
                 file_fields = []
                 if brain.portal_type == 'genweb.organs.file':
                     if hasattr(obj, 'visiblefile') and obj.visiblefile:
@@ -1396,7 +1396,7 @@ class CleanPDFsOrgansView(BrowserView):
                 path={'query': organ.getPath()})
 
             for brain in brains:
-                obj = brain.getObject()
+                obj = brain._unrestrictedGetObject()
 
                 # Determinar qué campos de archivo procesar según el tipo de contenido
                 file_fields = []

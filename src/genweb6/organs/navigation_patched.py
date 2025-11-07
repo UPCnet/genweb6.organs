@@ -51,11 +51,13 @@ def customBuildFolderTree(context, obj=None, query={}, strategy=NavtreeStrategyB
                 navtreeLevel = pathQuery.get('navtree_start', 1)
                 if navtreeLevel > 1:
                     navtreeContextPath = pathQuery['query']
-                    navtreeContextPathElements = navtreeContextPath[len(portalPath) + 1:].split('/')
+                    navtreeContextPathElements = navtreeContextPath[len(
+                        portalPath) + 1:].split('/')
                     # Short-circuit if we won't be able to find this path
                     if len(navtreeContextPathElements) < (navtreeLevel - 1):
                         return {'children': []}
-                    rootPath = portalPath + '/' + '/'.join(navtreeContextPathElements[:navtreeLevel - 1])
+                    rootPath = portalPath + '/' + '/'.join(
+                        navtreeContextPathElements[:navtreeLevel - 1])
                 else:
                     rootPath = portalPath
             else:
@@ -87,7 +89,7 @@ def customBuildFolderTree(context, obj=None, query={}, strategy=NavtreeStrategyB
         username = api.user.get_current().id
     for value in results2:
         if value.portal_type == 'genweb.organs.organgovern':
-            organ = value.getObject()
+            organ = value._unrestrictedGetObject()
             if username:
                 roles = api.user.get_roles(obj=organ, username=username)
             else:
@@ -96,10 +98,15 @@ def customBuildFolderTree(context, obj=None, query={}, strategy=NavtreeStrategyB
             if 'Manager' in roles or (organType == 'open_organ'):
                 results.append(value)
             elif organType == 'restricted_to_members_organ':
-                if utilsOrgans.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
+                if utilsOrgans.checkhasRol(
+                    ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'],
+                        roles):
                     results.append(value)
             elif organType == 'restricted_to_affected_organ':
-                if utilsOrgans.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'], roles):
+                if utilsOrgans.checkhasRol(
+                    ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat',
+                     'OG5-Convidat'],
+                        roles):
                     results.append(value)
             else:
                 # remove element

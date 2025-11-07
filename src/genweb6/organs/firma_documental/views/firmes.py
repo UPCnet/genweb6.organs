@@ -50,11 +50,14 @@ class FirmesMixin(object):
             ), 'error')
             return "gDOC Timeout"
 
-        choose_msg_func = self.error_to_msg_map[sign_step].get('choose_portal_msg', None)
+        choose_msg_func = self.error_to_msg_map[sign_step].get(
+            'choose_portal_msg', None)
         portal_msg = choose_msg_func(exc.response) if choose_msg_func else 'portal_msg'
 
-        logger.error(self.error_to_msg_map[sign_step]['console_log'] + ' Exception: %s', str(exc))
-        self.context.plone_utils.addPortalMessage(self.error_to_msg_map[sign_step][portal_msg], 'error')
+        logger.error(self.error_to_msg_map[sign_step]
+                     ['console_log'] + ' Exception: %s', str(exc))
+        self.context.plone_utils.addPortalMessage(
+            self.error_to_msg_map[sign_step][portal_msg], 'error')
 
         return "Error"
 
@@ -92,7 +95,9 @@ class UploadFiles(BrowserView, FirmesMixin):
         elif not isinstance(file.info_firma, dict):
             file.info_firma = ast.literal_eval(file.info_firma)
 
-        if file.info_firma.get(visibility, None) and file.info_firma[visibility].get('uploaded', False):
+        if file.info_firma.get(
+                visibility, None) and file.info_firma[visibility].get(
+                'uploaded', False):
             return True  # Already uploaded
 
         if visibility not in ['public', 'private']:
@@ -103,7 +108,8 @@ class UploadFiles(BrowserView, FirmesMixin):
         parent = file.aq_parent
         filename_append = ''
         if parent.portal_type == 'genweb.organs.acord':
-            filename_append = 'Acord [%s] ' % (parent.agreement or 'Acord sense numerar')
+            filename_append = 'Acord [%s] ' % (
+                parent.agreement or 'Acord sense numerar')
 
         if is_public:
             file_content = file.visiblefile
@@ -113,7 +119,8 @@ class UploadFiles(BrowserView, FirmesMixin):
             filename = 'Restringit - ' + filename_append + file.Title()
 
         try:
-            info_file = uploadFileGdoc(author, self.context.unitatDocumental, file_content, filename)
+            info_file = uploadFileGdoc(
+                author, self.context.unitatDocumental, file_content, filename)
             info_file['uploaded'] = True
             info_file['error'] = None
 
@@ -151,7 +158,8 @@ class UploadFiles(BrowserView, FirmesMixin):
         files = self.request.form.get('check', None)
 
         if not files:
-            self.context.plone_utils.addPortalMessage(_(u'No s\'ha seleccionat cap fitxer per signar'), 'error')
+            self.context.plone_utils.addPortalMessage(
+                _(u'No s\'ha seleccionat cap fitxer per signar'), 'error')
             return "No files selected"
 
         if not isinstance(files, list):
@@ -162,7 +170,8 @@ class UploadFiles(BrowserView, FirmesMixin):
         try:
             if not self.context.unitatDocumental:
                 sign_step = "getCodiExpedient"
-                logger.info('0.1. Demanant codi del expedient al servei generadorcodiexpedient')
+                logger.info(
+                    '0.1. Demanant codi del expedient al servei generadorcodiexpedient')
                 content_codi = client.getCodiExpedient(organ.serie)
                 logger.info('0.1.1. S\'ha obtingut correctament el codi del expedient')
 
@@ -187,15 +196,21 @@ class UploadFiles(BrowserView, FirmesMixin):
                 file_id = file_id.replace(visibility + '-', '', 1)
                 file_obj = uuidToObject(file_id)
                 if file_obj:
-                    success = self.uploadFileGdoc(organ.author, file_obj, visibility) and success
+                    success = self.uploadFileGdoc(
+                        organ.author, file_obj, visibility) and success
                     if not isinstance(file_obj.info_firma, dict):
                         file_obj.info_firma = ast.literal_eval(file_obj.info_firma)
-                    res = client.timbrarDocumentGdoc(file_obj.info_firma[visibility]['id'])
+                    res = client.timbrarDocumentGdoc(
+                        file_obj.info_firma[visibility]['id'])
                     file_obj.info_firma[visibility]['id'] = res['idDocument']
                     file_obj.reindexObject()
-                    logger.info("1.1 Document timbrat correctament: [%s] %s " % (file_obj.info_firma[visibility]['id'], file_obj.info_firma[visibility]['filename']))
+                    logger.info(
+                        "1.1 Document timbrat correctament: [%s] %s " %
+                        (file_obj.info_firma[visibility]['id'],
+                         file_obj.info_firma[visibility]['filename']))
                 else:
-                    logger.error('ERROR. No s\'ha pogut obtenir el fitxer amb id %s', file_id)
+                    logger.error(
+                        'ERROR. No s\'ha pogut obtenir el fitxer amb id %s', file_id)
 
         except Exception as e:
             return self.printError(sign_step, e)
@@ -204,10 +219,12 @@ class UploadFiles(BrowserView, FirmesMixin):
             transaction.commit()
 
         if not success:
-            self.context.plone_utils.addPortalMessage(_(u"Alguns dels fitxers no s'han pujat corectament. Revisa els estats dels fitxers per més informació."), 'error')
+            self.context.plone_utils.addPortalMessage(
+                _(u"Alguns dels fitxers no s'han pujat corectament. Revisa els estats dels fitxers per més informació."), 'error')
             return "Error"
 
-        self.context.plone_utils.addPortalMessage(_(u'S\'han pujat els fitxers correctament al gDOC'), 'success')
+        self.context.plone_utils.addPortalMessage(
+            _(u'S\'han pujat els fitxers correctament al gDOC'), 'success')
         return "Success"
 
 
@@ -264,7 +281,9 @@ class SignActa(BrowserView, FirmesMixin):
     def generateActaPDF(self):
         options = {'cookie': [('__ac', self.request.cookies['__ac']),
                               ('I18N_LANGUAGE', self.request.cookies.get('I18N_LANGUAGE', 'ca'))]}
-        pdfkit.from_url(self.context.absolute_url() + '/printActa', TMP_FOLDER + self.context.id + '.pdf', options=options, verbose=True)
+        pdfkit.from_url(
+            self.context.absolute_url() + '/printActa', TMP_FOLDER + self.context.id +
+            '.pdf', options=options, verbose=True)
         return open(TMP_FOLDER + self.context.id + '.pdf', 'rb')
 
     def removeActaPDF(self):
@@ -277,7 +296,9 @@ class SignActa(BrowserView, FirmesMixin):
         options = {'cookie': [('__ac', self.request.cookies['__ac']),
                               ('I18N_LANGUAGE', self.request.cookies.get('I18N_LANGUAGE', 'ca'))]}
         _filename = filename.replace('/', ' ')
-        pdfkit.from_url(document.absolute_url() + '/printDocument?visibility=' + visibility, TMP_FOLDER + _filename, options=options, verbose=True)
+        pdfkit.from_url(
+            document.absolute_url() + '/printDocument?visibility=' + visibility,
+            TMP_FOLDER + _filename, options=options, verbose=True)
         return open(TMP_FOLDER + _filename, 'rb')
 
     def removeDocumentPDF(self, filename):
@@ -294,9 +315,13 @@ class SignActa(BrowserView, FirmesMixin):
         if not isinstance(file.info_firma, dict):
             file.info_firma = ast.literal_eval(file.info_firma)
 
-        if file.visiblefile and not file.info_firma.get('public', {}).get('uploaded', False):
+        if file.visiblefile and not file.info_firma.get(
+                'public', {}).get(
+                'uploaded', False):
             return False
-        if file.hiddenfile and not file.info_firma.get('private', {}).get('uploaded', False):
+        if file.hiddenfile and not file.info_firma.get(
+                'private', {}).get(
+                'uploaded', False):
             return False
 
         return True
@@ -317,7 +342,8 @@ class SignActa(BrowserView, FirmesMixin):
         if not isinstance(self.context.info_firma, dict):
             self.context.info_firma = ast.literal_eval(self.context.info_firma)
 
-        if self.context.info_firma and self.context.info_firma.get('enviatASignar', False):
+        if self.context.info_firma and self.context.info_firma.get(
+                'enviatASignar', False):
             return "Already sent to sign"
 
         organ = utils.get_organ(self.context)
@@ -325,7 +351,8 @@ class SignActa(BrowserView, FirmesMixin):
         signants = self.getSignants(organ)
 
         if not signants:
-            self.context.plone_utils.addPortalMessage(_(u'No hi ha secretaris per firmar l\'acta.'), 'error')
+            self.context.plone_utils.addPortalMessage(
+                _(u'No hi ha secretaris per firmar l\'acta.'), 'error')
             return "No signants"
 
         if not organ.visiblegdoc:
@@ -366,7 +393,8 @@ class SignActa(BrowserView, FirmesMixin):
                 logger.info('1. Iniciant firma de l\'acta - ' + self.context.title)
 
                 sign_step = "getCodiExpedient"
-                logger.info('2. Demanant codi del expedient al servei generadorcodiexpedient')
+                logger.info(
+                    '2. Demanant codi del expedient al servei generadorcodiexpedient')
                 content_codi = client.getCodiExpedient(organ.serie)
                 logger.info('2.1. S\'ha obtingut correctament el codi del expedient')
 
@@ -382,11 +410,12 @@ class SignActa(BrowserView, FirmesMixin):
                 )
                 sessio.unitatDocumental = str(content_exp['idElementCreat'])
                 sessio.reindexObject()
-                logger.info('3.1. S\'ha creat correctament la serie documental')            
+                logger.info('3.1. S\'ha creat correctament la serie documental')
 
             files_sessio = utils.getFilesSessio(sessio)
             if any(not self.fileUploaded(file) for file in files_sessio):
-                self.context.plone_utils.addPortalMessage(_(u'Hi ha fitxers de la sessió que no s\'han pujat al Gestor Documental'), 'error')
+                self.context.plone_utils.addPortalMessage(
+                    _(u'Hi ha fitxers de la sessió que no s\'han pujat al Gestor Documental'), 'error')
                 return "Error"
 
             if not isinstance(self.context.info_firma, dict):
@@ -425,8 +454,9 @@ class SignActa(BrowserView, FirmesMixin):
                 for key in self.context if self.context[key].portal_type == 'genweb.organs.annex'
             ]
             self.context.info_firma['adjunts'].update(
-                self.uploadFilesGdoc(organ.author, sessio.unitatDocumental, lista_adjunts, save_title=True, save_size=True)
-            )
+                self.uploadFilesGdoc(
+                    organ.author, sessio.unitatDocumental, lista_adjunts,
+                    save_title=True, save_size=True))
 
             logger.info('6. Puja dels àudios al gDOC')
             sign_step = "uploadAudioGDoc"
@@ -435,8 +465,9 @@ class SignActa(BrowserView, FirmesMixin):
                 for key in self.context if self.context[key].portal_type == 'genweb.organs.audio'
             ]
             self.context.info_firma['audios'].update(
-                self.uploadFilesGdoc(organ.author, sessio.unitatDocumental, lista_audios, save_title=True)
-            )
+                self.uploadFilesGdoc(
+                    organ.author, sessio.unitatDocumental, lista_audios,
+                    save_title=True))
 
             # Creem el fitxer .url apuntant a la URL de la sessió
             logger.info('8. Creació del fitxer .url')
@@ -447,13 +478,15 @@ class SignActa(BrowserView, FirmesMixin):
             furl.close()
 
             furl = open("/tmp/" + session.id + ".url", "r")
-            files = {'fitxer': [session.id + '.url', furl.read(), 'application/octet-stream']}
+            files = {'fitxer': [session.id + '.url',
+                                furl.read(), 'application/octet-stream']}
 
             # Pujem el fitxer .url a la sèrie documental creada al gdoc
             sign_step = "uploadURLFile"
             logger.info('8.1 Puja del fitxer .url al gDOC')
 
-            self.context.info_firma['url'] = uploadFileGdoc(organ.author, sessio.unitatDocumental, files)
+            self.context.info_firma['url'] = uploadFileGdoc(
+                organ.author, sessio.unitatDocumental, files)
             self.context.reindexObject()
 
             sign_step = 'uploadActaPortafirmes'
@@ -471,23 +504,28 @@ class SignActa(BrowserView, FirmesMixin):
                 if privuuid:
                     punt_files_uuid.append(privuuid)
 
-            documentAnnexos = (
-                [{"codi": adjunt['uuid']} for idx, adjunt in self.context.info_firma['adjunts'].items()] +
-                [{"codi": audio['uuid']} for idx, audio in self.context.info_firma['audios'].items()] +
-                [{"codi": self.context.info_firma['url']['uuid']}] +
-                [{"codi": punt_file_uuid} for punt_file_uuid in punt_files_uuid]
-            )
+            documentAnnexos = ([{"codi": adjunt['uuid']} for idx,
+                                adjunt in self.context.info_firma['adjunts'].items()] +
+                               [{"codi": audio['uuid']} for idx,
+                                audio in self.context.info_firma['audios'].items()] +
+                               [{"codi": self.context.info_firma['url']['uuid']}] +
+                               [{"codi": punt_file_uuid}
+                                for punt_file_uuid in punt_files_uuid])
             content_sign = client.uploadActaPortafirmes(
                 self.context.title,
                 self.context.info_firma['acta']['uuid'],
                 documentAnnexos,
                 signants,
             )
-            logger.info('9.1. S\'ha enviat correctament la petició de la firma al portafirmes')
+            logger.info(
+                '9.1. S\'ha enviat correctament la petició de la firma al portafirmes')
 
-            self.context._Add_portal_content_Permission = ('Manager', 'Site Administrator', 'WebMaster')
-            self.context._Modify_portal_content_Permission = ('Manager', 'Site Administrator', 'WebMaster')
-            self.context._Delete_objects_Permission = ('Manager', 'Site Administrator', 'WebMaster')
+            self.context._Add_portal_content_Permission = (
+                'Manager', 'Site Administrator', 'WebMaster')
+            self.context._Modify_portal_content_Permission = (
+                'Manager', 'Site Administrator', 'WebMaster')
+            self.context._Delete_objects_Permission = (
+                'Manager', 'Site Administrator', 'WebMaster')
 
             self.context.acta = None
             for audio_id in self.context:
@@ -499,7 +537,8 @@ class SignActa(BrowserView, FirmesMixin):
             self.context.estat_firma = "PENDENT"
             self.context.reindexObject()
 
-            self.context.plone_utils.addPortalMessage(_(u'S\'ha enviat a firmar correctament'), 'success')
+            self.context.plone_utils.addPortalMessage(
+                _(u'S\'ha enviat a firmar correctament'), 'success')
             transaction.commit()
             self.removeActaPDF()
 
@@ -508,7 +547,8 @@ class SignActa(BrowserView, FirmesMixin):
             self.removeActaPDF()
             return error
 
-        utils.addEntryLog(self.context.__parent__, None, _(u'Acta send to sign'), self.context.absolute_url())
+        utils.addEntryLog(self.context.__parent__, None, _(
+            u'Acta send to sign'), self.context.absolute_url())
         return "Success"
 
 
@@ -532,18 +572,22 @@ class ViewFile(BrowserView):
                     raise Unauthorized
 
                 if visibility not in self.context.info_firma:
-                    self.context.plone_utils.addPortalMessage(_(u'El fitxer no existeix'), 'error')
+                    self.context.plone_utils.addPortalMessage(
+                        _(u'El fitxer no existeix'), 'error')
                     return None
 
                 content = self.context.info_firma[visibility]
 
-            return self._obtain_file_method_(content['uuid'], content['contentType'], content['filename'])
+            return self._obtain_file_method_(
+                content['uuid'],
+                content['contentType'],
+                content['filename'])
 
     def canViewActa(self):
         # Permissions to view acta
 
         if self.context.portal_type != 'genweb.organs.acta':
-            raise Unauthorized # Only for actes
+            raise Unauthorized  # Only for actes
 
         roles = utils.getUserRoles(self, self.context, api.user.get_current().id)
         if 'Manager' in roles:
@@ -596,7 +640,7 @@ class ResetFirm(BrowserView):
             path={'query': folder_path, 'depth': 1}
         )
         for acta in actes:
-            acta_obj = acta.getObject()
+            acta_obj = acta._unrestrictedGetObject()
             if hasFirmaActa(acta_obj):
                 return estatFirmaActa(acta_obj)
 
@@ -605,7 +649,8 @@ class ResetFirm(BrowserView):
     def __call__(self):
         estat_firma = self.estatFirma()
         if estat_firma and estat_firma['class'] != 'rebutjada':
-            self.context.plone_utils.addPortalMessage(_(u'No es pot reiniciar la firma d\'una sessió que no està rebutjada'), 'error')
+            self.context.plone_utils.addPortalMessage(
+                _(u'No es pot reiniciar la firma d\'una sessió que no està rebutjada'), 'error')
             return self.request.response.redirect(self.context.absolute_url())
 
         try:
@@ -613,12 +658,12 @@ class ResetFirm(BrowserView):
             folder_path = '/'.join(self.context.getPhysicalPath())
             values = portal_catalog.unrestrictedSearchResults(
                 portal_type=['genweb.organs.acord',
-                            'genweb.organs.acta',
-                            'genweb.organs.punt',
-                            'genweb.organs.subpunt',
-                            'genweb.organs.file',],
+                             'genweb.organs.acta',
+                             'genweb.organs.punt',
+                             'genweb.organs.subpunt',
+                             'genweb.organs.file',],
                 path={'query': folder_path,
-                    'depth': 3})
+                      'depth': 3})
 
             for brain in values:
                 obj = brain.getObject()
@@ -627,12 +672,18 @@ class ResetFirm(BrowserView):
                 obj.estat_firma = ''
                 obj.reindexObject()
 
-            self.context.plone_utils.addPortalMessage(_(u'S\'ha reiniciat la firma d\'aquesta sessio'), 'success')
-            logger.info('S\'ha reiniciat la firma d\'aquesta sessio: %s', self.context.absolute_url())
-            utils.addEntryLog(self.context, None, _(u'S\'ha reiniciat la firma d\'aquesta sessio'), self.context.absolute_url())
+            self.context.plone_utils.addPortalMessage(
+                _(u'S\'ha reiniciat la firma d\'aquesta sessio'), 'success')
+            logger.info('S\'ha reiniciat la firma d\'aquesta sessio: %s',
+                        self.context.absolute_url())
+            utils.addEntryLog(self.context, None,
+                              _(u'S\'ha reiniciat la firma d\'aquesta sessio'),
+                              self.context.absolute_url())
         except Exception as e:
-            self.context.plone_utils.addPortalMessage(_(u'Error al reiniciar la firma'), 'error')
-            logger.error('Error al reiniciar la firma en %s: %s', self.context.absolute_url(), str(e))
+            self.context.plone_utils.addPortalMessage(
+                _(u'Error al reiniciar la firma'), 'error')
+            logger.error('Error al reiniciar la firma en %s: %s',
+                         self.context.absolute_url(), str(e))
 
         transaction.commit()
         purge_cache_varnish(self)

@@ -27,7 +27,7 @@ def remove_punt_acord(trans, obj=None, parent=None):
         sufix = obj.aq_parent.proposalPoint
 
     for item in items:
-        objecte = item.getObject()
+        objecte = item._unrestrictedGetObject()
         if sufix:
             objecte.proposalPoint = str(sufix) + str('.') + str(index)
         else:
@@ -35,12 +35,13 @@ def remove_punt_acord(trans, obj=None, parent=None):
         if len(objecte.items()) > 0:
             search_path = '/'.join(objecte.getPhysicalPath())
             values = portal_catalog.searchResults(
-                portal_type=['genweb.organs.punt', 'genweb.organs.subpunt', 'genweb.organs.acord'],
+                portal_type=['genweb.organs.punt', 'genweb.organs.subpunt',
+                             'genweb.organs.acord'],
                 sort_on='getObjPositionInParent',
                 path={'query': search_path, 'depth': 1})
             subvalue = 1
             for value in values:
-                newobjecte = value.getObject()
+                newobjecte = value._unrestrictedGetObject()
                 if sufix:
                     newobjecte.proposalPoint = str(sufix) + str('.') + str(subvalue)
                 else:
@@ -50,7 +51,8 @@ def remove_punt_acord(trans, obj=None, parent=None):
 
     if obj.aq_parent.portal_type == 'genweb.organs.punt':
         if obj.portal_type == 'genweb.organs.acord':
-            addEntryLog(obj.aq_parent.aq_parent, None, _(u'Deleted acord'), str(obj.Title()))
+            addEntryLog(obj.aq_parent.aq_parent, None, _(
+                u'Deleted acord'), str(obj.Title()))
     else:
         if obj.portal_type == 'genweb.organs.acord':
             addEntryLog(obj.aq_parent, None, _(u'Deleted acord'), str(obj.Title()))
@@ -70,14 +72,16 @@ def remove_subpunt(trans, obj=None, parent=None):
     # Assign proposalPoints to acord and subpunts
     if items:
         # Get the real object, not the catalog brain
-        first_item = items[0].getObject()
+        first_item = items[0]._unrestrictedGetObject()
         sufix = str(first_item.proposalPoint).split('.')[0]
         for item in items:
-            newobjecte = item.getObject()
+            newobjecte = item._unrestrictedGetObject()
             newobjecte.proposalPoint = str(sufix) + str('.') + str(index)
             index = index + 1
-        addEntryLog(obj.aq_parent.aq_parent, None, _(u'Deleted subpunt'), str(obj.Title()))
+        addEntryLog(obj.aq_parent.aq_parent, None, _(
+            u'Deleted subpunt'), str(obj.Title()))
         transaction.commit()
+
 
 def deletion_confirmed():
     """

@@ -60,7 +60,9 @@ def membres_convidats_default_factory(context):
     if isSessio(context):
         source = context.membresConvidats
     else:
-        parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+        parent = getattr(
+            context, 'aq_parent', None) or getattr(
+            context, '__parent__', None)
         source = getattr(parent, 'membresConvidats', None)
     try:
         return get_richtext_content(source)
@@ -73,43 +75,54 @@ def membres_convocats_default_factory(context):
     if isSessio(context):
         source = context.assistents
     else:
-        parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+        parent = getattr(
+            context, 'aq_parent', None) or getattr(
+            context, '__parent__', None)
         source = getattr(parent, 'assistents', None)
     try:
         return get_richtext_content(source)
     except:
         return None
 
+
 @provider(IContextAwareDefaultFactory)
 def llista_excuses_default_factory(context):
     if isSessio(context):
         source = context.llistaExcusats
     else:
-        parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+        parent = getattr(
+            context, 'aq_parent', None) or getattr(
+            context, '__parent__', None)
         source = getattr(parent, 'llistaExcusats', None)
     try:
         return get_richtext_content(source)
     except:
         return None
 
+
 @provider(IContextAwareDefaultFactory)
 def llista_no_assistens_default_factory(context):
     if isSessio(context):
         source = context.noAssistents
     else:
-        parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+        parent = getattr(
+            context, 'aq_parent', None) or getattr(
+            context, '__parent__', None)
         source = getattr(parent, 'noAssistents', None)
     try:
         return get_richtext_content(source)
     except:
         return None
 
+
 @provider(IContextAwareDefaultFactory)
 def lloc_convocatoria_default_factory(context):
     if isSessio(context):
         return context.llocConvocatoria
     else:
-        parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+        parent = getattr(
+            context, 'aq_parent', None) or getattr(
+            context, '__parent__', None)
         return getattr(parent, 'llocConvocatoria', None)
 
 
@@ -125,7 +138,9 @@ def hora_inici_default_factory(context):
         return acc.start
     else:
         try:
-            parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+            parent = getattr(
+                context, 'aq_parent', None) or getattr(
+                context, '__parent__', None)
             acc = IEventAccessor(parent)
             return acc.start
         except (TypeError, ComponentLookupError):
@@ -144,7 +159,9 @@ def hora_fi_default_factory(context):
         return acc.end
     else:
         try:
-            parent = getattr(context, 'aq_parent', None) or getattr(context, '__parent__', None)
+            parent = getattr(
+                context, 'aq_parent', None) or getattr(
+                context, '__parent__', None)
             acc = IEventAccessor(parent)
             return acc.end
         except (TypeError, ComponentLookupError):
@@ -346,7 +363,7 @@ def Punts2Acta(context):
                       'depth': 1})
 
             for item in valuesInside:
-                subpunt = item.getObject()
+                subpunt = item._unrestrictedGetObject()
                 sub_title = escape(safe_unicode(item.Title))
                 sub_proposal_point = escape(safe_unicode(subpunt.proposalPoint))
                 sub_agreement_text = ''
@@ -443,7 +460,7 @@ class View(BrowserView, UtilsFirmaDocumental):
             if values:
                 results = []
                 for obj in values:
-                    audio = obj.getObject().file
+                    audio = obj._unrestrictedGetObject().file
                     results.append(dict(title=obj.Title,
                                         absolute_url=obj.getURL(),
                                         download_url=obj.getURL() + '/@@download/file',
@@ -480,7 +497,7 @@ class View(BrowserView, UtilsFirmaDocumental):
             if values:
                 results = []
                 for obj in values:
-                    annex = obj.getObject().file
+                    annex = obj._unrestrictedGetObject().file
                     results.append(
                         dict(
                             title=obj.Title, absolute_url=obj.getURL(),

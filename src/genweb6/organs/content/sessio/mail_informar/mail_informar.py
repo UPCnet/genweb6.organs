@@ -77,7 +77,8 @@ class Message(form.Form):
         self.widgets["sender"].value = str(organ.fromMail)
         session = self.context
         if session.adrecaAfectatsLlista:
-            self.widgets["recipients"].value = str(session.adrecaLlista) + ', ' + str(session.adrecaAfectatsLlista)
+            self.widgets["recipients"].value = str(
+                session.adrecaLlista) + ', ' + str(session.adrecaAfectatsLlista)
         else:
             self.widgets["recipients"].value = str(session.adrecaLlista)
 
@@ -163,7 +164,8 @@ class Message(form.Form):
             return
 
         # replace hidden fields to maintain correct urls...
-        body = formData['message'].raw.replace('----@@----http:/', 'http://').replace('----@@----https:/', 'https://')
+        body = formData['message'].raw.replace(
+            '----@@----http:/', 'http://').replace('----@@----https:/', 'https://')
 
         root_url = api.portal.get().absolute_url() + "/" + lang
         body = body.replace('resolveuid/', root_url + "/resolveuid/")
@@ -181,11 +183,15 @@ class Message(form.Form):
                 charset=api.portal.get_registry_record('plone.email_charset'),
                 msg_type='text/html')
 
-            addEntryLog(self.context, None, _(u'Sending mail informar sessio'), formData['recipients'])
+            addEntryLog(
+                self.context, None, _(u'Sending mail informar sessio'),
+                formData['recipients'])
             self.context.plone_utils.addPortalMessage(
                 _("Missatge enviat correctament"), 'info')
         except:
-            addEntryLog(self.context, None, _(u'Missatge no enviat'), formData['recipients'])
+            addEntryLog(
+                self.context, None, _(u'Missatge no enviat'),
+                formData['recipients'])
             self.context.plone_utils.addPortalMessage(
                 _("Missatge no enviat. Comprovi els destinataris del missatge"), 'error')
 
@@ -253,13 +259,17 @@ class Message(form.Form):
                 number = ''
             if value.portal_type == 'genweb.organs.acord':
                 if value.agreement:
-                    agreement = _(u'[Acord ') + str(value.agreement) + ' - ' + str(value.estatsLlista).upper() + ' ]'
+                    agreement = _(
+                        u'[Acord ') + str(value.agreement) + ' - ' + str(value.estatsLlista).upper() + ' ]'
                 else:
-                    agreement = _(u'[Acord sense numeracio]') if not getattr(value, 'omitAgreement', False) else ''
+                    agreement = _(u'[Acord sense numeracio]') if not getattr(
+                        value, 'omitAgreement', False) else ''
             else:
                 agreement = ''
             # adding hidden field to maintain good urls
-            results.append(str('&emsp;') + str('<a href=----@@----') + str(obj.getURL()) + str('>') + str(number) + str(obj.Title) + str('</a>') + '&nbsp;' + str(agreement))
+            results.append(
+                str('&emsp;') + str('<a href=----@@----') + str(obj.getURL()) + str('>') +
+                str(number) + str(obj.Title) + str('</a>') + '&nbsp;' + str(agreement))
 
             if len(value.objectIds()) > 0:
                 valuesInside = portal_catalog.searchResults(
@@ -268,18 +278,23 @@ class Message(form.Form):
                     path={'query': obj.getPath(),
                           'depth': 1})
                 for item in valuesInside:
-                    subpunt = item.getObject()
+                    subpunt = item._unrestrictedGetObject()
                     if subpunt.proposalPoint:
                         numberSubpunt = str(subpunt.proposalPoint) + '. '
                     else:
                         numberSubpunt = ''
                     if subpunt.portal_type == 'genweb.organs.acord':
                         if subpunt.agreement:
-                            agreement = _(u'[Acord ') + str(subpunt.agreement) + ' - ' + str(subpunt.estatsLlista).upper() + ' ]'
+                            agreement = _(
+                                u'[Acord ') + str(subpunt.agreement) + ' - ' + str(subpunt.estatsLlista).upper() + ' ]'
                         else:
-                            agreement = _(u'[Acord sense numeracio]') if not getattr(subpunt, 'omitAgreement', False) else ''
+                            agreement = _(u'[Acord sense numeracio]') if not getattr(
+                                subpunt, 'omitAgreement', False) else ''
                     else:
                         agreement = ''
                     # adding hidden field to maintain good urls
-                    results.append(str('&emsp;&emsp;') + str('<a href=----@@----') + str(item.getURL()) + str('>') + str(numberSubpunt) + str(item.Title) + str('</a>') + '&nbsp;' + str(agreement))
+                    results.append(
+                        str('&emsp;&emsp;') + str('<a href=----@@----') +
+                        str(item.getURL()) + str('>') + str(numberSubpunt) +
+                        str(item.Title) + str('</a>') + '&nbsp;' + str(agreement))
         return '<br/>'.join(results)

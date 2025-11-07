@@ -63,20 +63,23 @@ def llistaEstats(context):
         # The state name is all but the last word if a color is present
         parts = line.split()
         if len(parts) > 1 and parts[-1].isalnum():
-             term_title = ' '.join(parts[:-1])
+            term_title = ' '.join(parts[:-1])
         else:
             term_title = line
 
         if term_title:
             # The value for the vocabulary term is the state name.
             # The token must be a unique, ASCII-safe string.
-            token = unicodedata.normalize('NFKD', term_title).encode('ascii', 'ignore').decode('ascii')
+            token = unicodedata.normalize(
+                'NFKD', term_title).encode(
+                'ascii', 'ignore').decode('ascii')
             terms.append(SimpleVocabulary.createTerm(term_title, token, term_title))
 
     return SimpleVocabulary(terms)
 
 
 directlyProvides(llistaEstats, IContextSourceBinder)
+
 
 @provider(IContextAwareDefaultFactory)
 def proposal_point_default(context):
@@ -126,6 +129,7 @@ class IPunt(model.Schema):
         required=True,
     )
 
+
 @indexer(IPunt)
 def index_proposalPoint(obj):
     value = getattr(obj, 'proposalPoint', None)
@@ -160,7 +164,8 @@ class View(BrowserView, UtilsFirmaDocumental):
         estat = self.context.estatsLlista
         # Only 1 level
         organ = utils.get_organ(self.context)
-        if not organ or not getattr(organ, 'estatsLlista', None) or not organ.estatsLlista.raw:
+        if not organ or not getattr(
+                organ, 'estatsLlista', None) or not organ.estatsLlista.raw:
             return '#777777'
 
         raw_html = organ.estatsLlista.raw
@@ -196,12 +201,13 @@ class View(BrowserView, UtilsFirmaDocumental):
         results = []
         if values:
             for obj in values:
-                item = obj.getObject()
+                item = obj._unrestrictedGetObject()
                 if item.portal_type == 'genweb.organs.acord':
                     if item.agreement:
                         agreement = item.agreement
                     else:
-                        agreement = _(u"sense numeracio") if not getattr(item, 'omitAgreement', False) else ''
+                        agreement = _(u"sense numeracio") if not getattr(
+                            item, 'omitAgreement', False) else ''
                 else:
                     agreement = ''
                 results.append(dict(title=obj.Title,
@@ -225,7 +231,9 @@ class View(BrowserView, UtilsFirmaDocumental):
         organ_tipus = self.context.organType
 
         if organ_tipus == 'open_organ':
-            if estatSessio == 'planificada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
+            if estatSessio == 'planificada' and utils.checkhasRol(
+                ['OG1-Secretari', 'OG2-Editor'],
+                    roles):
                 return True
             elif estatSessio == 'convocada':
                 return True
@@ -239,7 +247,9 @@ class View(BrowserView, UtilsFirmaDocumental):
                 raise Unauthorized
 
         if organ_tipus == 'restricted_to_members_organ':
-            if estatSessio == 'planificada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
+            if estatSessio == 'planificada' and utils.checkhasRol(
+                ['OG1-Secretari', 'OG2-Editor'],
+                    roles):
                 return True
             elif estatSessio == 'convocada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
                 return True
@@ -253,7 +263,9 @@ class View(BrowserView, UtilsFirmaDocumental):
                 raise Unauthorized
 
         if organ_tipus == 'restricted_to_affected_organ':
-            if estatSessio == 'planificada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
+            if estatSessio == 'planificada' and utils.checkhasRol(
+                ['OG1-Secretari', 'OG2-Editor'],
+                    roles):
                 return True
             elif estatSessio == 'convocada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
                 return True

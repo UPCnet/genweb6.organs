@@ -18,16 +18,15 @@ class IOrgansfolder(model.Schema):
 
     informationText = RichTextField(
         title=_(u"Text informatiu"),
-        description=_(u'Text que es veurà quan el directori no conté cap Organ de Govern visible'),
-        required=False,
-    )
+        description=_(
+            u'Text que es veurà quan el directori no conté cap Organ de Govern visible'),
+        required=False,)
 
     customImage = schema.Bool(
         title=_(u'Fer servir capcalera personalitzada?'),
-        description=_(u'Si es vol fer servir la imatge estandard o la imatge que es puja a continuació'),
-        required=False,
-        default=False,
-    )
+        description=_(
+            u'Si es vol fer servir la imatge estandard o la imatge que es puja a continuació'),
+        required=False, default=False,)
 
     logoOrganFolder = NamedBlobImage(
         title=_(u"Organs folder logo"),
@@ -59,7 +58,7 @@ class View(BrowserView):
         else:
             username = api.user.get_current().id
         for obj in values:
-            value = obj.getObject()
+            value = obj._unrestrictedGetObject()
             organType = value.organType
             if username:
                 roles = api.user.get_roles(obj=value, username=username)
@@ -74,7 +73,9 @@ class View(BrowserView):
                                     review_state=obj.review_state))
             # if restricted_to_members_organ
             elif organType == 'restricted_to_members_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
+                if utils.checkhasRol(
+                    ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'],
+                        roles):
                     results.append(dict(title=value.title,
                                         absolute_url=value.absolute_url(),
                                         acronim=value.acronim,
@@ -82,7 +83,10 @@ class View(BrowserView):
                                         review_state=obj.review_state))
             # if restricted_to_affected_organ
             elif organType == 'restricted_to_affected_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'], roles):
+                if utils.checkhasRol(
+                    ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat',
+                     'OG5-Convidat'],
+                        roles):
                     results.append(dict(title=value.title,
                                         absolute_url=value.absolute_url(),
                                         acronim=value.acronim,

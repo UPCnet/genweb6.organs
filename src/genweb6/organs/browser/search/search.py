@@ -67,7 +67,9 @@ class Search(BrowserView):
         )
         username = api.user.get_current().id
         for obj in values:
-            organ = obj.getObject()
+            # Usar _unrestrictedGetObject() es más rápido que getObject()
+            # y seguro porque verificamos permisos con get_roles()
+            organ = obj._unrestrictedGetObject()
             all_roles = api.user.get_roles(username=username, obj=organ)
             roles = [o for o in all_roles if o in ['OG1-Secretari',
                                                    'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat']]

@@ -52,11 +52,11 @@ def list_acords_by_estat_aprovacio_and_delta_and_review_state(
             'range': 'min:max'}
     if review_state:
         filters['review_state'] = review_state
-    #We search for every object if its approved (you cant know it just with the brain, because its a field)
+    # We search for every object if its approved (you cant know it just with the brain, because its a field)
     results = []
     brains = catalog.searchResults(filters)
     for brain in brains:
-        obj = brain.getObject()
+        obj = brain._unrestrictedGetObject()
         if obj.estatsLlista == 'Aprovat':
             results.append(obj)
 
