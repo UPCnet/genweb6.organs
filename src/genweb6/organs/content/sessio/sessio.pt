@@ -800,8 +800,8 @@ P Conclusions</code>
                 </div>
 
                 <div class="formControls">
-                  <input id="form-buttons-send" name="form.buttons.send" class="btn btn-primary" value="Envia" type="submit" i18n:attributes="value">
-                  <input id="form-buttons-cancel" name="form.buttons.cancel" class="btn btn-secondary" value="Cancel·la" type="submit" i18n:attributes="value">
+                  <input id="form-buttons-send" name="form.buttons.send" class="btn btn-primary form-buttons-send-structure-creation" value="Envia" type="submit" i18n:attributes="value">
+                  <button id="form-buttons-cancel" class="btn btn-secondary" type="button" data-bs-dismiss="modal" i18n:translate="">Cancel·la</button>
                 </div>
               </form>
             </div>
@@ -1573,6 +1573,12 @@ P Conclusions</code>
             </tal:block>
           </tal:documents>
         </ul>
+      </div>
+    </div>
+
+    <div class="spinner-block position-fixed top-0 start-0 vw-100 vh-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-25 d-none">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
     </div>
 

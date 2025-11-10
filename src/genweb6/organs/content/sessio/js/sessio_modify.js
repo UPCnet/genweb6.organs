@@ -13,7 +13,8 @@ $(document).ready(function(){
       var params = {};
       params.itemid = ui.item.attr('id');
       params.action = 'movepunt';
-      params.delta = ui.item.index() - start
+      params.delta = ui.item.index() - start;
+      $('.spinner-block').removeClass('d-none');
       $.ajax({
         type: 'POST',
         url: ui.item.data('url') + '/@@fcmoveTable',
@@ -21,6 +22,9 @@ $(document).ready(function(){
         success: function(){
           setTimeout(() => window.location.reload(), 500);
         },
+        error: function(){
+          $('.spinner-block').addClass('d-none');
+        }
       });
     },
   }).disableSelection();
@@ -36,7 +40,8 @@ $(document).ready(function(){
       var params = {};
       params.itemid = ui.item.attr('id');
       params.action = 'movesubpunt';
-      params.delta = ui.item.index() - start
+      params.delta = ui.item.index() - start;
+      $('.spinner-block').removeClass('d-none');
       $.ajax({
         type: 'POST',
         url: ui.item.data('url') + '/@@fcmoveTable',
@@ -44,6 +49,9 @@ $(document).ready(function(){
         success: function(){
           setTimeout(() => window.location.reload(), 500);
         },
+        error: function(){
+          $('.spinner-block').addClass('d-none');
+        }
       });
     },
   }).disableSelection();
@@ -110,6 +118,7 @@ $(document).ready(function(){
       alert('El títol no pot estar buit.');
       return;
     }
+    $('.spinner-block').removeClass('d-none');
     $.ajax({
       type: 'POST',
       url: window.location.href.split('?')[0].replace(/\/$/, "") + '/@@createElement',
@@ -119,6 +128,7 @@ $(document).ready(function(){
         setTimeout(() => window.location.reload(), 500);
       },
       error: function(){
+        $('.spinner-block').addClass('d-none');
         alert('Hi ha hagut un error al crear el punt.');
       }
     });
@@ -133,6 +143,7 @@ $(document).ready(function(){
       alert('El títol no pot estar buit.');
       return;
     }
+    $('.spinner-block').removeClass('d-none');
     $.ajax({
       type: 'POST',
       url: window.location.href.split('?')[0].replace(/\/$/, "") + '/@@createElement',
@@ -142,6 +153,7 @@ $(document).ready(function(){
         setTimeout(() => window.location.reload(), 500);
       },
       error: function(){
+        $('.spinner-block').addClass('d-none');
         alert('Hi ha hagut un error al crear l\'acord.');
       }
     });
@@ -200,6 +212,7 @@ $(document).ready(function(){
         alert('El títol no pot estar buit.');
         return;
       }
+      $('.spinner-block').removeClass('d-none');
       $.ajax({
         url: $(this).data('url') + '/changeTitle',
         type: 'POST',
@@ -208,9 +221,11 @@ $(document).ready(function(){
           $('a.editTitle[data-id="' + pk + '"]').text(newTitle);
           $('button.edit[data-id="' + pk + '"], button.edit2[data-id="' + pk + '"]').data('title', newTitle);
           $editTitleModalEl.modal('hide');
+          $('.spinner-block').addClass('d-none');
         },
         error: function(){
           alert('Hi ha hagut un error al desar el títol.');
+          $('.spinner-block').addClass('d-none');
         }
       });
     });
@@ -227,6 +242,14 @@ $(document).ready(function(){
     $buttonGroup.closest('.einesSpan').parent().find('.boleta > span > i').css({ 'color': colorSelected });
     const textSelected = $(this).find('span').text();
     $buttonGroup.closest('.einesSpan').parent().find('.boleta > span > span').text(textSelected);
+  });
+
+
+  /*
+  * MANEJO DE CREACIÓN ÁGIL DE PUNTOS Y ACUERDOS
+  */
+  $('.form-buttons-send-structure-creation').on('click', function (e) {
+    $('.spinner-block').removeClass('d-none');
   });
 
   /*
@@ -279,6 +302,7 @@ $(document).ready(function(){
  * FUNCIONES GLOBALES (usadas en los manejadores de eventos)
  */
 function hideAgreement(url){
+  $('.spinner-block').removeClass('d-none');
   $.ajax({
     type: 'POST',
     url: url + '/hideAgreement',
@@ -288,12 +312,17 @@ function hideAgreement(url){
         setTimeout(() => window.location.reload(), 500);
       } else {
         $agreement.remove();
+        $('.spinner-block').addClass('d-none');
       }
+    },
+    error: function(){
+      $('.spinner-block').addClass('d-none');
     }
   });
 }
 
 function deleteElement(url, name, portal_type){
+  $('.spinner-block').removeClass('d-none');
   const id = CSS.escape(name);
   $.ajax({
     type: 'POST',
@@ -301,6 +330,12 @@ function deleteElement(url, name, portal_type){
     data: { action: 'delete', id: name, type: portal_type },
     success: function(){
       setTimeout(() => window.location.reload(), 500);
+    },
+    error: function(){
+      $('.spinner-block').addClass('d-none');
     }
   });
+
+
+  
 }
