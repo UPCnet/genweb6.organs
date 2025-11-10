@@ -61,7 +61,6 @@ class ManualImport(BrowserView):
 
         # Obtener el órgano usando utils.get_organ como en createElement
         organ = utils.get_organ(self.context)
-        print(f"DEBUG: organ encontrado = {organ}")
 
         values = organ.estatsLlista
         if hasattr(values, 'raw'):
@@ -69,13 +68,6 @@ class ManualImport(BrowserView):
         value = values.split('</p>')[0]
         item_net = unicodedata.normalize("NFKD", value).rstrip(' ').replace('<p>', '').replace('</p>', '').replace('\r\n', '')
         defaultEstat = ' '.join(item_net.split()[:-1]).lstrip()
-
-        # --- Numeración de acuerdos ---
-        acronim = getattr(organ, 'acronim', '') or ''
-        any = str(self.context.start.year) if hasattr(self.context, 'start') else str(api.portal.get_localized_time())[:4]
-        numsessio = getattr(self.context, 'numSessio', '01')
-        idacord = 1
-        # ---
 
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         folder_path = '/'.join(self.context.getPhysicalPath())
@@ -105,11 +97,6 @@ class ManualImport(BrowserView):
                                 type='genweb.organs.acord',
                                 title=line,
                                 container=self.context)
-                        # Numerar acuerdo
-                        printid = '{0}'.format(str(idacord).zfill(2))
-                        obj.agreement = f"{acronim}/{any}/{numsessio}/{printid}"
-                        obj.omitAgreement = False
-                        idacord += 1
                     elif str(portal_type) == 'P':  # Es tracta d'un punt
                         line = ' '.join(line.lstrip().rstrip().split(' ')[1:])
                         with api.env.adopt_roles(['OG1-Secretari']):
@@ -141,11 +128,6 @@ class ManualImport(BrowserView):
                                     type='genweb.organs.acord',
                                     title=line,
                                     container=previousPuntContainer)
-                            # Numerar acuerdo
-                            printid = '{0}'.format(str(idacord).zfill(2))
-                            newobj.agreement = f"{acronim}/{any}/{numsessio}/{printid}"
-                            newobj.omitAgreement = False
-                            idacord += 1
                         elif str(portal_type) == 'P':  # Es tracta d'un punt
                             line = ' '.join(line.lstrip().rstrip().split(' ')[1:])
                             with api.env.adopt_roles(['OG1-Secretari']):

@@ -103,7 +103,6 @@ class createElement(BrowserView):
                     title=itemid,
                     container=self.context,
                     safe_id=True,
-                    proposalPoint=proposal_point_number
                 )
             if default_estat:
                 new_obj.estatsLlista = default_estat
@@ -112,9 +111,6 @@ class createElement(BrowserView):
             acords_p = portal_catalog.searchResults(
                 portal_type=['genweb.organs.acord'],
                 path={'query': path, 'depth': 1})
-            agreement_count = str(len(acords_p) + 1)
-            year = str(datetime.date.today().year)
-            agreement_number = f"{agreement_count}/{year}"
 
             with api.env.adopt_roles(['OG1-Secretari', 'Manager']):
                 new_obj = api.content.create(
@@ -122,7 +118,6 @@ class createElement(BrowserView):
                     title=itemid,
                     container=self.context,
                     safe_id=True,
-                    agreement=agreement_number,
                     proposalPoint=proposal_point_number
                 )
             if default_estat:
