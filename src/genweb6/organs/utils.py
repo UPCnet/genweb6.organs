@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import ast
 from Acquisition import aq_chain
 from Acquisition import aq_inner
 from Products.PluggableAuthService.interfaces.plugins import IPropertiesPlugin
@@ -7,21 +6,16 @@ from Products.PluggableAuthService.interfaces.plugins import IPropertiesPlugin
 from datetime import datetime
 from plone import api
 from plone.app.layout.navigation.root import getNavigationRootObject
-from plone.app.uuid.utils import uuidToObject
 from plone.memoize import instance
 from plone.registry.interfaces import IRegistry
 from zope.annotation.interfaces import IAnnotations
 from zope.component import getUtility
 
-from zope.component.hooks import getSite
-from time import time
-from Products.CMFCore.utils import getToolByName
-from zope.ramcache import ram
-
 from genweb6.core.purge import purge_varnish_paths
 from genweb6.organs import _
 from genweb6.organs.controlpanel import IOrgansSettings
 
+import ast
 import unicodedata
 
 
@@ -643,7 +637,6 @@ def getFilesSessio(context):
 
 
 def purge_cache_varnish(self):
-    ram.caches.clear()
     paths = []
     paths.append('_purge_all')
     purge_varnish_paths(self, paths)
