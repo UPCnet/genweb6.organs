@@ -87,7 +87,7 @@ def numSessioShowOnly(context):
     total = 0
     year = datetime.datetime.today().strftime('%Y')
     for session in sessions:
-        if session.getObject().start.strftime('%Y') == year:
+        if session._unrestrictedGetObject().start.strftime('%Y') == year:
             total = total + 1
     return '{0}'.format(str(total + 1).zfill(2))
 
