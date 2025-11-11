@@ -203,7 +203,9 @@ Missatge automàtic generat per https://govern.upc.edu/"""
             }
 
             msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
-            mailhost.send(msg)
+            # Normalizar finales de línea a CRLF para cumplir con RFC 5321
+            msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
+            mailhost.send(msg_string)
 
         elif context.aq_parent.aq_parent.portal_type == 'genweb.organs.punt':
 
@@ -218,7 +220,9 @@ Missatge automàtic generat per https://govern.upc.edu/"""
             }
 
             msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
-            mailhost.send(msg)
+            # Normalizar finales de línea a CRLF para cumplir con RFC 5321
+            msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
+            mailhost.send(msg_string)
 
 
 def sendRemoveVoteEmail(context):
@@ -269,7 +273,9 @@ def sendRemoveVoteEmail(context):
             }
 
             msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
-            mailhost.send(msg)
+            # Normalizar finales de línea a CRLF para cumplir con RFC 5321
+            msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
+            mailhost.send(msg_string)
 
         elif context.aq_parent.aq_parent.portal_type == 'genweb.organs.punt':
 
@@ -283,7 +289,9 @@ def sendRemoveVoteEmail(context):
             }
 
             msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
-            mailhost.send(msg)
+            # Normalizar finales de línea a CRLF para cumplir con RFC 5321
+            msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
+            mailhost.send(msg_string)
 
 
 class RemoveVote(BrowserView):
