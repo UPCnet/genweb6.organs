@@ -55,11 +55,11 @@
 
     <!-- EXPAND ALL / COLLAPSE ALL -->
     <div class="d-flex justify-content-end">
-      <button id="expandAll" class="btn btn-outline-primary">
+      <button id="expandAll" class="btn btn-link link-underline link-underline-opacity-0">
         <i class="bi bi-arrows-expand me-1"></i>
         <span i18n:translate="">Desplega tot</span>
       </button>
-      <button id="collapseAll" class="btn btn-outline-primary d-none">
+      <button id="collapseAll" class="btn btn-link link-underline link-underline-opacity-0 d-none">
         <i class="bi bi-arrows-collapse me-1"></i>
         <span i18n:translate="">Plega tot</span>
       </button>
@@ -107,7 +107,7 @@
                       [ACORD]
                     </span>
 
-                    <div class="btn-group" role="group" aria-label="Change current state" tal:condition="view/changeEstat">
+                    <div class="btn-group float-end" role="group" aria-label="Change current state" tal:condition="view/changeEstat">
                       <tal:block tal:condition="item/state">
                         <button class="badge btn btn-outline-secondary ms-2 px-2 py-2 text-dark dropdown-toggle bullet-toggle" type="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -146,7 +146,7 @@
                               <tal:omit-tag tal:content="file_item/title"> Doc title</tal:omit-tag>
                             </a>
                             <tal:block tal:condition="file_item/isGODocument">
-                              <a class="btn btn-outline-success btn-sm ms-2"
+                              <a class="btn btn-outline-primary btn-sm ms-2 float-end"
                                  tal:condition="file_item/publicRaw"
                                  href="#"
                                  data-bs-toggle="modal"
@@ -156,7 +156,7 @@
                                  i18n:translate="">
                                 Contingut públic
                               </a> 
-                              <a class="btn btn-outline-danger btn-sm ms-2"
+                              <a class="btn btn-outline-primary btn-sm ms-2 float-end"
                                  tal:condition="file_item/reservedRaw"
                                  href="#"
                                  data-bs-toggle="modal"
@@ -168,7 +168,7 @@
                               </a>
                             </tal:block>
                             <tal:block tal:condition="file_item/isGOFile">
-                              <a class="btn btn-outline-success btn-sm ms-2"
+                              <a class="btn btn-outline-primary btn-sm ms-2 float-end"
                                  tal:condition="file_item/publicURL"
                                  href="#"
                                  data-bs-toggle="modal"
@@ -178,7 +178,7 @@
                                  i18n:translate="">
                                 Fitxer públic
                               </a> 
-                              <a class="btn btn-outline-danger btn-sm ms-2"
+                              <a class="btn btn-outline-primary btn-sm ms-2 float-end"
                                  tal:condition="file_item/reservedURL"
                                  href="#"
                                  data-bs-toggle="modal"
@@ -219,7 +219,7 @@
                                   tal:content="agreement">
                               [ACORD]
                             </span>
-                            <div class="btn-group" role="group" aria-label="Change current state" tal:condition="view/changeEstat">
+                            <div class="btn-group float-end" role="group" aria-label="Change current state" tal:condition="view/changeEstat">
                               <tal:block tal:condition="itemSubpunt/state">
                                 <button class="badge btn btn-outline-secondary ms-2 px-2 py-2 text-dark dropdown-toggle bullet-toggle" type="button"
                                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -254,7 +254,7 @@
                                   <tal:omit-tag tal:content="item/title"> Doc title</tal:omit-tag>
                                 </a>
                                 <tal:block tal:condition="item/isGODocument">
-                                  <a class="btn btn-outline-success btn-sm ms-2"
+                                  <a class="btn btn-outline-primary btn-sm ms-2 float-end"
                                      tal:condition="item/publicRaw"
                                      href="#"
                                      data-bs-toggle="modal"
@@ -264,7 +264,7 @@
                                      i18n:translate="">
                                     Contingut públic
                                   </a> 
-                                  <a class="btn btn-outline-danger btn-sm ms-2"
+                                  <a class="btn btn-outline-primary btn-sm ms-2 float-end"
                                      tal:condition="item/reservedRaw"
                                      href="#"
                                      data-bs-toggle="modal"
@@ -276,7 +276,7 @@
                                   </a>
                                 </tal:block>
                                 <tal:block tal:condition="item/isGOFile">
-                                  <a class="btn btn-outline-success btn-sm ms-2"
+                                  <a class="btn btn-outline-primary btn-sm ms-2 float-end"
                                      tal:condition="item/publicURL"
                                      data-bs-toggle="modal"
                                      data-bs-target="#fileContentModal"
@@ -286,7 +286,7 @@
                                      i18n:translate="">
                                     Fitxer públic
                                   </a> 
-                                  <a class="btn btn-outline-danger btn-sm ms-2"
+                                  <a class="btn btn-outline-primary btn-sm ms-2 float-end"
                                      tal:condition="item/reservedURL"
                                      data-bs-toggle="modal"
                                      data-bs-target="#fileContentModal"
