@@ -109,7 +109,7 @@ def generate_pdf(self, url, filename):
     pdfkit.from_url(url, filename, options=options, verbose=True)
 
 
-def generate_pdf_with_timeout(self, url, filename, timeout=60):
+def generate_pdf_with_timeout(self, url, filename, timeout=30):
     p = multiprocessing.Process(target=generate_pdf, args=(self, url, filename))
     p.start()
     p.join(timeout)
