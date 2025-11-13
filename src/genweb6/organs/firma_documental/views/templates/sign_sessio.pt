@@ -70,11 +70,11 @@
 
           <div class="d-flex justify-content-between mb-3">
             <div class="d-flex">
-              <button id="expandAll" class="btn btn-outline-primary d-none">
+              <button id="expandAll" class="btn btn-link link-underline link-underline-opacity-0 d-none">
                 <i class="bi bi-arrows-expand me-1"></i>
                 <span i18n:translate="">Desplega tot</span>
               </button>
-              <button id="collapseAll" class="btn btn-outline-primary">
+              <button id="collapseAll" class="btn btn-link link-underline link-underline-opacity-0">
                 <i class="bi bi-arrows-collapse me-1"></i>
                 <span i18n:translate="">Plega tot</span>
               </button>
@@ -145,16 +145,19 @@
                                     target="_blank"
                                     class="text-dark">
                                     <tal:omit-tag tal:content="file_item/title"> Doc title</tal:omit-tag>
+                                    <span class="text-danger-emphasis"
+                                          tal:condition="not:file_item/info_firma/success" 
+                                          tal:content="file_item/info_firma/message"></span>
                                   </a>
                                   <a tal:attributes="href file_item/absolute_url;"
                                     tal:condition="not:file_item/new_tab"
                                     class="text-dark">
                                     <tal:omit-tag tal:content="file_item/title"> Doc title</tal:omit-tag>
-                                  </a>
-                                  <div class="ms-auto d-flex align-items-center">
                                     <span class="text-danger-emphasis"
                                           tal:condition="not:file_item/info_firma/success" 
                                           tal:content="file_item/info_firma/message"></span>
+                                  </a>
+                                  <div class="ms-auto d-flex align-items-center">
                                     <i title="Enviat i desat a gDOC"
                                         tal:condition="file_item/info_firma/sent"
                                         tal:attributes="class string:bi bi-circle-fill ${file_item/info_firma/cssClass} ms-1">
@@ -209,16 +212,19 @@
                                           target="_blank"
                                           class="text-dark">
                                         <tal:omit-tag tal:content="item/title"> Doc title</tal:omit-tag>
+                                        <span class="text-danger-emphasis"
+                                              tal:condition="not:item/info_firma/success" 
+                                              tal:content="item/info_firma/message"></span>
                                       </a>
                                       <a tal:attributes="href item/absolute_url;" 
                                           tal:condition="not:item/new_tab"
                                           class="text-dark">
                                         <tal:omit-tag tal:content="item/title"> Doc title</tal:omit-tag>
-                                      </a>
-                                      <div class="ms-auto d-flex align-items-center">
                                         <span class="text-danger-emphasis"
                                               tal:condition="not:item/info_firma/success" 
                                               tal:content="item/info_firma/message"></span>
+                                      </a>
+                                      <div class="ms-auto d-flex align-items-center">
                                         <i title="Enviat i desat a gDOC"
                                           tal:condition="item/info_firma/sent"
                                           tal:attributes="class string:bi bi-circle-fill ${item/info_firma/cssClass} ms-1">
@@ -283,7 +289,15 @@
                 <button id="signActa" class="btn btn-primary btnActa"
                   tal:condition="checkSerieGDoc/valid_serie"
                   tal:attributes="data-sign-url string:${acta/absolute_url}/signActa">
-                    <i class="bi bi-arrow-right"></i>&nbsp;<span i18n:translate="">Enviar acta a signar</span>
+                  <i class="bi bi-arrow-right"></i>&nbsp;<span i18n:translate="">Enviar acta a signar</span>
+                </button>
+              </tal:block>
+
+              <!-- Botón Cancel·lar signatura -->
+              <tal:block tal:condition="python:view.canCancelSignatura(acta)">
+                <button id="cancelSignatura" class="btn btn-warning btnActa ms-3"
+                  tal:attributes="data-cancel-url string:${acta/absolute_url}/cancelSignatura">
+                  <i class="bi bi-x-circle"></i>&nbsp;<span i18n:translate="">Cancel·lar signatura</span>
                 </button>
               </tal:block>
 
@@ -435,93 +449,94 @@
             <tal:documents repeat="item items">
               <tal:block tal:define="agreement item/agreement">
                 <li tal:attributes="id item/id">
-                  <div class="row px-3 py-2" tal:condition="item/show">
+                  <tal:block-contenidos-show tal:condition="item/show">
                     <tal:block-contenidos tal:condition="python: view.hasUnsentFiles(item, depth=2)"
                                           tal:define="files python:view.filesinsidePunt(item);
                                                       subpunts python:view.SubpuntsInside(item);">
-
-                      <div class="puntTitle col-12 d-flex flex-nowrap align-items-baseline">
-                        <div class="numberSpan me-2 w-5 text-end">
-                          <span class="proposalNumber text-primary fs-xxxl fw-bold"
-                                tal:content="item/proposalPoint"></span>
-                        </div>
-
-                        <div class="titleSpan me-2 w-75">
-                          <a tal:attributes="data-id item/id; 
-                                            href item/absolute_url" 
-                            data-url="changeTitle"
-                            class="editTitle titleSize text-dark">
-                            <tal:omit-tag tal:content="item/title">Item Title</tal:omit-tag>
-                          </a>
-                          <span tal:condition="agreement" class="text-muted fs-s"
-                                tal:attributes="data-agreement string:${item/absolute_url}">
-                            [<tal:omit-tag i18n:translate="">acord</tal:omit-tag> <tal:omit-tag
-                                          tal:content="agreement">Acord code </tal:omit-tag>]
-                          </span>
-                        </div>
-                      </div>
-
-                      <tal:files tal:condition="files">
-                        <ul class="listFiles list-unstyled">
-                          <tal:documents repeat="file_item files">
-                            <li class="filesinTable w-100 mt-2"
-                                tal:attributes="id file_item/uuid"
-                                tal:condition="not:file_item/info_firma/success">
-                              <div class="titleSpan">
-                                <i tal:attributes="class string:${file_item/classCSS} me-1"></i>
-                                <tal:omit-tag tal:content="file_item/title"> Doc title</tal:omit-tag>
-                              </div>
-                            </li>
-                          </tal:documents>
-                        </ul>
-                      </tal:files>
-
-                      <div class="container-subpunts" tal:condition="subpunts">
-                        <tal:subpunts repeat="itemSubpunt subpunts">
-                          <div class="li_subgrups row mt-2 justify-content-end" 
-                              tal:condition="python:view.hasUnsentFiles(itemSubpunt)"
-                              tal:attributes="id itemSubpunt/id" 
-                              tal:define="agreement itemSubpunt/agreement;
-                                          itemSubpunt_id itemSubpunt/id;">
-
-                            <div class="subpuntTitle col-12 d-flex flex-nowrap align-items-baseline">
-                              <div class="numberSpan me-2 w-5">
-                                <span class="proposalNumberSubpunt text-primary fw-bold" 
-                                      tal:content="itemSubpunt/proposalPoint"></span>
-                              </div>
-
-                              <div class="titleSpan me-2 w-95">
-                                <a tal:attributes="data-id itemSubpunt_id; 
-                                                  href itemSubpunt/absolute_url"
-                                  data-type="text" data-url="changeTitle" 
-                                  class="editTitle subtitleSize text-dark">
-                                  <tal:omit-tag tal:content="itemSubpunt/title">Item Title</tal:omit-tag>
-                                </a>
-                                <span tal:condition="agreement" class="text-muted fs-s"
-                                      tal:attributes="data-agreement string:${itemSubpunt/absolute_url}">
-                                  [<tal:omit-tag i18n:translate="">acord</tal:omit-tag> <tal:omit-tag
-                                    tal:content="agreement">Acord code </tal:omit-tag>]
-                                </span>
-                              </div>
-                            </div>
-
-                            <tal:files tal:define="files python:view.filesinsidePunt(itemSubpunt)">
-                              <ul class="listFiles list-unstyled" tal:condition="files">
-                                <tal:documents repeat="item files">
-                                  <li class="filesinTable w-100 mt-2"
-                                      tal:attributes="id item/uuid"
-                                      tal:condition="not:item/info_firma/success">
-                                    <i tal:attributes="class string:${item/classCSS} me-1"></i>
-                                    <tal:omit-tag tal:content="item/title"> Doc title</tal:omit-tag>
-                                  </li>
-                                </tal:documents>
-                              </ul>
-                            </tal:files>
+                      <div class="row px-3 py-2">
+                        <div class="puntTitle col-12 d-flex flex-nowrap align-items-baseline">
+                          <div class="numberSpan me-2 w-5 text-end">
+                            <span class="proposalNumber text-primary fs-xxxl fw-bold"
+                                  tal:content="item/proposalPoint"></span>
                           </div>
-                        </tal:subpunts>
+
+                          <div class="titleSpan me-2 w-75">
+                            <a tal:attributes="data-id item/id; 
+                                              href item/absolute_url" 
+                              data-url="changeTitle"
+                              class="editTitle titleSize text-dark">
+                              <tal:omit-tag tal:content="item/title">Item Title</tal:omit-tag>
+                            </a>
+                            <span tal:condition="agreement" class="text-muted fs-s"
+                                  tal:attributes="data-agreement string:${item/absolute_url}">
+                              [<tal:omit-tag i18n:translate="">acord</tal:omit-tag> <tal:omit-tag
+                                            tal:content="agreement">Acord code </tal:omit-tag>]
+                            </span>
+                          </div>
+                        </div>
+
+                        <tal:files tal:condition="files">
+                          <ul class="listFiles list-unstyled">
+                            <tal:documents repeat="file_item files">
+                              <li class="filesinTable w-100 mt-2"
+                                  tal:attributes="id file_item/uuid"
+                                  tal:condition="not:file_item/info_firma/success">
+                                <div class="titleSpan">
+                                  <i tal:attributes="class string:${file_item/classCSS} me-1"></i>
+                                  <tal:omit-tag tal:content="file_item/title"> Doc title</tal:omit-tag>
+                                </div>
+                              </li>
+                            </tal:documents>
+                          </ul>
+                        </tal:files>
+
+                        <div class="container-subpunts" tal:condition="subpunts">
+                          <tal:subpunts repeat="itemSubpunt subpunts">
+                            <div class="li_subgrups row mt-2 justify-content-end" 
+                                tal:condition="python:view.hasUnsentFiles(itemSubpunt)"
+                                tal:attributes="id itemSubpunt/id" 
+                                tal:define="agreement itemSubpunt/agreement;
+                                            itemSubpunt_id itemSubpunt/id;">
+
+                              <div class="subpuntTitle col-12 d-flex flex-nowrap align-items-baseline">
+                                <div class="numberSpan me-2 w-5">
+                                  <span class="proposalNumberSubpunt text-primary fw-bold" 
+                                        tal:content="itemSubpunt/proposalPoint"></span>
+                                </div>
+
+                                <div class="titleSpan me-2 w-95">
+                                  <a tal:attributes="data-id itemSubpunt_id; 
+                                                    href itemSubpunt/absolute_url"
+                                    data-type="text" data-url="changeTitle" 
+                                    class="editTitle subtitleSize text-dark">
+                                    <tal:omit-tag tal:content="itemSubpunt/title">Item Title</tal:omit-tag>
+                                  </a>
+                                  <span tal:condition="agreement" class="text-muted fs-s"
+                                        tal:attributes="data-agreement string:${itemSubpunt/absolute_url}">
+                                    [<tal:omit-tag i18n:translate="">acord</tal:omit-tag> <tal:omit-tag
+                                      tal:content="agreement">Acord code </tal:omit-tag>]
+                                  </span>
+                                </div>
+                              </div>
+
+                              <tal:files tal:define="files python:view.filesinsidePunt(itemSubpunt)">
+                                <ul class="listFiles list-unstyled" tal:condition="files">
+                                  <tal:documents repeat="item files">
+                                    <li class="filesinTable w-100 mt-2"
+                                        tal:attributes="id item/uuid"
+                                        tal:condition="not:item/info_firma/success">
+                                      <i tal:attributes="class string:${item/classCSS} me-1"></i>
+                                      <tal:omit-tag tal:content="item/title"> Doc title</tal:omit-tag>
+                                    </li>
+                                  </tal:documents>
+                                </ul>
+                              </tal:files>
+                            </div>
+                          </tal:subpunts>
+                        </div>
                       </div>
                     </tal:block-contenidos>
-                  </div>
+                  </tal:block-contenidos-show>
                 </li>
               </tal:block>
             </tal:documents>

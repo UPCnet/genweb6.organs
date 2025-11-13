@@ -420,6 +420,35 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
         roles = utils.getUserRoles(self, self.context, api.user.get_current().id)
         return utils.checkhasRol(['Manager', 'OG1-Secretari'], roles)
 
+    def canCancelSignatura(self, acta):
+        """
+        Verifica si se puede cancelar la signatura del acta.
+        
+        Condiciones:
+        - El acta debe estar enviada a firmar (hasFirma)
+        - La sesión debe estar en estado "en_correccio" (En modificació)
+        - El usuario debe tener permisos para firmar (mismos que canFirm)
+        """
+        if not acta:
+            return False
+        
+        # Verificar permisos (mismos que para firmar)
+        roles = utils.getUserRoles(self, self.context, api.user.get_current().id)
+        if not utils.checkhasRol(['Manager', 'OG1-Secretari'], roles):
+            return False
+        
+        # Verificar que el acta está enviada a firmar
+        if not self.hasFirma(acta):
+            return False
+        
+        # Verificar que la sesión está en estado "en_correccio" (En modificació)
+        session = utils.get_session(self.context)
+        review_state = api.content.get_state(session)
+        if review_state != 'en_correccio':
+            return False
+        
+        return True
+
     def hasFirma(self, acta):
         return utilsFD.hasFirmaActa(acta)
 

@@ -144,6 +144,44 @@ class ClientFirma(object):
             self._request('POST', url, json_data=data, headers={'X-Api-Key': self.settings.signaturacsv_apikey}, timeout=self.timeout).content
         )
 
+    def cancelPeticioPortafirmes(self, id_peticio):
+        """
+        Cancela una petición de firma en Portafirmes.
+        
+        Args:
+            id_peticio: ID de la petición de firma a cancelar
+            
+        Returns:
+            dict: Respuesta del servicio Portafirmes
+        """
+        url = self.settings.portafirmes_url + '/service/peticio/' + str(id_peticio)
+        headers = {'X-Api-Key': self.settings.portafirmes_apikey}
+        return json.loads(
+            self._request('DELETE', url, headers=headers, timeout=self.timeout).content
+        )
+
+    def invalidaCopiaAutentica(self, id_document=None, csv_id=None):
+        """
+        Invalida una copia auténtica (CSV) para evitar copias firmadas.
+        
+        Args:
+            id_document: ID del documento en gDOC (opcional)
+            csv_id: ID del CSV a invalidar (opcional)
+            
+        Returns:
+            dict: Respuesta del servicio de copias auténticas
+        """
+        url = self.settings.copiesautentiques_url + '/copiesautentiquesv2/invalidaCopiaAutentica'
+        headers = {'X-Api-Key': self.settings.copiesautentiques_apikey}
+        data = {}
+        if id_document:
+            data['idDocument'] = id_document
+        if csv_id:
+            data['csvId'] = csv_id
+        return json.loads(
+            self._request('POST', url, json_data=data, headers=headers, timeout=self.timeout).content
+        )
+
     def _request(self, method, url, data=None, json_data=None, headers=None, files=None, timeout=None):
         timeout = timeout or self.timeout
         try:

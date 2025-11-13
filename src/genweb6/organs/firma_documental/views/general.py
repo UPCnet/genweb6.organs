@@ -13,8 +13,13 @@ from genweb6.organs.utils import purge_cache_varnish
 import json
 import logging
 import requests
+import pdfkit
+import multiprocessing
+import os
 
 logger = logging.getLogger(__name__)
+
+TMP_FOLDER = os.environ.get('TMPFOLDER', '/tmp/')
 
 
 def getCopiaAutentica(self, uuid):
@@ -96,6 +101,24 @@ def downloadGDoc(self, uuid, contentType, filename):
             return copia_autentica
 
         return self.request.response.redirect(self.context.absolute_url())
+
+
+def generate_pdf(self, url, filename):
+    options = {'cookie': [('__ac', self.request.cookies['__ac']),
+                          ('I18N_LANGUAGE', self.request.cookies.get('I18N_LANGUAGE', 'ca'))]}
+    pdfkit.from_url(url, filename, options=options, verbose=True)
+
+
+def generate_pdf_with_timeout(self, url, filename, timeout=60):
+    p = multiprocessing.Process(target=generate_pdf, args=(self, url, filename))
+    p.start()
+    p.join(timeout)
+    if p.is_alive():
+        logger.info("⏱️ Tiempo excedido, matando proceso wkhtmltopdf...")
+        p.terminate()
+        p.join()
+        return False
+    return True
 
 
 class UpdateInfoPortafirmes(BrowserView):

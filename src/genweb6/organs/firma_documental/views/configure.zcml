@@ -21,6 +21,13 @@
     permission="genweb.organs.firmadocumental.sign" />
 
   <browser:page
+    name="cancelSignatura"
+    for="genweb6.organs.content.acta.acta.IActa"
+    class=".firmes.CancelSignatura"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="genweb.organs.firmadocumental.sign" />
+
+  <browser:page
     name="viewActa"
     for="genweb6.organs.content.acta.acta.IActa"
     class=".acta.ViewActa"

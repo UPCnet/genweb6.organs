@@ -892,11 +892,11 @@ P Conclusions</code>
         <div class="d-flex flex-wrap flex-md-nowrap align-middle justify-content-between mb-4 row-gap-2">
           <h2 class="sessionOrdreDia mb-0" i18n:translate="">Ordre del dia</h2>
           <div class="d-flex text-end">
-            <button id="expandAll" class="btn btn-outline-primary">
+            <button id="expandAll" class="btn btn-link link-underline link-underline-opacity-0">
               <i class="bi bi-arrows-expand me-1"></i>
               <span i18n:translate="">Desplega tot</span>
             </button>
-            <button id="collapseAll" class="btn btn-outline-primary d-none">
+            <button id="collapseAll" class="btn btn-link link-underline link-underline-opacity-0 d-none">
               <i class="bi bi-arrows-collapse me-1"></i>
               <span i18n:translate="">Plega tot</span>
             </button>
@@ -944,7 +944,7 @@ P Conclusions</code>
                         </button>
                       </div>
 
-                      <div class="btn-group" role="group" aria-label="Add element">
+                      <div class="btn-group " role="group" aria-label="Add element">
                         <button class="badge btn btn-outline-secondary fs-xxxs px-2 py-2 text-dark dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                           +

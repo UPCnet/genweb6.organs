@@ -15,6 +15,24 @@ $(document).ready(function(){
     })
   });
 
+  // Cancelar signatura
+  $('#cancelSignatura').on('click', function(){
+    if (!confirm('Estàs segur que vols cancel·lar la signatura? Això permetrà modificar l\'acta i tornar-la a enviar a signar.')) {
+      return false;
+    }
+    $('.spinner-block').removeClass('d-none');
+    $.ajax({
+      url: $(this).attr('data-cancel-url'),
+      type: 'POST',
+      success: function(data){
+        window.location.reload();
+      },
+      error: function(){
+        window.location.reload();
+      }
+    })
+  });
+
   $('#send-sign-btn').click(function () {
     $('#previewDocModal').modal('hide');
     var data = {};
