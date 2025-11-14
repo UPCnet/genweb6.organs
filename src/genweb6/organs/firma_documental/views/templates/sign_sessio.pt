@@ -70,11 +70,11 @@
 
           <div class="d-flex justify-content-between mb-3">
             <div class="d-flex">
-              <button id="expandAll" class="btn btn-outline-primary d-none">
+              <button id="expandAll" class="btn btn-link link-underline link-underline-opacity-0 d-none">
                 <i class="bi bi-arrows-expand me-1"></i>
                 <span i18n:translate="">Desplega tot</span>
               </button>
-              <button id="collapseAll" class="btn btn-outline-primary">
+              <button id="collapseAll" class="btn btn-link link-underline link-underline-opacity-0">
                 <i class="bi bi-arrows-collapse me-1"></i>
                 <span i18n:translate="">Plega tot</span>
               </button>
