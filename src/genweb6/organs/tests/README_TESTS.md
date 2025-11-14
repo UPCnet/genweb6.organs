@@ -73,6 +73,13 @@ Esta guía documenta cómo ejecutar los tests de permisos implementados para `ge
     - Permisos para Manager, OG1-Secretari, OG2-Editor, OG3-Membre
     - 12 tests implementados
 
+16. **test_document_fitxer_permissions_in_punt.py** ⭐ NUEVO
+    - Permisos para crear Document/Fitxer dentro de Punts
+    - OG2-Editor puede crear en PLANIFICADA, CONVOCADA, REALITZADA, EN_CORRECCIO
+    - OG2-Editor NO puede crear en TANCADA (solo RW)
+    - OG3-Membre solo READ en estados CONVOCADA+
+    - 13 tests implementados
+
 ## 🚀 Comandos de Ejecución
 
 ### Ejecutar TODOS los tests
@@ -153,9 +160,14 @@ cd /Users/pilarmarinas/Development/Plone/organs6.buildout
 ./bin/test -s genweb6.organs -t test_quorum
 ```
 
-#### Ejecutar todos los tests de acciones y UI (75 tests) ⭐ NUEVO
+#### Tests de Document/Fitxer en Punts ⭐ NUEVO
 ```bash
-./bin/test -s genweb6.organs -t test_organ_tabs -t test_session_actions_by_state -t test_organ_actions -t test_acta_actions -t test_votaciones -t test_quorum
+./bin/test -s genweb6.organs -t test_document_fitxer_permissions_in_punt
+```
+
+#### Ejecutar todos los tests de acciones y UI (88 tests) ⭐ NUEVO
+```bash
+./bin/test -s genweb6.organs -t test_organ_tabs -t test_session_actions_by_state -t test_organ_actions -t test_acta_actions -t test_votaciones -t test_quorum -t test_document_fitxer_permissions_in_punt
 ```
 
 ### Ejecutar con verbosidad
@@ -394,15 +406,16 @@ directory = coverage_report
 
 ## 📊 Resumen de Tests Implementados
 
-**Total: 15/15 tests (100%)**
+**Total: 16/16 tests (100%)**
 
-**75 tests funcionales en total**:
+**88 tests funcionales en total**:
 - ✅ 8 tests - Pestañas del órgano
 - ✅ 22 tests - Acciones sobre sesiones por estado
 - ✅ 12 tests - Acciones sobre el órgano
 - ✅ 12 tests - Sistema de votaciones
 - ✅ 12 tests - Sistema de quorum
 - ✅ 9 tests - Acciones sobre actas
+- ✅ 13 tests - Document/Fitxer en Punts
 
 **Estado**: ✅ 0 failures, 0 errors
 
@@ -425,4 +438,4 @@ El test de quorum (`test_quorum.py`) verifica 3 permisos específicos:
 
 **Última actualización**: Octubre 2025
 **Versión de Plone**: 6.0.11
-**Tests implementados**: 15/15 (100%) ✅
+**Tests implementados**: 16/16 (100%) ✅

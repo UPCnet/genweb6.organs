@@ -56,21 +56,34 @@ class Genweb6OrgansLayer(PloneSandboxLayer):
         portal.portal_workflow.setDefaultChain("simple_publication_workflow")
 
         # Monkeypatch temporal de genweb6.upc.setuphandlers.setupVarious para tests
-        from genweb6.upc import setuphandlers
-        original_setupVarious = setuphandlers.setupVarious
+        from genweb6.upc import setuphandlers as upc_setuphandlers
+        original_upc_setupVarious = upc_setuphandlers.setupVarious
 
-        def mock_setupVarious(context):
-            # Skip setupVarious en tests - evita llamar getRequest().URL
+        def mock_upc_setupVarious(context):
+            # Skip setupVarious de UPC en tests - evita llamar getRequest().URL
             pass
 
         try:
-            setuphandlers.setupVarious = mock_setupVarious
+            upc_setuphandlers.setupVarious = mock_upc_setupVarious
             # Aplicar perfils
             applyProfile(portal, "genweb6.upc:default")
             applyProfile(portal, "genweb6.organs:default")
         finally:
             # Restaurar función original
-            setuphandlers.setupVarious = original_setupVarious
+            upc_setuphandlers.setupVarious = original_upc_setupVarious
+
+        # ⚠️ Ejecutar setupVarious de organs DESPUÉS de aplicar el perfil
+        # Esto asegura que los tests fallen si disable_acquire_permission()
+        # bloquea permisos necesarios para usuarios Editor/Secretari
+        from genweb6.organs import setuphandlers as organs_setuphandlers
+
+        # Crear un contexto mock para ejecutar setupVarious
+        class MockContext:
+            def readDataFile(self, filename):
+                # Simular que el archivo marker existe
+                return "marker"
+
+        organs_setuphandlers.setupVarious(MockContext())
 
         # Asegurarte que el usuario de testing existe y tenga rol Manager
         setRoles(portal, TEST_USER_ID, ['Manager'])
