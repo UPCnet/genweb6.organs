@@ -285,8 +285,8 @@ Para mantener esta cobertura perfecta:
 
 ---
 
-**Fecha del análisis:** Noviembre 2025  
-**Documento de referencia:** `resumen_permisos_organs.html`  
-**Archivos de test analizados:** 19  
-**Tests funcionales:** 107  
+**Fecha del análisis:** Noviembre 2025
+**Documento de referencia:** `resumen_permisos_organs.html`
+**Archivos de test analizados:** 19
+**Tests funcionales:** 107
 **Cobertura global:** ✅ 100% ULTRA-EXHAUSTIVA

@@ -65,14 +65,14 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
         # Create Organs Test Folder as Manager
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-        
+
         self.og_unit = api.content.create(
             type='genweb.organs.organsfolder',
             id='testingfolder',
             title='Organ Tests E2E',
             container=self.portal['ca']
         )
-        
+
         logout()
 
     def test_e2e_basic_workflow(self):
@@ -81,11 +81,11 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
         print("=" * 60)
         print("Simula el ciclo de vida completo de una sesión")
         print()
-        
+
         # Como Manager, configurar el órgano
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-        
+
         # PASO 1: Crear órgano
         print("📋 PASO 1: Crear órgano")
         organ = api.content.create(
@@ -100,7 +100,7 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
         print("  ✓ Órgano creado: Órgano E2E Test")
         print(f"    - ID: {organ.id}")
         print(f"    - Tipo: {organ.organType}")
-        
+
         # PASO 2: Crear sesión (como Secretari)
         print("\n📝 PASO 2: Crear sesión")
         now = datetime.datetime.now()
@@ -118,10 +118,10 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
         print("  ✓ Sesión creada: Sessió 001")
         print(f"    - Estado inicial: {api.content.get_state(session)}")
         print(f"    - Fecha: {session.start.strftime('%d/%m/%Y %H:%M')}")
-        
+
         # PASO 3: Añadir contenido a la sesión
         print("\n📄 PASO 3: Añadir contenido a la sesión")
-        
+
         # Crear punto del día
         punt = api.content.create(
             type='genweb.organs.punt',
@@ -130,7 +130,7 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
             container=session
         )
         print("  ✓ Punt creado: Punt 1")
-        
+
         # Crear acuerdo
         acord = api.content.create(
             type='genweb.organs.acord',
@@ -139,7 +139,7 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
             container=session
         )
         print("  ✓ Acord creado: Acord 1")
-        
+
         # Crear acta
         acta = api.content.create(
             type='genweb.organs.acta',
@@ -148,44 +148,44 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
             container=session
         )
         print("  ✓ Acta creada")
-        
+
         # PASO 4: Convocar sesión
         print("\n📢 PASO 4: Convocar sesión")
         print(f"    - Estado antes: {api.content.get_state(session)}")
         api.content.transition(obj=session, transition='convocar')
         print(f"    - Estado después: {api.content.get_state(session)}")
         print("  ✓ Sesión convocada")
-        
+
         # Verificar que el contenido es accesible
         self.assertEqual(api.content.get_state(session), 'convocada')
         self.assertTrue(session.restrictedTraverse('view')())
         print("  ✓ Contenido accesible en estado CONVOCADA")
-        
+
         # PASO 5: Realizar sesión
         print("\n▶️  PASO 5: Realizar sesión")
         print(f"    - Estado antes: {api.content.get_state(session)}")
         api.content.transition(obj=session, transition='realitzar')
         print(f"    - Estado después: {api.content.get_state(session)}")
         print("  ✓ Sesión realizada")
-        
+
         self.assertEqual(api.content.get_state(session), 'realitzada')
-        
+
         # PASO 6: Cerrar sesión
         print("\n🔒 PASO 6: Cerrar sesión")
         print(f"    - Estado antes: {api.content.get_state(session)}")
         api.content.transition(obj=session, transition='tancar')
         print(f"    - Estado después: {api.content.get_state(session)}")
         print("  ✓ Sesión cerrada")
-        
+
         self.assertEqual(api.content.get_state(session), 'tancada')
-        
+
         # Verificar integridad final
         print("\n✅ VERIFICACIÓN FINAL")
         print("  ✓ Órgano existe y funciona")
         print("  ✓ Sesión completó todo el ciclo de vida")
         print("  ✓ Contenido preservado (punt, acord, acta)")
         print("  ✓ Flujo básico completado exitosamente")
-        
+
         logout()
         print("=" * 60)
 
@@ -193,10 +193,10 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
         """Test flujo con votación completa."""
         print("\n🗳️  FLUJO END-TO-END CON VOTACIÓN")
         print("=" * 60)
-        
+
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-        
+
         # Crear órgano y sesión
         print("📋 Preparación: Crear órgano y sesión")
         organ = api.content.create(
@@ -208,7 +208,7 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
         )
         organ.acronim = 'OG.VOT'
         organ.organType = 'open_organ'
-        
+
         now = datetime.datetime.now()
         session = api.content.create(
             type='genweb.organs.sessio',
@@ -222,7 +222,7 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
             numSessio='001'
         )
         print("  ✓ Órgano y sesión creados")
-        
+
         # Crear acuerdo con votación
         print("\n📝 Crear acuerdo para votar")
         acord = api.content.create(
@@ -232,30 +232,30 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
             container=session
         )
         print("  ✓ Acord creado para votación")
-        
+
         # Convocar y realizar sesión
         print("\n▶️  Ciclo de vida de la sesión")
         api.content.transition(obj=session, transition='convocar')
         print(f"  ✓ Estado: {api.content.get_state(session)}")
-        
+
         api.content.transition(obj=session, transition='realitzar')
         print(f"  ✓ Estado: {api.content.get_state(session)}")
-        
+
         # Simular votación (esto requeriría llamar a las vistas específicas)
         print("\n🗳️  Simulación de votación")
         print("  ✓ Votación abierta (simulated)")
         print("  ✓ Votos registrados (simulated)")
         print("  ✓ Votación cerrada (simulated)")
-        
+
         # Cerrar sesión
         api.content.transition(obj=session, transition='tancar')
         print(f"\n🔒 Sesión cerrada: {api.content.get_state(session)}")
-        
+
         print("\n✅ VERIFICACIÓN FINAL")
         print("  ✓ Flujo con votación completado")
         print("  ✓ Acuerdo con votación creado")
         print("  ✓ Sesión cerrada correctamente")
-        
+
         logout()
         print("=" * 60)
 
@@ -265,10 +265,10 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
         print("=" * 60)
         print("Incluye: documentos, actas, puntos, acuerdos y transiciones")
         print()
-        
+
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-        
+
         # FASE 1: PREPARACIÓN
         print("📋 FASE 1: PREPARACIÓN DEL ÓRGANO")
         organ = api.content.create(
@@ -281,7 +281,7 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
         organ.acronim = 'OG.FULL'
         organ.organType = 'open_organ'
         print("  ✓ Órgano creado y configurado")
-        
+
         # FASE 2: CREAR SESIÓN Y CONTENIDO
         print("\n📝 FASE 2: CREAR SESIÓN Y ORDEN DEL DÍA")
         now = datetime.datetime.now()
@@ -297,10 +297,10 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
             numSessio='001'
         )
         print(f"  ✓ Sesión creada en estado: {api.content.get_state(session)}")
-        
+
         # Crear estructura completa
         print("\n  Creando contenido de la sesión:")
-        
+
         # Múltiples puntos
         for i in range(1, 4):
             punt = api.content.create(
@@ -310,7 +310,7 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
                 container=session
             )
             print(f"    ✓ Punt {i} creado")
-            
+
             # Documentos en cada punt
             doc = api.content.create(
                 type='genweb.organs.document',
@@ -319,7 +319,7 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
                 container=punt
             )
             print(f"      ✓ Document adjunt al Punt {i}")
-        
+
         # Acuerdos
         for i in range(1, 3):
             acord = api.content.create(
@@ -329,7 +329,7 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
                 container=session
             )
             print(f"    ✓ Acord {i} creado")
-        
+
         # Acta
         acta = api.content.create(
             type='genweb.organs.acta',
@@ -338,45 +338,47 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
             container=session
         )
         print("    ✓ Acta creada")
-        
+
         # FASE 3: WORKFLOW COMPLETO
         print("\n▶️  FASE 3: EJECUTAR WORKFLOW COMPLETO")
-        
+
         estados = []
         transiciones = ['convocar', 'realitzar', 'tancar']
-        
+
         for transicion in transiciones:
             estado_antes = api.content.get_state(session)
             estados.append(estado_antes)
             api.content.transition(obj=session, transition=transicion)
             estado_despues = api.content.get_state(session)
             print(f"  ✓ {transicion.capitalize()}: {estado_antes} → {estado_despues}")
-        
+
         estados.append(api.content.get_state(session))
-        
+
         # FASE 4: VERIFICACIÓN FINAL
         print("\n✅ FASE 4: VERIFICACIÓN FINAL")
-        
+
         # Verificar estado final
         self.assertEqual(api.content.get_state(session), 'tancada')
         print("  ✓ Sesión en estado final: TANCADA")
-        
+
         # Verificar contenido
         print("  ✓ Verificando integridad del contenido:")
-        self.assertEqual(len([o for o in session.objectIds() if o.startswith('punt_')]), 3)
+        self.assertEqual(
+            len([o for o in session.objectIds() if o.startswith('punt_')]), 3)
         print("    ✓ 3 puntos presentes")
-        
-        self.assertEqual(len([o for o in session.objectIds() if o.startswith('acord_')]), 2)
+
+        self.assertEqual(
+            len([o for o in session.objectIds() if o.startswith('acord_')]), 2)
         print("    ✓ 2 acuerdos presentes")
-        
+
         self.assertIn('acta_completa', session.objectIds())
         print("    ✓ Acta presente")
-        
+
         # Verificar que los documentos están en los puntos
         punt_1 = session['punt_001']
         self.assertIn('doc_001', punt_1.objectIds())
         print("    ✓ Documentos adjuntos a puntos")
-        
+
         # Resumen del flujo
         print("\n📊 RESUMEN DEL FLUJO COMPLETO:")
         print(f"  • Órgano: {organ.title}")
@@ -387,7 +389,7 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
         print(f"  • Documentos adjuntos: 3")
         print(f"  • Acta: Sí")
         print("\n  ✅ FLUJO COMPLETO EJECUTADO EXITOSAMENTE")
-        
+
         logout()
         print("=" * 60)
 
@@ -418,6 +420,5 @@ class EndToEndWorkflowTestCase(unittest.TestCase):
         print()
         print("✅ TESTS END-TO-END COMPLETADOS")
         print("=" * 60)
-        
-        self.assertTrue(True)
 
+        self.assertTrue(True)

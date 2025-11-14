@@ -90,7 +90,7 @@ class AnnexPermissionsTestCase(unittest.TestCase):
             )
             organ.acronim = f'OG.{organ_id.upper()}'
             organ.organType = organ_type
-            
+
             # Create sessions and annexes
             now = datetime.datetime.now()
             session_configs = {
@@ -98,7 +98,7 @@ class AnnexPermissionsTestCase(unittest.TestCase):
                 'convocada': ['convocar'],
                 'tancada': ['convocar', 'realitzar', 'tancar'],
             }
-            
+
             sessions = {}
             for session_id, transitions in session_configs.items():
                 session = api.content.create(
@@ -112,13 +112,13 @@ class AnnexPermissionsTestCase(unittest.TestCase):
                     numSessioShowOnly='01',
                     numSessio='01'
                 )
-                
+
                 for transition in transitions:
                     try:
                         api.content.transition(obj=session, transition=transition)
                     except Exception:
                         pass
-                
+
                 # Create acta first (annex must be inside acta)
                 acta = api.content.create(
                     type='genweb.organs.acta',
@@ -126,7 +126,7 @@ class AnnexPermissionsTestCase(unittest.TestCase):
                     title=f'Acta {session_id}',
                     container=session
                 )
-                
+
                 # Create annex inside acta
                 annex = api.content.create(
                     type='genweb.organs.annex',
@@ -134,9 +134,10 @@ class AnnexPermissionsTestCase(unittest.TestCase):
                     title=f'Annex {session_id}',
                     container=acta
                 )
-                
-                sessions[session_id] = {'session': session, 'acta': acta, 'annex': annex}
-            
+
+                sessions[session_id] = {
+                    'session': session, 'acta': acta, 'annex': annex}
+
             self.organs[organ_type] = {'organ': organ, 'sessions': sessions}
 
         logout()
@@ -144,10 +145,10 @@ class AnnexPermissionsTestCase(unittest.TestCase):
     def test_annex_permissions_in_open_organ_planificada(self):
         """Test que Annex existe y está correctamente creado - PLANIFICADA."""
         print("\n✅ Verificando Annex en open_organ - PLANIFICADA")
-        
+
         annex = self.organs['open_organ']['sessions']['planificada']['annex']
         acta = self.organs['open_organ']['sessions']['planificada']['acta']
-        
+
         # Verificar estructura
         print("  ✓ Verificando estructura de Annex")
         self.assertIsNotNone(annex)
@@ -155,16 +156,16 @@ class AnnexPermissionsTestCase(unittest.TestCase):
         self.assertEqual(annex.aq_parent, acta)
         print("    ✓ Annex creado correctamente dentro de Acta")
         print("    ✓ Annex hereda permisos de su Acta contenedora")
-        
+
         print("  ✓ Verificación completa: Estructura Annex correcta en PLANIFICADA")
 
     def test_annex_permissions_in_open_organ_convocada(self):
         """Test que Annex existe y está correctamente creado - CONVOCADA."""
         print("\n✅ Verificando Annex en open_organ - CONVOCADA")
-        
+
         annex = self.organs['open_organ']['sessions']['convocada']['annex']
         acta = self.organs['open_organ']['sessions']['convocada']['acta']
-        
+
         # Verificar estructura
         print("  ✓ Verificando estructura de Annex")
         self.assertIsNotNone(annex)
@@ -172,16 +173,16 @@ class AnnexPermissionsTestCase(unittest.TestCase):
         self.assertEqual(annex.aq_parent, acta)
         print("    ✓ Annex creado correctamente dentro de Acta")
         print("    ✓ Annex hereda permisos de su Acta contenedora")
-        
+
         print("  ✓ Verificación completa: Estructura Annex correcta en CONVOCADA")
 
     def test_annex_permissions_in_open_organ_tancada(self):
         """Test que Annex existe y está correctamente creado - TANCADA."""
         print("\n✅ Verificando Annex en open_organ - TANCADA")
-        
+
         annex = self.organs['open_organ']['sessions']['tancada']['annex']
         acta = self.organs['open_organ']['sessions']['tancada']['acta']
-        
+
         # Verificar estructura
         print("  ✓ Verificando estructura de Annex")
         self.assertIsNotNone(annex)
@@ -189,46 +190,50 @@ class AnnexPermissionsTestCase(unittest.TestCase):
         self.assertEqual(annex.aq_parent, acta)
         print("    ✓ Annex creado correctamente dentro de Acta")
         print("    ✓ Annex hereda permisos de su Acta contenedora")
-        
+
         print("  ✓ Verificación completa: Estructura Annex correcta en TANCADA")
 
     def test_annex_permissions_in_restricted_organs(self):
         """Test que Annex existe en órganos restringidos."""
         print("\n✅ Verificando Annex en órganos restringidos")
-        
+
         # Test en órgano restringido a miembros
         print("  ✓ Verificando restricted_to_members_organ")
-        annex_membres = self.organs['restricted_to_members_organ']['sessions']['convocada']['annex']
-        acta_membres = self.organs['restricted_to_members_organ']['sessions']['convocada']['acta']
-        
+        annex_membres = self.organs['restricted_to_members_organ']['sessions'][
+            'convocada']['annex']
+        acta_membres = self.organs['restricted_to_members_organ']['sessions'][
+            'convocada']['acta']
+
         self.assertIsNotNone(annex_membres)
         self.assertEqual(annex_membres.portal_type, 'genweb.organs.annex')
         self.assertEqual(annex_membres.aq_parent, acta_membres)
         print("    ✓ Annex existe en órgano restricted_to_members")
-        
+
         # Test en órgano restringido a afectados
         print("  ✓ Verificando restricted_to_affected_organ")
-        annex_afectats = self.organs['restricted_to_affected_organ']['sessions']['convocada']['annex']
-        acta_afectats = self.organs['restricted_to_affected_organ']['sessions']['convocada']['acta']
-        
+        annex_afectats = self.organs['restricted_to_affected_organ']['sessions'][
+            'convocada']['annex']
+        acta_afectats = self.organs['restricted_to_affected_organ']['sessions'][
+            'convocada']['acta']
+
         self.assertIsNotNone(annex_afectats)
         self.assertEqual(annex_afectats.portal_type, 'genweb.organs.annex')
         self.assertEqual(annex_afectats.aq_parent, acta_afectats)
         print("    ✓ Annex existe en órgano restricted_to_affected")
-        
+
         print("  ✓ Verificación completa: Estructura Annex correcta en órganos restringidos")
 
     def test_annex_creation_permissions(self):
         """Test creación de Annex por Manager."""
         print("\n✅ Verificando creación de Annex")
-        
+
         acta = self.organs['open_organ']['sessions']['planificada']['acta']
-        
+
         # Manager: Puede crear annex dentro de acta
         print("  ✓ Verificando Manager puede crear")
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-        
+
         annex = api.content.create(
             type='genweb.organs.annex',
             id='annex_created_by_manager',
@@ -240,7 +245,7 @@ class AnnexPermissionsTestCase(unittest.TestCase):
         self.assertEqual(annex.aq_parent, acta)
         print("    ✓ Manager puede crear Annex dentro de Acta")
         logout()
-        
+
         print("  ✓ Verificación completa: Creación de Annex correcta")
 
     def test_zzz_annex_permissions_summary(self):
@@ -271,6 +276,5 @@ class AnnexPermissionsTestCase(unittest.TestCase):
         print("   - Los permisos se heredan de Acta (contenedor padre)")
         print("   - Estructura y creación verificadas correctamente")
         print("=" * 60)
-        
-        self.assertTrue(True)
 
+        self.assertTrue(True)

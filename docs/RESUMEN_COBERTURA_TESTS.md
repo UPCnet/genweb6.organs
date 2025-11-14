@@ -1,6 +1,6 @@
 # 📊 RESUMEN: Cobertura de Tests vs. Tablas de Permisos
 
-**Fecha:** Noviembre 2025  
+**Fecha:** Noviembre 2025
 **Análisis de:** `resumen_permisos_organs.html` vs. Tests implementados
 
 ---

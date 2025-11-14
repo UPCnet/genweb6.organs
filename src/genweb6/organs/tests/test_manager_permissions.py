@@ -87,7 +87,7 @@ class ManagerPermissionsTestCase(unittest.TestCase):
             )
             organ.acronim = f'OG.{organ_id.upper()}'
             organ.organType = organ_type
-            
+
             # Create sessions in different states
             now = datetime.datetime.now()
             session_transitions = {
@@ -97,7 +97,7 @@ class ManagerPermissionsTestCase(unittest.TestCase):
                 'tancada': ['convocar', 'realitzar', 'tancar'],
                 'correccio': ['convocar', 'realitzar', 'correccio']
             }
-            
+
             sessions = {}
             for session_id, transitions in session_transitions.items():
                 session = api.content.create(
@@ -111,16 +111,16 @@ class ManagerPermissionsTestCase(unittest.TestCase):
                     numSessioShowOnly='01',
                     numSessio='01'
                 )
-                
+
                 # Apply workflow transitions
                 for transition in transitions:
                     try:
                         api.content.transition(obj=session, transition=transition)
                     except Exception:
                         pass
-                
+
                 sessions[session_id] = session
-            
+
             self.organs[organ_type] = {'organ': organ, 'sessions': sessions}
 
         logout()
@@ -128,17 +128,17 @@ class ManagerPermissionsTestCase(unittest.TestCase):
     def test_manager_can_access_all_organ_types(self):
         """Test que Manager puede acceder a todos los tipos de órganos."""
         print("\n✅ Verificando que Manager puede acceder a todos los tipos de órganos")
-        
+
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-        
+
         for organ_type, data in self.organs.items():
             organ = data['organ']
-            
+
             # READ: Puede ver el órgano
             print(f"  ✓ Verificando acceso a órgano {organ_type}")
             self.assertTrue(organ.restrictedTraverse('view')())
-            
+
             # WRITE: Puede modificar el órgano
             original_title = organ.title
             organ.title = f'{original_title} - Modified by Manager'
@@ -146,28 +146,28 @@ class ManagerPermissionsTestCase(unittest.TestCase):
             self.assertEqual(organ.title, f'{original_title} - Modified by Manager')
             organ.title = original_title
             organ.reindexObject()
-            
+
             print(f"    ✓ Manager tiene acceso completo RWD a {organ_type}")
-        
+
         print("  ✓ Verificación completa: Manager accede a todos los tipos de órganos")
         logout()
 
     def test_manager_can_access_all_session_states(self):
         """Test que Manager puede acceder a sesiones en todos los estados."""
         print("\n✅ Verificando que Manager puede acceder a sesiones en todos los estados")
-        
+
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-        
+
         # Test con órgano público (más permisivo)
         sessions = self.organs['open_organ']['sessions']
-        
+
         for state, session in sessions.items():
             print(f"  ✓ Verificando acceso a sesión en estado {state.upper()}")
-            
+
             # READ: Puede ver la sesión
             self.assertTrue(session.restrictedTraverse('view')())
-            
+
             # WRITE: Puede modificar la sesión
             original_title = session.title
             session.title = f'{original_title} - Manager'
@@ -175,28 +175,28 @@ class ManagerPermissionsTestCase(unittest.TestCase):
             self.assertEqual(session.title, f'{original_title} - Manager')
             session.title = original_title
             session.reindexObject()
-            
+
             print(f"    ✓ Manager tiene acceso RW a sesión {state}")
-        
+
         print("  ✓ Verificación completa: Manager accede a todos los estados")
         logout()
 
     def test_manager_can_create_all_content_types(self):
         """Test que Manager puede crear todos los tipos de contenido."""
         print("\n✅ Verificando que Manager puede crear todos los tipos de contenido")
-        
+
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-        
+
         # Test en sesión PLANIFICADA (más restrictiva normalmente)
         session = self.organs['open_organ']['sessions']['planificada']
-        
+
         content_types = [
             ('genweb.organs.punt', 'punt_manager', 'Punt Manager'),
             ('genweb.organs.acord', 'acord_manager', 'Acord Manager'),
             ('genweb.organs.acta', 'acta_manager', 'Acta Manager'),
         ]
-        
+
         for portal_type, id, title in content_types:
             print(f"  ✓ Creando {portal_type}")
             content = api.content.create(
@@ -207,20 +207,20 @@ class ManagerPermissionsTestCase(unittest.TestCase):
             )
             self.assertIsNotNone(content)
             print(f"    ✓ Manager puede crear {portal_type}")
-        
+
         print("  ✓ Verificación completa: Manager puede crear todo tipo de contenido")
         logout()
 
     def test_manager_can_delete_content(self):
         """Test que Manager puede eliminar cualquier contenido."""
         print("\n✅ Verificando que Manager puede eliminar contenido")
-        
+
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-        
+
         # Crear y eliminar en sesión TANCADA (normalmente restrictiva)
         session = self.organs['open_organ']['sessions']['tancada']
-        
+
         # Crear un punt
         punt = api.content.create(
             type='genweb.organs.punt',
@@ -230,38 +230,38 @@ class ManagerPermissionsTestCase(unittest.TestCase):
         )
         self.assertIsNotNone(punt)
         print("  ✓ Punt creado")
-        
+
         # Eliminar el punt
         api.content.delete(obj=punt, check_linkintegrity=False)
         print("  ✓ Punt eliminado por Manager")
-        
+
         # Verificar que no existe
         self.assertNotIn('punt_to_delete', session.objectIds())
-        
+
         print("  ✓ Verificación completa: Manager puede eliminar contenido")
         logout()
 
     def test_manager_has_no_restrictions_in_restricted_organs(self):
         """Test que Manager NO tiene restricciones en órganos restringidos."""
         print("\n✅ Verificando que Manager no tiene restricciones en órganos restringidos")
-        
+
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-        
+
         # Test en órgano restringido a miembros
         organ_membres = self.organs['restricted_to_members_organ']['organ']
         session = self.organs['restricted_to_members_organ']['sessions']['planificada']
-        
+
         print("  ✓ Verificando órgano restricted_to_members_organ")
-        
+
         # Puede ver el órgano
         self.assertTrue(organ_membres.restrictedTraverse('view')())
         print("    ✓ Manager puede ver órgano restringido")
-        
+
         # Puede ver la sesión
         self.assertTrue(session.restrictedTraverse('view')())
         print("    ✓ Manager puede ver sesión en órgano restringido")
-        
+
         # Puede crear contenido
         punt = api.content.create(
             type='genweb.organs.punt',
@@ -271,31 +271,31 @@ class ManagerPermissionsTestCase(unittest.TestCase):
         )
         self.assertIsNotNone(punt)
         print("    ✓ Manager puede crear contenido en órgano restringido")
-        
+
         # Test en órgano restringido a afectados
         organ_afectats = self.organs['restricted_to_affected_organ']['organ']
         self.assertTrue(organ_afectats.restrictedTraverse('view')())
         print("    ✓ Manager puede ver órgano restricted_to_affected_organ")
-        
+
         print("  ✓ Verificación completa: Manager sin restricciones en órganos restringidos")
         logout()
 
     def test_manager_can_manage_quorum(self):
         """Test que Manager puede gestionar quorum."""
         print("\n✅ Verificando que Manager puede gestionar quorum")
-        
+
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-        
+
         session = self.organs['open_organ']['sessions']['convocada']
-        
+
         # Manager debería poder acceder a las vistas de quorum
         # (Según test_quorum.py, Manager tiene todos los permisos de quorum)
         print("  ✓ Manager tiene permisos completos de quorum:")
         print("    ✓ Manage Quorum - Puede gestionar quorum")
         print("    ✓ Add Quorum - Puede añadir asistentes")
         print("    ✓ Remove Quorum - Puede eliminar quorum (solo Manager)")
-        
+
         print("  ✓ Verificación completa: Manager puede gestionar quorum")
         logout()
 
@@ -334,6 +334,5 @@ class ManagerPermissionsTestCase(unittest.TestCase):
         print("   - Sin excepciones ni restricciones")
         print("   - Acceso verificado en todos los escenarios")
         print("=" * 60)
-        
-        self.assertTrue(True)
 
+        self.assertTrue(True)
