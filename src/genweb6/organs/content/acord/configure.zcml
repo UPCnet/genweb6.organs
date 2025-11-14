@@ -41,7 +41,7 @@
     name="hideAgreement"
     for=".acord.IAcord"
     class=".acord.HideAgreement"
-    permission="genweb.webmaster"
+    permission="cmf.ModifyPortalContent"
     />
     
   <browser:page
