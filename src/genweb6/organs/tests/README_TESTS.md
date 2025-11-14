@@ -85,20 +85,20 @@ Esta guía documenta cómo ejecutar los tests de permisos implementados para `ge
     - Verificación explícita de permisos del rol Manager
     - Acceso completo a todos los tipos de órganos y estados
     - Permisos CRWDE completos sin restricciones
-    - 7 tests implementados
+    - 7 tests implementados (6 funcionales + 1 resumen)
 
 18. **test_annex_permissions.py** ⭐ BAJA PRIORIDAD
     - Verificación de estructura de Annex (contenido dentro de Acta)
     - Annex hereda permisos de su Acta contenedora
     - Verificación de creación y estructura en todos los estados
-    - 6 tests implementados
+    - 6 tests implementados (5 funcionales + 1 resumen)
 
 19. **test_end_to_end_workflow.py** ⭐ BAJA PRIORIDAD
     - Tests End-to-End de flujos completos
     - Flujo básico: Crear → Convocar → Realizar → Cerrar
     - Flujo con votación: Incluye acuerdos y votaciones
     - Flujo completo: Múltiples puntos, acuerdos, documentos y actas
-    - 4 tests implementados
+    - 5 tests implementados (4 funcionales + 1 resumen)
 
 ## 🚀 Comandos de Ejecución
 
@@ -183,6 +183,27 @@ cd /Users/pilarmarinas/Development/Plone/organs6.buildout
 #### Tests de Document/Fitxer en Punts ⭐ NUEVO
 ```bash
 ./bin/test -s genweb6.organs -t test_document_fitxer_permissions_in_punt
+```
+
+#### Tests de Manager (baja prioridad) ⭐ NUEVO
+```bash
+./bin/test -s genweb6.organs -t test_manager_permissions
+```
+
+#### Tests de Annex (baja prioridad) ⭐ NUEVO
+```bash
+./bin/test -s genweb6.organs -t test_annex_permissions
+```
+
+#### Tests End-to-End (baja prioridad) ⭐ NUEVO
+```bash
+./bin/test -s genweb6.organs -t test_end_to_end_workflow
+```
+
+#### Ejecutar todos los tests ultra-exhaustivos (baja prioridad) ⭐ NUEVO
+```bash
+# Ejecutar los 3 tests de baja prioridad (Manager, Annex, E2E)
+./bin/test -s genweb6.organs -t "test_manager_permissions|test_annex_permissions|test_end_to_end_workflow"
 ```
 
 #### Ejecutar todos los tests de acciones y UI (88 tests) ⭐ NUEVO
@@ -437,9 +458,9 @@ directory = coverage_report
 - ✅ 9 tests - Acciones sobre actas
 - ✅ 13 tests - Document/Fitxer en Punts
 - ✅ 8 tests - Permisos CRWDE (5 estados de workflow) ⭐ +2 tests nuevos
-- ✅ 7 tests - Permisos Manager (baja prioridad) ⭐ NUEVO
-- ✅ 6 tests - Estructura Annex (baja prioridad) ⭐ NUEVO
-- ✅ 4 tests - Flujos End-to-End (baja prioridad) ⭐ NUEVO
+- ✅ 7 tests - Permisos Manager (6 funcionales + 1 resumen) ⭐ NUEVO
+- ✅ 6 tests - Estructura Annex (5 funcionales + 1 resumen) ⭐ NUEVO
+- ✅ 5 tests - Flujos End-to-End (4 funcionales + 1 resumen) ⭐ NUEVO
 - ✅ Tests adicionales para tipos de órganos y otros casos
 
 **Estado**: ✅ 0 failures, 0 errors
@@ -462,6 +483,7 @@ El test de quorum (`test_quorum.py`) verifica 3 permisos específicos:
 
 ---
 
-**Última actualización**: Octubre 2025
+**Última actualización**: Noviembre 2025
 **Versión de Plone**: 6.0.11
-**Tests implementados**: 16/16 (100%) ✅
+**Tests implementados**: 19/19 (100%) ✅
+**Total tests funcionales**: 107 (0 failures, 0 errors) ✅
