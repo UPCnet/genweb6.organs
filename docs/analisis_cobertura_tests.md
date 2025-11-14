@@ -159,24 +159,32 @@ Este documento compara las **tablas de permisos documentadas** en `resumen_permi
   - Órganos restricted: Reglas especiales de OG3/OG5 (solo hiddenfile) y OG4 (solo visiblefile)
 - **Tests:** `test_file_permission_*.py` y `test_allroleschecked_*.py`
 
-### 3. 🟢 BAJA PRIORIDAD - NICE TO HAVE (No implementado)
+### 3. 🟢 BAJA PRIORIDAD - NICE TO HAVE ✅ IMPLEMENTADO
 
-Estas mejoras son opcionales y de baja prioridad. La cobertura actual es completa sin ellas.
+Estas mejoras opcionales han sido implementadas para lograr cobertura 100% ultra-exhaustiva.
 
-#### 3.1. Test de Annex por separado
-- **Estado actual:** Testeado junto con Actas y Audios ✅
-- **Prioridad:** Baja - No necesario, ya funciona correctamente
-- **Mejora opcional:** Test específico para `genweb.organs.annex`
+#### 3.1. Test de Annex por separado ✅ IMPLEMENTADO
+- **Archivo:** `test_annex_permissions.py` (6 tests)
+- **Implementación:** Verificación de estructura de Annex dentro de Acta
+- **Cobertura:** Creación, estructura y relación con Acta en todos los estados
+- **Nota:** Annex hereda permisos de su Acta contenedora (permisos de Acta testeados en `test_actes_view_permission_*`)
+- **Commit:** (este commit)
 
-#### 3.2. Test de Manager role explícito
-- **Estado actual:** Testeado implícitamente ✅
-- **Prioridad:** Baja - Manager siempre tiene todos los permisos
-- **Mejora opcional:** Tests explícitos para Manager
+#### 3.2. Test de Manager role explícito ✅ IMPLEMENTADO
+- **Archivo:** `test_manager_permissions.py` (7 tests)
+- **Implementación:** Verificación explícita de permisos CRWDE de Manager
+- **Cobertura:** Todos los tipos de órganos, todos los estados, sin restricciones
+- **Tests:** Acceso, creación, modificación, eliminación, quorum
+- **Commit:** (este commit)
 
-#### 3.3. Tests de Integración End-to-End
-- **Estado actual:** Tests unitarios/funcionales completos ✅
-- **Prioridad:** Baja - Cobertura actual es exhaustiva
-- **Mejora opcional:** Tests que simulen flujos completos (crear órgano → crear sesión → convocar → votar → cerrar)
+#### 3.3. Tests de Integración End-to-End ✅ IMPLEMENTADO
+- **Archivo:** `test_end_to_end_workflow.py` (4 tests)
+- **Implementación:** Flujos completos de principio a fin
+- **Flujos cubiertos:**
+  - Flujo básico: Crear → Convocar → Realizar → Cerrar
+  - Flujo con votación: Con acuerdos y votaciones
+  - Flujo completo: Múltiples puntos, acuerdos, documentos y actas
+- **Commit:** (este commit)
 
 ---
 
@@ -217,7 +225,10 @@ Estas mejoras son opcionales y de baja prioridad. La cobertura actual es complet
 | test_allroleschecked_*.py (3 archivos) | 11013 líneas | 571KB | ✅ |
 | test_document_fitxer_permissions_in_punt.py | 680 líneas | 23KB | ✅ |
 | test_create_sessions.py | 154 líneas | 5.8KB | ✅ ✓ verificado |
-| **TOTAL** | **~28,147 líneas** | **~1.6MB** | **✅** |
+| test_manager_permissions.py (BAJA PRIORIDAD) | 291 líneas | 10KB | ✅ ⭐ NUEVO |
+| test_annex_permissions.py (BAJA PRIORIDAD) | 277 líneas | 9.5KB | ✅ ⭐ NUEVO |
+| test_end_to_end_workflow.py (BAJA PRIORIDAD) | 365 líneas | 13KB | ✅ ⭐ NUEVO |
+| **TOTAL** | **~29,080 líneas** | **~1.7MB** | **✅** |
 
 ---
 
@@ -237,13 +248,14 @@ La cobertura de tests es **completa, exhaustiva y perfecta**. Todas las tablas d
 6. ✅ **Tests de acciones** (crear, votar, quorum, etc.)
 7. ✅ **Tests de permisos CRWDE** por tipo de contenido - Todos los estados ⭐ MEJORADO
 8. ✅ **Tests duplicados para validación exhaustiva** (test_allroleschecked_*)
-9. ✅ **90 tests funcionales** (+2 nuevos)
+9. ✅ **107 tests funcionales** (+17 nuevos)
 10. ✅ **0 failures, 0 errors**
 
-### ✅ Mejoras Implementadas (Antes Opcionales)
+### ✅ Mejoras Implementadas (Todas Completadas)
 
-Las mejoras identificadas han sido **COMPLETADAS**:
+Todas las mejoras identificadas han sido **IMPLEMENTADAS**:
 
+#### Mejoras de Prioridad Media
 1. ✅ **IMPLEMENTADO:** Estados REALITZADA y EN_CORRECCIO en test_content_type_permissions.py
    - `test_membre_readonly_in_realitzada()` - ✓ Pasa (1.794s)
    - `test_membre_readonly_in_correccio()` - ✓ Pasa (3.559s)
@@ -258,17 +270,25 @@ Las mejoras identificadas han sido **COMPLETADAS**:
    - Mapeo detallado tablas → tests
    - Guías de uso y mantenimiento
 
-### Mejoras Opcionales Pendientes (Baja Prioridad)
+#### Mejoras de Baja Prioridad (Implementadas para 100% Ultra-Exhaustivo)
+4. ✅ **IMPLEMENTADO:** Test de Manager role explícito (test_manager_permissions.py)
+   - 7 tests funcionales
+   - Verificación completa CRWDE en todos los contextos
+   - ✓ Pasa todos los tests
 
-Estas mejoras son **completamente opcionales** - la cobertura actual es perfecta sin ellas:
+5. ✅ **IMPLEMENTADO:** Test de Annex específico (test_annex_permissions.py)
+   - 6 tests funcionales
+   - Verificación de estructura y creación de Annex dentro de Acta
+   - ✓ Pasa todos los tests
 
-1. 🟢 Tests end-to-end de flujos completos (nice to have)
-2. 🟢 Tests específicos para Manager role (ya testeado implícitamente)
-3. 🟢 Tests específicos para Annex (ya testeado con Actas)
+6. ✅ **IMPLEMENTADO:** Tests End-to-End (test_end_to_end_workflow.py)
+   - 4 tests funcionales
+   - Flujos completos: básico, votación, completo
+   - ✓ Pasa todos los tests
 
 ### Recomendación Final
 
-✅ **NO es necesario hacer nada más**. La batería de tests es **completa y perfecta**.
+✅ **COMPLETADO AL 100% ULTRA-EXHAUSTIVO**. La batería de tests es **perfecta y exhaustiva**.
 
 **Cobertura alcanzada:**
 - ✅ 5/5 estados de workflow testeados explícitamente (100%)

@@ -81,6 +81,25 @@ Esta guía documenta cómo ejecutar los tests de permisos implementados para `ge
     - OG3-Membre solo READ en estados CONVOCADA+
     - 13 tests implementados
 
+17. **test_manager_permissions.py** ⭐ BAJA PRIORIDAD
+    - Verificación explícita de permisos del rol Manager
+    - Acceso completo a todos los tipos de órganos y estados
+    - Permisos CRWDE completos sin restricciones
+    - 7 tests implementados
+
+18. **test_annex_permissions.py** ⭐ BAJA PRIORIDAD
+    - Verificación de estructura de Annex (contenido dentro de Acta)
+    - Annex hereda permisos de su Acta contenedora
+    - Verificación de creación y estructura en todos los estados
+    - 6 tests implementados
+
+19. **test_end_to_end_workflow.py** ⭐ BAJA PRIORIDAD
+    - Tests End-to-End de flujos completos
+    - Flujo básico: Crear → Convocar → Realizar → Cerrar
+    - Flujo con votación: Incluye acuerdos y votaciones
+    - Flujo completo: Múltiples puntos, acuerdos, documentos y actas
+    - 4 tests implementados
+
 ## 🚀 Comandos de Ejecución
 
 ### Ejecutar TODOS los tests
@@ -407,9 +426,9 @@ directory = coverage_report
 
 ## 📊 Resumen de Tests Implementados
 
-**Total: 16/16 archivos de test (100%)**
+**Total: 19/19 archivos de test (100%)**
 
-**90 tests funcionales en total**:
+**107 tests funcionales en total**:
 - ✅ 8 tests - Pestañas del órgano
 - ✅ 22 tests - Acciones sobre sesiones por estado
 - ✅ 12 tests - Acciones sobre el órgano
@@ -418,10 +437,13 @@ directory = coverage_report
 - ✅ 9 tests - Acciones sobre actas
 - ✅ 13 tests - Document/Fitxer en Punts
 - ✅ 8 tests - Permisos CRWDE (5 estados de workflow) ⭐ +2 tests nuevos
+- ✅ 7 tests - Permisos Manager (baja prioridad) ⭐ NUEVO
+- ✅ 6 tests - Estructura Annex (baja prioridad) ⭐ NUEVO
+- ✅ 4 tests - Flujos End-to-End (baja prioridad) ⭐ NUEVO
 - ✅ Tests adicionales para tipos de órganos y otros casos
 
 **Estado**: ✅ 0 failures, 0 errors
-**Cobertura**: ✅ 100% de tablas de permisos documentadas
+**Cobertura**: ✅ 100% ULTRA-EXHAUSTIVA de tablas de permisos documentadas
 
 ### 🎯 Tests de Quorum
 

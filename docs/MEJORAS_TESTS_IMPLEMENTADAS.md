@@ -1,6 +1,6 @@
 # ✅ Mejoras de Tests Implementadas
 
-**Fecha:** Noviembre 2025  
+**Fecha:** Noviembre 2025
 **Objetivo:** Cobertura 100% ultra-exhaustiva de permisos
 
 ---
@@ -31,7 +31,7 @@ Se han implementado **2 mejoras opcionales** para alcanzar una cobertura de test
 ```python
 def test_membre_readonly_in_realitzada(self):
     """Test que OG3-Membre solo tiene READ en REALITZADA.
-    
+
     Según documentación UPC, en REALITZADA los permisos son idénticos
     a CONVOCADA:
     - OG1-Secretari: CRWDE
@@ -49,7 +49,7 @@ def test_membre_readonly_in_realitzada(self):
 ```python
 def test_membre_readonly_in_correccio(self):
     """Test que OG3-Membre solo tiene READ en EN_CORRECCIO.
-    
+
     Según documentación UPC, en EN_CORRECCIO los permisos son idénticos
     a CONVOCADA/REALITZADA:
     - OG1-Secretari: CRWDE
@@ -250,7 +250,7 @@ cd /Users/pilarmarinas/Development/Plone/organs6.buildout
    - Actualizado resumen de permisos con cobertura 5/5 estados
    - Verificado que test_create_sessions.py cubre 3 tipos de órganos
    - Actualizada documentación de análisis de cobertura
-   
+
    Cobertura: 100% ultra-exhaustiva de todos los estados de workflow"
    ```
 
@@ -295,4 +295,3 @@ cd /Users/pilarmarinas/Development/Plone/organs6.buildout
 ---
 
 **🎉 Objetivo alcanzado: Cobertura 100% ultra-exhaustiva de permisos en genweb6.organs**
-
