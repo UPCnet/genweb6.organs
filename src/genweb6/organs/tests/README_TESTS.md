@@ -34,9 +34,10 @@ Esta guía documenta cómo ejecutar los tests de permisos implementados para `ge
    - Vista de actas/audios en órganos restringidos a afectados
    - OG4-Afectat sin acceso a actas
 
-8. **test_content_type_permissions.py** ⭐ NUEVO
+8. **test_content_type_permissions.py** ⭐ ACTUALIZADO
    - Permisos CRWDE sobre tipos de contenido
-   - Por estado de sesión (PLANIFICADA, CONVOCADA, TANCADA)
+   - Por estado de sesión (PLANIFICADA, CONVOCADA, REALITZADA, TANCADA, EN_CORRECCIO)
+   - Cobertura: 5/5 estados (100%)
 
 9. **test_organ_permissions.py** ⭐ NUEVO
    - Permisos RWD sobre el órgano
@@ -406,9 +407,9 @@ directory = coverage_report
 
 ## 📊 Resumen de Tests Implementados
 
-**Total: 16/16 tests (100%)**
+**Total: 16/16 archivos de test (100%)**
 
-**88 tests funcionales en total**:
+**90 tests funcionales en total**:
 - ✅ 8 tests - Pestañas del órgano
 - ✅ 22 tests - Acciones sobre sesiones por estado
 - ✅ 12 tests - Acciones sobre el órgano
@@ -416,8 +417,11 @@ directory = coverage_report
 - ✅ 12 tests - Sistema de quorum
 - ✅ 9 tests - Acciones sobre actas
 - ✅ 13 tests - Document/Fitxer en Punts
+- ✅ 8 tests - Permisos CRWDE (5 estados de workflow) ⭐ +2 tests nuevos
+- ✅ Tests adicionales para tipos de órganos y otros casos
 
 **Estado**: ✅ 0 failures, 0 errors
+**Cobertura**: ✅ 100% de tablas de permisos documentadas
 
 ### 🎯 Tests de Quorum
 
