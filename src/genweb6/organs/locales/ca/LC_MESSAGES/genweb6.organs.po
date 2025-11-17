@@ -12,7 +12,7 @@ msgstr ""
 "Language-Code: en\n"
 "Language-Name: English\n"
 "Preferred-Encodings: utf-8 latin1\n"
-"Domain: DOMAIN\n"
+"Domain: genweb6.organs\n"
 "Language: ca\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
@@ -1917,3 +1917,62 @@ msgstr "a"
 #: ./genweb6/organs/portlets/calendar/portlet_calendar.pt:63
 msgid "veure totes les sessions"
 msgstr "veure totes les sessions"
+
+
+
+msgid "ConvocarSessio"
+msgstr "Convoca sessió"
+
+msgid "ModificarSessio"
+msgstr "Modifica sessió"
+
+msgid "PlanificarSessio"
+msgstr "Planifica sessió"
+
+msgid "RealitzarSessio"
+msgstr "Dóna per realitzada"
+
+msgid "TancarSessio"
+msgstr "Tanca sessió"
+
+msgid "ConvocantSessio"
+msgstr "Convoca sessió"
+
+msgid "SessioTancada"
+msgstr "Sessió tancada"
+
+msgid "SessioEnModificacio"
+msgstr "Sessió en modificació"
+
+msgid "SessioEnPlanificacio"
+msgstr "Sessió en planificació"
+
+msgid "SessioConvocada"
+msgstr "Sessió convocada"
+
+msgid "SessioRealitzada"
+msgstr "Sessió realitzada"
+
+msgid "convocada"
+msgstr "Convocada"
+
+msgid "realitzada"
+msgstr "Realitzada"
+
+msgid "tancada"
+msgstr "Tancada"
+
+msgid "planificada"
+msgstr "En planificació"
+
+msgid "en_correccio"
+msgstr "En modificació"
+
+msgid "open_organ"
+msgstr "Públic"
+
+msgid "restricted_to_members_organ"
+msgstr "Restringit a membres"
+
+msgid "restricted_to_affected_organ"
+msgstr "Restringit a afectats"

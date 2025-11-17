@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <dc-workflow workflow_id="organs_sessio_workflow"
   xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-  i18n:domain="genweb"
+  i18n:domain="plone"
   title="Genweb Organs: Session Workflow"
   description="Organs Sessio: Planificada / Convocada / Realitzada / Tancada / En correccio"
   state_variable="review_state"

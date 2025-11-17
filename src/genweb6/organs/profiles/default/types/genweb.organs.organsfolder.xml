@@ -2,7 +2,7 @@
 <object name="genweb.organs.organsfolder" meta_type="Dexterity FTI" i18n:domain="genweb6.organs"
         xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
-    <property name="title" i18n:translate="">Organ Folder</property>
+    <property name="title" i18n:translate="">Organs Folder</property>
     <property name="description"></property>
     <property name="icon_expr">string:folder-fill</property>
     <property name="allow_discussion">False</property>
