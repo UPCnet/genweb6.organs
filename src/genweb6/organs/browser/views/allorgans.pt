@@ -60,7 +60,7 @@
               <span tal:content="item/organType"
                     i18n:translate=""
                     tal:attributes="class string:label-${item/organType}"
-                    i18n:domain="genweb">
+                    i18n:domain="plone">
                       Item Type
               </span>
             </td>

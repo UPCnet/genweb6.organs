@@ -27,7 +27,7 @@
   <span tal:condition="view/canModify" class="d-flex justify-content-end align-items-center mb-3">
     <tal:omit-tag i18n:translate="">Organ Govern type</tal:omit-tag>:
     <span tal:attributes="class string:label-${context/organType} ms-2 py-2"
-        i18n:domain="genweb" i18n:translate="" tal:content="context/organType"></span>
+        i18n:domain="plone" i18n:translate="" tal:content="context/organType"></span>
   </span>
 
   <div style="width: 180px;" class="pull-right mb-3" tal:condition="context/logoOrgan">
@@ -128,7 +128,7 @@
                   <span tal:content="item/review_state"
                         tal:attributes="class string:label-${item/review_state}"
                         i18n:translate=""
-                        i18n:domain="genweb">
+                        i18n:domain="plone">
                          Item State
                   </span>
                 </td>
