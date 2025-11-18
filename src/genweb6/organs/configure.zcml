@@ -22,6 +22,11 @@
     />
 
     <permission
+      id="genweb.organs.manage.organs"
+      title="Genweb Organs: Manage Organs"
+    />
+
+    <permission
       id="genweb.organs.manage.vote"
       title="Genweb Organs: Manage Vote"
     />

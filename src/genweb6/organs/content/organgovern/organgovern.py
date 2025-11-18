@@ -89,7 +89,7 @@ class IOrgangovern(model.Schema):
         required=False,
     )
 
-    directives.write_permission(organType='genweb.webmaster')
+    directives.write_permission(organType='genweb.organs.manage.organs')
     organType = schema.Choice(
         title=_(u"Organ Govern type"),
         vocabulary=types,
