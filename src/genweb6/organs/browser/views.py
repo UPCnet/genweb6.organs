@@ -91,10 +91,12 @@ class createElement(BrowserView):
             pass
 
         # Calculate proposalPoint based on existing items, respecting permissions
-        items = portal_catalog.searchResults(
-            portal_type=['genweb.organs.punt', 'genweb.organs.acord'],
-            path={'query': path, 'depth': 1})
-        proposal_point_number = str(len(items) + 1)
+        is_punt_or_acord = action in ['createPunt', 'createAcord']
+        if is_punt_or_acord:
+            items = portal_catalog.searchResults(
+                portal_type=['genweb.organs.punt', 'genweb.organs.acord'],
+                path={'query': path, 'depth': 1})
+            proposal_point_number = str(len(items) + 1)
 
         if action == 'createPunt':
             with api.env.adopt_roles(['OG1-Secretari', 'Manager']):
@@ -103,15 +105,10 @@ class createElement(BrowserView):
                     title=itemid,
                     container=self.context,
                     safe_id=True,
+                    proposalPoint=proposal_point_number
                 )
-            if default_estat:
-                new_obj.estatsLlista = default_estat
 
         elif action == 'createAcord':
-            acords_p = portal_catalog.searchResults(
-                portal_type=['genweb.organs.acord'],
-                path={'query': path, 'depth': 1})
-
             with api.env.adopt_roles(['OG1-Secretari', 'Manager']):
                 new_obj = api.content.create(
                     type='genweb.organs.acord',
@@ -120,10 +117,12 @@ class createElement(BrowserView):
                     safe_id=True,
                     proposalPoint=proposal_point_number
                 )
-            if default_estat:
-                new_obj.estatsLlista = default_estat
+            
         else:
             return
+
+        if is_punt_or_acord and default_estat:
+            new_obj.estatsLlista = default_estat
 
         new_obj.reindexObject()
 
