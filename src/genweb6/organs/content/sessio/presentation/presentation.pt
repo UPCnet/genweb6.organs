@@ -247,7 +247,7 @@
                         <tal:files tal:define="files python:view.filesinside(itemSubpunt)">
                           <ul class="listFiles list-unstyled" tal:condition="files">
                             <tal:documents repeat="item files">
-                              <li class="filesinTable w-100 mt-2">
+                              <li class="filesinTable w-100 d-flex mt-2">
                                 <i tal:attributes="class string:${item/classCSS} me-1 flex-shrink-0"></i>
                                 <a tal:attributes="href item/absolute_url;" 
                                     class="text-dark">
