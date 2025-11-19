@@ -4,6 +4,7 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 from plone import api
 from plone.app.portlets.portlets import base
+from plone.memoize import instance
 from plone.portlets.interfaces import IPortletDataProvider
 from zope.interface import implementer
 
@@ -24,7 +25,13 @@ class Assignment(base.Assignment):
 class Renderer(base.Renderer):
     render = ViewPageTemplateFile('lamevavinculacio.pt')
 
+    @instance.memoize
     def getOwnOrgans(self):
+        """Get organs linked to current user.
+
+        OPTIMIZATION: Request-level cache to avoid repeated calls per page load.
+        The portlet is rendered multiple times in a single request.
+        """
         if not api.user.is_anonymous():
             results = []
             portal_catalog = api.portal.get_tool(name='portal_catalog')
