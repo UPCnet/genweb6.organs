@@ -384,8 +384,11 @@ class View(BrowserView):
 
     def showPresentacionButton(self):
         estatSessio = utils.session_wf_state(self)
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         if 'Manager' in roles:
             return True
         elif estatSessio == 'planificada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
