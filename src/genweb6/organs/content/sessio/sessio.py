@@ -1192,17 +1192,23 @@ class View(BrowserView):
                       'depth': 1})
 
             if acordObj.estatVotacio in ['open', 'close']:
-                data = {'UID': acord.UID, 'URL': acordObj.absolute_url(),
-                        'title': acordObj.title, 'code': acordObj.agreement,
-                        'state': _(u'open')
-                        if acordObj.estatVotacio == 'open' else _(u'close'),
+                data = {'UID': acord.UID, 
+                        'URL': acordObj.absolute_url(),
+                        'title': acordObj.title, 
+                        'code': acordObj.agreement if acordObj.agreement else _(u"Acord sense numeració"),
+                        'state': _(u'open') if acordObj.estatVotacio == 'open' else _(u'close'),
                         'isOpen': acordObj.estatVotacio == 'open',
                         'isPublic': acordObj.tipusVotacio ==
                         'public' and self.canViewManageVote(),
                         'hourOpen': acordObj.horaIniciVotacio,
-                        'hourClose': acordObj.horaFiVotacio, 'favorVote': 0,
-                        'againstVote': 0, 'whiteVote': 0, 'totalVote': 0,
-                        'isEsmena': False, 'isVote': True, 'canReopen': True}
+                        'hourClose': acordObj.horaFiVotacio, 
+                        'favorVote': 0,
+                        'againstVote': 0, 
+                        'whiteVote': 0, 
+                        'totalVote': 0,
+                        'isEsmena': False, 
+                        'isVote': True, 
+                        'canReopen': True}
 
                 if acordObj.estatVotacio == 'open':
                     data['canReopen'] = False
@@ -1253,7 +1259,7 @@ class View(BrowserView):
                 data = {'UID': acord.UID,
                         'URL': acordObj.absolute_url(),
                         'title': acordObj.title,
-                        'code': acordObj.agreement,
+                        'code': acordObj.agreement if acordObj.agreement else _(u"Acord sense numeració"),
                         'state': '',
                         'isOpen': False,
                         'isPublic': False,
