@@ -28,7 +28,7 @@ import traceback
 
 logger = logging.getLogger(__name__)
 
-TMP_FOLDER = os.environ.get('TMPFOLDER', '/tmp/')
+TMP_FOLDER = os.environ.get('TMPDIR', '/tmp/')
 
 
 class FirmesMixin(object):
