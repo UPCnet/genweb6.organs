@@ -2,11 +2,15 @@ Changelog
 =========
 
 
-1.3 (unreleased)
+1.3 (2025-11-24)
 ----------------
 
-- Nothing changed yet.
-
+* [UPD] Reducir texto print [Iago López]
+* [FIX] Visualizacion composicion govern [Iago López]
+* [UPD] Cambiar variable entorno TMPFOLDER a TMPDIR [Iago López]
+* [UPD] organType solo modificable por webmaster o manager [Iago López]
+* [FIX] Votaciones listado ver mensaje de acord sin numeracio si no tiene [Iago López]
+* [UPD] Presentation flex [Iago López]
 
 1.2 (2025-11-18)
 ----------------
