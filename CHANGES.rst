@@ -2,11 +2,11 @@ Changelog
 =========
 
 
-1.4 (unreleased)
+1.4 (2025-11-24)
 ----------------
 
-- Nothing changed yet.
-
+* Merge remote-tracking branch 'origin/rendimiento' [Iago López]
+* [UPD] Evitar error merge [Iago López]
 
 1.3 (2025-11-24)
 ----------------
