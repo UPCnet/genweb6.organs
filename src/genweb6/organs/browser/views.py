@@ -91,7 +91,6 @@ class createElement(BrowserView):
             pass
 
         # Calculate proposalPoint based on existing items, respecting permissions
-        # OPTIMIZATION: Only query catalog when needed (createPunt/createAcord)
         is_punt_or_acord = action in ['createPunt', 'createAcord']
         if is_punt_or_acord:
             items = portal_catalog.searchResults(
@@ -118,7 +117,7 @@ class createElement(BrowserView):
                     safe_id=True,
                     proposalPoint=proposal_point_number
                 )
-
+            
         else:
             return
 
