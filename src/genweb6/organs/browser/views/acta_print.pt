@@ -36,7 +36,7 @@
         <img style="height:67px;" tal:attributes="src getActaLogo" />
       </div>
       <div class="col-6">
-        <h1 class="text-end" style="margin-top: 0px;">
+        <h1 class="text-end">
           <img width="207px" height="46px" tal:attributes="src string:${portal_url}/++theme++genweb6.organs/img/logoUPC.png"/>
         </h1>
       </div>
@@ -46,32 +46,32 @@
     <h1 class="h1Print"><tal:omit-tag tal:content="view/unitatTitle">UNITAT</tal:omit-tag> -
     <tal:omit-tag tal:content="view/organGovernTitle">CONSELL DE GOVERN</tal:omit-tag></h1>
     <h2> ACTA <tal:omit-tag tal:content="view/sessionTitle">CONSELL DE GOVERN</tal:omit-tag></h2>
-    <span style="margin-top: 15px;" i18n:translate=""> Amb la signatura d'aquesta acta es dóna validesa i integritat als documents que l'acompanyen. </span>
+    <span i18n:translate=""> Amb la signatura d'aquesta acta es dóna validesa i integritat als documents que l'acompanyen. </span>
     <hr/>
-    <div class="col-12" style="margin-bottom: 0px !important">
+    <div class="col-12">
       <tal:omit-tag tal:condition="modalitat">
-        <th style="display: inline-block;"><strong i18n:translate="">Modality of meet</strong><b>:</b></th>
+        <th><strong i18n:translate="">Modality of meet</strong><b>:</b></th>
         <span i18n:translate="" tal:content="modalitat"></span>
         <br/>
       </tal:omit-tag>
       <tal:omit-tag tal:condition="llocConvocatoria">
-        <th style="display: inline-block;"><strong i18n:translate="">Session location</strong><b>:</b></th>
+        <th><strong i18n:translate="">Session location</strong><b>:</b></th>
         <span tal:content="llocConvocatoria"></span>
         <br/>
       </tal:omit-tag>
       <tal:omit-tag tal:condition="horaInici">
-        <th style="display: inline-block;"><strong i18n:translate="">Dia/Hora inici</strong><b>:</b></th>
+        <th><strong i18n:translate="">Dia/Hora inici</strong><b>:</b></th>
         <span tal:content="python:context.horaInici.strftime('%d/%m/%Y %H:%M')"></span>
         <br/>
       </tal:omit-tag>
       <tal:omit-tag tal:condition="horaFi">
-        <th style="display: inline-block;"><strong i18n:translate="">Dia/Hora fi</strong><b>:</b></th>
+        <th><strong i18n:translate="">Dia/Hora fi</strong><b>:</b></th>
         <span tal:content="python:context.horaFi.strftime('%d/%m/%Y %H:%M')"></span>
       </tal:omit-tag>
     </div>
     <div class="clearfix"></div>
     <hr/>
-    <div class="col-12" style="margin-bottom: 0px !important; padding-left:0px !important; margin-left:0px !important;">
+    <div class="col-12">
       <div class="caixa col-12" tal:condition="membresConvocats">
         <h4 i18n:translate=""> Assistants </h4>
         <div tal:replace="structure membresConvocats/output"></div>
@@ -96,13 +96,13 @@
     <div class="clearfix"></div>
     <hr/>
     <div tal:condition="acta">
-       <h3 style="padding-bottom: 15px;" i18n:translate=""> Ordre del dia </h3>
+       <h3 i18n:translate=""> Ordre del dia </h3>
       <span tal:replace="structure acta"></span>
     </div>
     <div class="clearfix"></div>
     <hr/>
     <div tal:condition="ordenDelDia">
-       <h3 style="padding-bottom: 15px;" i18n:translate=""> Desenvolupament de la sessio </h3>
+       <h3 i18n:translate=""> Desenvolupament de la sessio </h3>
       <span tal:replace="structure ordenDelDia/output"></span>
     </div>
     <tal:block tal:condition="signatura">

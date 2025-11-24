@@ -80,18 +80,18 @@
               cellspacing="0">
           <thead>
             <tr>
-              <th class="align-middle text-center" style="width: 15%;" i18n:translate="">Punt</th>
-              <th class="align-middle text-center w-25" i18n:translate="">Agreement</th>
+              <th class="align-middle text-center" style="width: 5%;" i18n:translate="">Punt</th>
+              <th class="align-middle text-center" style="width: 15%;" i18n:translate="">Agreement</th>
               <th class="align-middle" i18n:translate="">Titol</th>
             </tr>
           </thead>
           <tbody>
             <tr vertical-align="top" valign="top"
                 tal:repeat="row view/PuntsOrdreDelDia">
-              <td class="text-end" style="width: 15%;">
+              <td class="text-end" style="width: 5%;">
                 <span tal:condition="row/punt" tal:content="row/punt"></span>
               </td>
-              <td class="text-end w-25">
+              <td class="text-end" style="width: 15%;">
                 <span tal:condition="row/acord" tal:content="row/acord"></span>
               </td>
               <td>

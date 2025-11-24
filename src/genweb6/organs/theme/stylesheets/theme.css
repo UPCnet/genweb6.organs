@@ -350,22 +350,17 @@ table.table-bordered thead th {
 
   /* line 11, ../scss/_print.scss */
   html, body {
-    font-size: 15pt !important;
+    font-size: 16px !important;
     font-family: Arial, Helvetica, sans-serif;
-    line-height: 130% !important;
+    line-height: 120% !important;
   }
 
   /* line 17, ../scss/_print.scss */
-  li {
-    line-height: 130% !important;
-  }
-
-  /* line 21, ../scss/_print.scss */
   #content-header {
     padding-bottom: 50px;
   }
 
-  /* line 25, ../scss/_print.scss */
+  /* line 21, ../scss/_print.scss */
   #hero,
   nav#portal-breadcrumbs,
   .nav-collapse-eines,
@@ -401,114 +396,142 @@ table.table-bordered thead th {
     display: none !important;
   }
 
-  /* line 60, ../scss/_print.scss */
+  /* line 56, ../scss/_print.scss */
   #portal-column-content {
     margin: 0 !important;
     width: 100% !important;
   }
 
-  /* line 65, ../scss/_print.scss */
+  /* line 61, ../scss/_print.scss */
   #peu .col-md-8 {
     width: 100% !important;
   }
 
-  /* line 69, ../scss/_print.scss */
+  /* line 65, ../scss/_print.scss */
   div.pageBreak {
     page-break-before: always !important;
   }
 
-  /* line 73, ../scss/_print.scss */
+  /* line 69, ../scss/_print.scss */
   #portal-breadcrumbs {
     display: inline !important;
   }
 
-  /* line 77, ../scss/_print.scss */
+  /* line 73, ../scss/_print.scss */
   a {
     text-decoration: underline;
     color: black;
   }
-  /* line 81, ../scss/_print.scss */
+  /* line 77, ../scss/_print.scss */
   a:hover {
     text-decoration: none;
   }
 
-  /* line 86, ../scss/_print.scss */
+  /* line 82, ../scss/_print.scss */
   .plain a {
     color: #555555;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.8rem;
   }
 
-  /* line 92, ../scss/_print.scss */
+  /* line 88, ../scss/_print.scss */
   h2,
   h3 {
     color: #557C95;
   }
 
-  /* line 97, ../scss/_print.scss */
+  /* line 93, ../scss/_print.scss */
   h1 {
     font-size: 1.6rem !important;
     margin-top: 0px !important;
   }
 
-  /* line 102, ../scss/_print.scss */
+  /* line 98, ../scss/_print.scss */
   h2 {
     font-size: 1.4rem !important;
     margin-bottom: 0.8rem !important;
   }
 
-  /* line 107, ../scss/_print.scss */
+  /* line 103, ../scss/_print.scss */
   h3 {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1.3rem !important;
   }
 
-  /* line 112, ../scss/_print.scss */
+  /* line 108, ../scss/_print.scss */
   h4 {
     font-size: 1.2rem !important;
   }
 
-  /* line 116, ../scss/_print.scss */
+  /* line 112, ../scss/_print.scss */
+  h3,
+  h4 {
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* line 117, ../scss/_print.scss */
+  hr {
+    margin: .5rem 0 !important;
+  }
+
+  /* line 121, ../scss/_print.scss */
+  p {
+    margin: 0 0 6px !important;
+  }
+
+  /* line 125, ../scss/_print.scss */
   .h4Print {
     color: #557C95;
   }
 
-  /* line 120, ../scss/_print.scss */
+  /* line 129, ../scss/_print.scss */
   .caixa {
     width: 9cm;
     vertical-align: top;
   }
 
-  /* line 125, ../scss/_print.scss */
-  table {
-    font-size: 0.8rem !important;
+  /* line 134, ../scss/_print.scss */
+  table,
+  p,
+  strong,
+  span,
+  li,
+  th,
+  td {
+    font-size: 16px !important;
     line-height: 120% !important;
   }
-  /* line 129, ../scss/_print.scss */
+
+  /* line 147, ../scss/_print.scss */
+  table * {
+    font-size: var(--gw-font-size-xxs) !important;
+  }
+  /* line 151, ../scss/_print.scss */
+  table td,
+  table th {
+    padding: 0rem !important;
+  }
+  /* line 156, ../scss/_print.scss */
   table thead {
     border-bottom: 5px solid var(--bs-primary) !important;
   }
-  /* line 133, ../scss/_print.scss */
-  table tbody {
-    line-height: 130% !important;
-  }
-  /* line 136, ../scss/_print.scss */
+  /* line 162, ../scss/_print.scss */
   table tbody > tr {
     height: auto !important;
   }
 
-  /* line 142, ../scss/_print.scss */
+  /* line 168, ../scss/_print.scss */
   #portal-header,
   #portal-footer-wrapper {
     border: 0px;
   }
 
-  /* line 147, ../scss/_print.scss */
+  /* line 173, ../scss/_print.scss */
   section#content-area {
     margin-top: 0px;
   }
 
-  /* line 151, ../scss/_print.scss */
+  /* line 177, ../scss/_print.scss */
   .h2butlleti {
     line-height: inherit;
   }
