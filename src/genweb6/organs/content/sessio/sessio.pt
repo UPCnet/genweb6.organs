@@ -911,7 +911,7 @@ P Conclusions</code>
                                   class item/classe">
                 <div class="row px-3 py-2 justify-content-end" tal:condition="item/show">
                   <div class="col-6 einesSpan d-none d-flex flex-row-reverse justify-content-start align-items-baseline column-gap-2">
-                    <tal:editActions tal:condition="python: view.canModifyPunt(item)">
+                    <tal:editActions tal:condition="item/canModify">
                       <div class="d-flex column-gap-2" aria-label="Edit actions">
                         <tal:block tal:condition="isAcord">
                           <button type="button" class="hide-agreement badge btn btn-secondary fs-xxxs px-2 py-2"
@@ -1090,7 +1090,7 @@ P Conclusions</code>
                       </tal:block>
                     </tal:editActions>
 
-                    <div tal:condition="python: not view.canModifyPunt(item)">
+                    <div tal:condition="not:item/canModify">
                       <tal:block tal:condition="item/state">
                         <button class="btn badge bg-secondary disabled">
                           <i class="bi bi-circle-fill me-1" aria-hidden="true"
@@ -1233,7 +1233,7 @@ P Conclusions</code>
                                   <tal:omit-tag tal:content="file_item/title"> Doc title</tal:omit-tag>
                                 </a>
                                 <div class="float-end"
-                                    tal:condition="python:view.canModifyPunt(item)">
+                                    tal:condition="item/canModify">
                                   <button type="button" class="remove badge btn btn-danger fs-xxxs px-2 py-2"
                                           title="Esborra"
                                           data-bs-toggle="modal"
@@ -1262,7 +1262,7 @@ P Conclusions</code>
                                            itemSubpunt_id itemSubpunt/id;
                                            isAcord itemSubpunt/isAcord">
                             <div class="col-6 einesSpan d-none d-flex flex-row-reverse justify-content-start align-items-baseline column-gap-2">
-                              <tal:editActions tal:condition="python: view.canModifyPunt(itemSubpunt)">
+                              <tal:editActions tal:condition="itemSubpunt/canModify">
                                 <div class="d-flex column-gap-2" aria-label="Edit actions">
                                   <tal:block tal:condition="isAcord">
                                     <button type="button" class="hide-agreement badge btn btn-secondary fs-xxxs px-2 py-2"
@@ -1422,7 +1422,7 @@ P Conclusions</code>
                                 </tal:block>
                               </tal:editActions>
 
-                              <div tal:condition="not:python: view.canModifyPunt(itemSubpunt)">
+                              <div tal:condition="not:itemSubpunt/canModify">
                                 <tal:block tal:condition="itemSubpunt/state">
                                   <button class="btn badge bg-secondary disabled fs-xxs">
                                     <i class="bi bi-circle-fill me-1" aria-hidden="true"
@@ -1546,7 +1546,7 @@ P Conclusions</code>
                                       <tal:omit-tag tal:content="item/title"> Doc title</tal:omit-tag>
                                     </a>
                                     <div class="float-end"
-                                          tal:condition="python: view.canModifyPunt(itemSubpunt)">
+                                          tal:condition="itemSubpunt/canModify">
                                       <button type="button" class="remove badge btn btn-danger fs-xxxs px-2 py-2"
                                               title="Esborra"
                                               data-bs-toggle="modal"

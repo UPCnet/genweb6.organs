@@ -362,6 +362,10 @@ class ActaPrintView(BrowserView):
     def getActaContent(self):
         """ Retorna els punt en format text per mostrar a l'ordre
             del dia de les actes
+            
+            OPTIMIZATION: Use brain metadata (portal_type, Title) when possible.
+            Still need getObject() for objectIds() check, but avoid it for subpunts
+            when only checking portal_type and getting agreement.
         """
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         folder_path = '/'.join(self.context.aq_parent.getPhysicalPath())
@@ -374,9 +378,11 @@ class ActaPrintView(BrowserView):
         results = []
         results.append('<div class="num_acta"> <ol>')
         for obj in values:
-            # value = obj.getObject()
+            # Need getObject() for objectIds() check
             value = obj._unrestrictedGetObject()
-            if value.portal_type == 'genweb.organs.acord':
+            
+            # OPTIMIZATION: Use brain.portal_type instead of value.portal_type
+            if obj.portal_type == 'genweb.organs.acord':
                 if value.agreement:
                     agreement = ' [Acord ' + str(value.agreement) + ']'
                 else:
@@ -384,6 +390,8 @@ class ActaPrintView(BrowserView):
                         value, 'omitAgreement', False) else ''
             else:
                 agreement = ''
+            
+            # OPTIMIZATION: Use brain.Title (metadata) instead of value.Title
             results.append('<li>' + str(obj.Title) + ' ' + str(agreement))
 
             if len(value.objectIds()) > 0:
@@ -395,11 +403,14 @@ class ActaPrintView(BrowserView):
 
                 results.append('<ol>')
                 for item in valuesInside:
-                    subpunt = item._unrestrictedGetObject()
-                    if subpunt.portal_type == 'genweb.organs.acord':
+                    # OPTIMIZATION: Use brain.portal_type and brain.Title (metadata)
+                    # Only getObject() if it's an acord (need agreement field)
+                    if item.portal_type == 'genweb.organs.acord':
+                        subpunt = item._unrestrictedGetObject()
                         agreement = ' [Acord ' + str(subpunt.agreement) + ']'
                     else:
                         agreement = ''
+                    
                     results.append(
                         '<li>' + str(item.Title) + ' ' + str(agreement) + '</li>')
                 results.append('</ol></li>')

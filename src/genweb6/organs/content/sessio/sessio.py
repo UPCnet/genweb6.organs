@@ -384,8 +384,11 @@ class View(BrowserView):
 
     def showPresentacionButton(self):
         estatSessio = utils.session_wf_state(self)
-        username = api.user.get_current().id
-        roles = utils.getUserRoles(self, self.context, username)
+        # OPTIMIZATION: Reutilizar roles cacheados
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
         if 'Manager' in roles:
             return True
         elif estatSessio == 'planificada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
@@ -555,24 +558,26 @@ class View(BrowserView):
                     isAcord = False
                     omitAgreement = False
 
-                results.append(
-                    dict(
-                        title=obj.Title, portal_type=obj.portal_type,
-                        absolute_url=item.absolute_url(),
-                        item_path=item.absolute_url_path(),
-                        proposalPoint=item.proposalPoint,
-                        agreement=agreement, omitAgreement=omitAgreement,
-                        state=item.estatsLlista, css=self.getColor(obj),
-                        estats=self.estatsCanvi(obj),
-                        id=obj.id, show=True, isPunt=isPunt, isAcord=isAcord,
-                        classe=classe, canOpenVote=canOpenVote,
-                        canCloseVote=canCloseVote,
-                        canRecloseVote=canRecloseVote,
-                        titleEsmena=titleEsmena, hasVote=hasVote,
-                        classVote=classVote, favorVote=favorVote,
-                        againstVote=againstVote, whiteVote=whiteVote,
-                        items_inside=inside, info_firma=item.info_firma
-                        if hasattr(item, 'info_firma') else None))
+                # OPTIMIZATION: Pre-calculate canModify to avoid repeated calls from template
+                item_dict = dict(
+                    title=obj.Title, portal_type=obj.portal_type,
+                    absolute_url=item.absolute_url(),
+                    item_path=item.absolute_url_path(),
+                    proposalPoint=item.proposalPoint, agreement=agreement,
+                    omitAgreement=omitAgreement, state=item.estatsLlista,
+                    css=self.getColor(obj),
+                    estats=self.estatsCanvi(obj),
+                    id=obj.id, show=True, isPunt=isPunt, isAcord=isAcord, classe=classe,
+                    canOpenVote=canOpenVote, canCloseVote=canCloseVote,
+                    canRecloseVote=canRecloseVote, titleEsmena=titleEsmena,
+                    hasVote=hasVote, classVote=classVote, favorVote=favorVote,
+                    againstVote=againstVote, whiteVote=whiteVote, items_inside=inside,
+                    info_firma=item.info_firma if hasattr(item, 'info_firma') else None)
+
+                # Pre-calculate canModify to avoid repeated template calls
+                item_dict['canModify'] = self.canModifyPunt(item_dict)
+
+                results.append(item_dict)
         return results
 
     def SubpuntsInside(self, data):
@@ -654,28 +659,34 @@ class View(BrowserView):
                 isAcord = False
                 omitAgreement = False
 
-            results.append(dict(title=obj.Title,
-                                portal_type=obj.portal_type,
-                                absolute_url=item.absolute_url(),
-                                proposalPoint=item.proposalPoint,
-                                item_path=item.absolute_url_path(),
-                                state=item.estatsLlista,
-                                agreement=agreement,
-                                omitAgreement=omitAgreement,
-                                isAcord=isAcord,
-                                estats=self.estatsCanvi(obj),
-                                css=self.getColor(obj),
-                                canOpenVote=canOpenVote,
-                                canCloseVote=canCloseVote,
-                                canRecloseVote=canRecloseVote,
-                                titleEsmena=titleEsmena,
-                                hasVote=hasVote,
-                                classVote=classVote,
-                                favorVote=favorVote,
-                                againstVote=againstVote,
-                                whiteVote=whiteVote,
-                                id='/'.join(item.absolute_url_path().split('/')[-2:]),
-                                info_firma=item.info_firma if hasattr(item, 'info_firma') else None))
+            # OPTIMIZATION: Pre-calculate canModify to avoid repeated calls from template
+            item_dict = dict(title=obj.Title,
+                             portal_type=obj.portal_type,
+                             absolute_url=item.absolute_url(),
+                             proposalPoint=item.proposalPoint,
+                             item_path=item.absolute_url_path(),
+                             state=item.estatsLlista,
+                             agreement=agreement,
+                             omitAgreement=omitAgreement,
+                             isAcord=isAcord,
+                             estats=self.estatsCanvi(obj),
+                             css=self.getColor(obj),
+                             canOpenVote=canOpenVote,
+                             canCloseVote=canCloseVote,
+                             canRecloseVote=canRecloseVote,
+                             titleEsmena=titleEsmena,
+                             hasVote=hasVote,
+                             classVote=classVote,
+                             favorVote=favorVote,
+                             againstVote=againstVote,
+                             whiteVote=whiteVote,
+                             id='/'.join(item.absolute_url_path().split('/')[-2:]),
+                             info_firma=item.info_firma if hasattr(item, 'info_firma') else None)
+
+            # Pre-calculate canModify to avoid repeated template calls
+            item_dict['canModify'] = self.canModifyPunt(item_dict)
+
+            results.append(item_dict)
         return results
 
     def canModifyPunt(self, item):

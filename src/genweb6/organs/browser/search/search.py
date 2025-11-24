@@ -9,6 +9,7 @@ from ZTUtils import make_query
 
 from plone import api
 from plone.app.contentlisting.interfaces import IContentListing
+from plone.memoize import instance
 from operator import itemgetter
 from zope.component import getMultiAdapter
 from zope.i18nmessageid import MessageFactory
@@ -53,7 +54,13 @@ class Search(BrowserView):
     Compatible con Plone 6 y el nuevo template search.pt (Bootstrap 5).
     """
 
+    @instance.memoize
     def getOwnOrgans(self):
+        """Get organs linked to current user.
+
+        OPTIMIZATION: Request-level cache to avoid repeated calls per page load.
+        The search view may render multiple times in a single request.
+        """
         if api.user.is_anonymous():
             return []
         results = []
