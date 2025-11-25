@@ -305,6 +305,7 @@ def FilesandDocumentsInside(self):
                                 absolute_url=obj.getURL(),
                                 classCSS=class_css,
                                 new_tab=False,
+                                target=None,
                                 hidden=False))
         else:
             # Anonim / Afectat / Membre veuen obrir en finestra nova dels fitxers.
@@ -317,18 +318,21 @@ def FilesandDocumentsInside(self):
                                             portal_type=obj.portal_type,
                                             absolute_url=obj.getURL(),
                                             new_tab=True,
+                                            target='_blank',
                                             classCSS=class_css))
                     else:
                         results.append(dict(title=obj.Title,
                                             portal_type=obj.portal_type,
                                             absolute_url=obj.getURL(),
                                             new_tab=True,
+                                            target='_blank',
                                             classCSS=class_css))
                 elif value.defaultContent:
                     results.append(dict(title=obj.Title,
                                         portal_type=obj.portal_type,
                                         absolute_url=obj.getURL(),
                                         new_tab=True,
+                                        target='_blank',
                                         classCSS=class_css))
                 elif value.alternateContent:
                     if checkhasRol(
@@ -339,6 +343,7 @@ def FilesandDocumentsInside(self):
                                             portal_type=obj.portal_type,
                                             absolute_url=obj.getURL(),
                                             new_tab=True,
+                                            target='_blank',
                                             classCSS=class_css))
 
             if obj.portal_type == 'genweb.organs.file':
@@ -360,6 +365,7 @@ def FilesandDocumentsInside(self):
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
                                                 new_tab=True,
+                                                target='_blank',
                                                 classCSS=class_css))
                         else:
                             if info_firma.get('public', {}).get('uploaded', False):
@@ -370,6 +376,7 @@ def FilesandDocumentsInside(self):
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
                                                 new_tab=True,
+                                                target='_blank',
                                                 classCSS=class_css))
                     else:
                         if info_firma.get('private', {}).get('uploaded', False):
@@ -381,6 +388,7 @@ def FilesandDocumentsInside(self):
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
                                                 new_tab=True,
+                                                target='_blank',
                                                 classCSS=class_css))
                         else:
                             if info_firma.get('public', {}).get('uploaded', False):
@@ -391,6 +399,7 @@ def FilesandDocumentsInside(self):
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
                                                 new_tab=True,
+                                                target='_blank',
                                                 classCSS=class_css))
                 elif value.visiblefile:
                     if info_firma.get('public', {}).get('uploaded', False):
@@ -400,6 +409,7 @@ def FilesandDocumentsInside(self):
                     results.append(dict(title=obj.Title,
                                         absolute_url=absolute_url,
                                         new_tab=True,
+                                        target='_blank',
                                         classCSS=class_css,
                                         hidden=False))
                 elif value.hiddenfile:
@@ -416,6 +426,7 @@ def FilesandDocumentsInside(self):
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
                                                 new_tab=True,
+                                                target='_blank',
                                                 classCSS=class_css))
                     else:
                         if checkhasRol(
@@ -426,6 +437,7 @@ def FilesandDocumentsInside(self):
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
                                                 new_tab=True,
+                                                target='_blank',
                                                 classCSS=class_css))
     return results
 

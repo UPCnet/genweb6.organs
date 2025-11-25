@@ -24,11 +24,11 @@
 
       <span class="btn badge bg-secondary disabled bg-secondaryString fs-xl"
             tal:define="color view/getColor">
-        <i class="bi bi-circle-fill me-1" aria-hidden="true" 
+        <i class="bi bi-circle-fill me-1" aria-hidden="true"
            tal:attributes="style string:color:${color};"></i>
         <span tal:content="context/estatsLlista">Esborrany</span>
       </span>
-    </div>    
+    </div>
 
     <!-- Firma (si aplica) -->
     <div class="mb-3" tal:condition="view/hasFirma">
@@ -50,15 +50,15 @@
           <li tal:repeat="item filesanddocs">
             <a tal:define="title item/title"
                class="text-decoration-none d-flex align-items-center"
-               tal:attributes="href item/absolute_url; 
-                               target python:item.get('new_tab') and '_blank' or None; 
-                               title title; 
+               tal:attributes="href item/absolute_url;
+                               target item/target | nothing;
+                               title title;
                                alt title">
               <i tal:attributes="class string:${item/classCSS} me-1"></i>
               <tal:omit-tag tal:content="title">Nom fitxer</tal:omit-tag>
             </a>
-          </li>   
-        </ul>             
+          </li>
+        </ul>
       </div>
     </div>
 
@@ -69,13 +69,13 @@
         <ul class="list-unstyled m-0">
           <li tal:repeat="item votacions">
             <a class="text-decoration-none"
-               tal:attributes="href item/absolute_url; 
-                               title item/title; 
+               tal:attributes="href item/absolute_url;
+                               title item/title;
                                alt item/title">
               <span tal:content="item/title">Votació</span>
             </a>
-          </li>   
-        </ul>             
+          </li>
+        </ul>
       </div>
     </div>
 
