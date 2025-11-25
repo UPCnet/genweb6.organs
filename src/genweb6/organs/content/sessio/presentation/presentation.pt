@@ -22,12 +22,12 @@
   <!-- TITULO -->
   <div class="d-flex justify-content-between align-items-center border-bottom border-2 border-primary mt-4 mb-3 pb-2">
     <h1 class="text-uppercase mb-0" tal:content="view/getSessionTitle">Ordre del dia</h1>
-    <span tal:attributes="class string:p-2 label-${status}" 
+    <span tal:attributes="class string:p-2 label-${status}"
           i18n:domain="plone" i18n:translate="" tal:content="status"></span>
   </div>
 
   <!-- ACCIONES -->
-  <div tal:condition="not:anonim" 
+  <div tal:condition="not:anonim"
        class="eines-lateral position-fixed top-50 end-0 translate-middle-y me-4 z-3 d-flex flex-column align-items-center gap-1">
 
     <a href="." title="Tornar a la sessió" class="text-secondary icon-hover">
@@ -73,13 +73,13 @@
           <li tal:attributes="id item/id"
               class="border-bottom">
             <div class="row px-3 py-2 justify-content-end">
-              <tal:block-contenidos tal:define="files python:view.filesinside(item);
-                                                subpunts python:view.SubpuntsInside(item);
-                                                contenidos python:files or subpunts">
+              <tal:block-contenidos tal:define="files item/files;
+                                                subpunts item/subpunts;
+                                                contenidos item/hasContent">
 
                 <div class="puntTitle col-12 d-flex flex-nowrap align-items-baseline">
                   <div class="fletxaSpan me-2 w-3">
-                    <button type="button" class="btn px-0 py-0 btn-expand-collapse collapsed" 
+                    <button type="button" class="btn px-0 py-0 btn-expand-collapse collapsed"
                             tal:condition="contenidos"
                             data-bs-toggle="collapse"
                             tal:attributes="data-bs-target string:#collapse-${item/id}"
@@ -95,13 +95,13 @@
                   </div>
 
                   <div class="titleSpan me-2 w-92">
-                    <a tal:attributes="data-id item/id; 
-                                      href item/absolute_url" 
+                    <a tal:attributes="data-id item/id;
+                                      href item/absolute_url"
                       data-url="changeTitle"
                       class="editTitle titleSize text-dark">
                       <tal:omit-tag tal:content="item/title">Item Title</tal:omit-tag>
                     </a>
-                    
+
                     <span tal:condition="agreement" class="text-muted fs-4"
                       tal:attributes="data-agreement string:${item/absolute_url}"
                       tal:content="agreement">
@@ -133,8 +133,8 @@
                   </div>
 
                 </div>
-                <div class="collapse multi-collapse-points fs-4" 
-                     tal:attributes="id string:collapse-${item/id}" 
+                <div class="collapse multi-collapse-points fs-4"
+                     tal:attributes="id string:collapse-${item/id}"
                      tal:condition="contenidos">
                   <tal:files tal:condition="files">
                     <ul class="listFiles list-unstyled">
@@ -156,7 +156,7 @@
                                                  data-title string:Contingut públic"
                                  i18n:translate="">
                                 Contingut públic
-                              </a> 
+                              </a>
                               <a class="btn btn-outline-primary btn-sm ms-2"
                                  tal:condition="file_item/reservedRaw"
                                  href="#"
@@ -178,7 +178,7 @@
                                                  data-title string:Fitxer públic"
                                  i18n:translate="">
                                 Fitxer públic
-                              </a> 
+                              </a>
                               <a class="btn btn-outline-primary btn-sm ms-2"
                                  tal:condition="file_item/reservedURL"
                                  href="#"
@@ -188,7 +188,7 @@
                                                  data-title string:Fitxer restringit"
                                  i18n:translate="">
                                 Fitxer restringit
-                              </a> 
+                              </a>
                             </div>
                           </div>
                         </li>
@@ -197,21 +197,21 @@
                   </tal:files>
                   <div tal:condition="subpunts">
                     <tal:subpunts repeat="itemSubpunt subpunts">
-                      <div class="li_subgrups row mt-2 justify-content-end" 
-                           tal:attributes="id itemSubpunt/id" 
+                      <div class="li_subgrups row mt-2 justify-content-end"
+                           tal:attributes="id itemSubpunt/id"
                            tal:define="agreement itemSubpunt/agreement;
                                        itemSubpunt_id itemSubpunt/id;">
 
                         <div class="subpuntTitle col-12 d-flex flex-nowrap align-items-baseline">
                           <div class="numberSpan me-2 w-5">
-                            <span class="proposalNumberSubpunt text-primary fw-bold" 
+                            <span class="proposalNumberSubpunt text-primary fw-bold"
                                   tal:content="itemSubpunt/proposalPoint"></span>
                           </div>
 
                           <div class="titleSpan me-2 w-95">
-                            <a tal:attributes="data-id itemSubpunt_id; 
+                            <a tal:attributes="data-id itemSubpunt_id;
                                                href itemSubpunt/absolute_url"
-                              data-type="text" data-url="changeTitle" 
+                              data-type="text" data-url="changeTitle"
                               class="editTitle subtitleSize text-dark">
                               <tal:omit-tag tal:content="itemSubpunt/title">Item Title</tal:omit-tag>
                             </a>
@@ -245,12 +245,12 @@
                           </div>
 
                         </div>
-                        <tal:files tal:define="files python:view.filesinside(itemSubpunt)">
+                        <tal:files tal:define="files itemSubpunt/files">
                           <ul class="listFiles list-unstyled" tal:condition="files">
                             <tal:documents repeat="item files">
                               <li class="filesinTable w-100 d-flex mt-2">
                                 <i tal:attributes="class string:${item/classCSS} me-1 flex-shrink-0"></i>
-                                <a tal:attributes="href item/absolute_url;" 
+                                <a tal:attributes="href item/absolute_url;"
                                     class="text-dark">
                                   <tal:omit-tag tal:content="item/title"> Doc title</tal:omit-tag>
                                 </a>
@@ -264,7 +264,7 @@
                                                      data-title string:Contingut públic"
                                      i18n:translate="">
                                     Contingut públic
-                                  </a> 
+                                  </a>
                                   <a class="btn btn-outline-primary btn-sm ms-2"
                                      tal:condition="item/reservedRaw"
                                      href="#"
@@ -286,7 +286,7 @@
                                      href="#"
                                      i18n:translate="">
                                     Fitxer públic
-                                  </a> 
+                                  </a>
                                   <a class="btn btn-outline-primary btn-sm ms-2"
                                      tal:condition="item/reservedURL"
                                      data-bs-toggle="modal"
@@ -296,7 +296,7 @@
                                      href="#"
                                      i18n:translate="">
                                     Fitxer restringit
-                                  </a> 
+                                  </a>
                                 </div>
                               </li>
                             </tal:documents>
@@ -314,7 +314,7 @@
     </ul>
 
     <!-- Modal document -->
-    <div class="modal fade" id="documentContentModal" tabindex="-1" 
+    <div class="modal fade" id="documentContentModal" tabindex="-1"
          aria-labelledby="documentContentModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -330,7 +330,7 @@
     </div>
 
     <!-- Modal file -->
-    <div class="modal fade" id="fileContentModal" tabindex="-1" 
+    <div class="modal fade" id="fileContentModal" tabindex="-1"
          aria-labelledby="fileContentModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -350,11 +350,11 @@
   </div>
 
   <script type="text/javascript"
-          src="++theme++genweb6.organs/js/content/sessio.min.js"></script>   
-          
+          src="++theme++genweb6.organs/js/content/sessio.min.js"></script>
+
   <script type="text/javascript"
-          src="++theme++genweb6.organs/js/content/presentation.min.js"></script>    
-  
+          src="++theme++genweb6.organs/js/content/presentation.min.js"></script>
+
   <script type="text/javascript"
           src="++theme++genweb6.organs/js/content/presentation_modify.min.js"
           tal:condition="changeEstat"></script>

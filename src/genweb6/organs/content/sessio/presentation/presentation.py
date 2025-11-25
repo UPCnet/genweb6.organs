@@ -22,6 +22,7 @@ class Presentation(BrowserView):
         return api.content.get_state(obj=self.context)
 
     def PuntsInside(self):
+        """OPTIMIZATION: Pre-calcula files i subpunts per evitar crides des del template"""
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         folder_path = '/'.join(self.context.getPhysicalPath())
         values = portal_catalog.unrestrictedSearchResults(
@@ -47,15 +48,15 @@ class Presentation(BrowserView):
                                 item, 'omitAgreement', False) else False
                     else:
                         agreement = False
-                    results.append(dict(title=obj.Title,
-                                        absolute_url=item.absolute_url(),
-                                        proposalPoint=item.proposalPoint,
-                                        state=item.estatsLlista,
-                                        item_path=item.absolute_url_path(),
-                                        portal_type=obj.portal_type,
-                                        agreement=agreement,
-                                        id=obj.id,
-                                        items_inside=inside))
+                    item_dict = dict(title=obj.Title,
+                                     absolute_url=item.absolute_url(),
+                                     proposalPoint=item.proposalPoint,
+                                     state=item.estatsLlista,
+                                     item_path=item.absolute_url_path(),
+                                     portal_type=obj.portal_type,
+                                     agreement=agreement,
+                                     id=obj.id,
+                                     items_inside=inside)
                 else:
                     item = obj.getObject()
                     if len(item.objectIds()) > 0:
@@ -70,21 +71,30 @@ class Presentation(BrowserView):
                                 item, 'omitAgreement', False) else False
                     else:
                         agreement = False
-                    results.append(dict(title=obj.Title,
-                                        absolute_url=item.absolute_url(),
-                                        proposalPoint=item.proposalPoint,
-                                        state=item.estatsLlista,
-                                        item_path=item.absolute_url_path(),
-                                        estats=self.estatsCanvi(obj),
-                                        css=self.getColor(obj),
-                                        portal_type=obj.portal_type,
-                                        agreement=agreement,
-                                        id=obj.id,
-                                        items_inside=inside))
+                    item_dict = dict(title=obj.Title,
+                                     absolute_url=item.absolute_url(),
+                                     proposalPoint=item.proposalPoint,
+                                     state=item.estatsLlista,
+                                     item_path=item.absolute_url_path(),
+                                     estats=self.estatsCanvi(obj),
+                                     css=self.getColor(obj),
+                                     portal_type=obj.portal_type,
+                                     agreement=agreement,
+                                     id=obj.id,
+                                     items_inside=inside)
+
+                # OPTIMIZATION: Pre-calculate files and subpunts to avoid python: calls in template
+                item_dict['files'] = self.filesinside(item_dict)
+                item_dict['subpunts'] = self.SubpuntsInside(item_dict)
+                item_dict['hasContent'] = bool(
+                    item_dict['files'] or item_dict['subpunts'])
+
+                results.append(item_dict)
         return results
 
     def SubpuntsInside(self, data):
-        """ Retorna les sessions i el seu contingut
+        """Retorna les sessions i el seu contingut
+        OPTIMIZATION: Pre-calcula files per evitar crides des del template
         """
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         folder_path = '/'.join(self.context.getPhysicalPath()) + '/' + data['id']
@@ -106,14 +116,14 @@ class Presentation(BrowserView):
                             item, 'omitAgreement', False) else False
                 else:
                     agreement = False
-                results.append(dict(title=obj.Title,
-                                    absolute_url=item.absolute_url(),
-                                    proposalPoint=item.proposalPoint,
-                                    state=item.estatsLlista,
-                                    portal_type=obj.portal_type,
-                                    item_path=item.absolute_url_path(),
-                                    agreement=agreement,
-                                    id='/'.join(item.absolute_url_path().split('/')[-2:])))
+                item_dict = dict(title=obj.Title,
+                                 absolute_url=item.absolute_url(),
+                                 proposalPoint=item.proposalPoint,
+                                 state=item.estatsLlista,
+                                 portal_type=obj.portal_type,
+                                 item_path=item.absolute_url_path(),
+                                 agreement=agreement,
+                                 id='/'.join(item.absolute_url_path().split('/')[-2:]))
             else:
                 item = obj.getObject()
                 item = obj._unrestrictedGetObject()
@@ -125,16 +135,21 @@ class Presentation(BrowserView):
                             item, 'omitAgreement', False) else False
                 else:
                     agreement = False
-                results.append(dict(title=obj.Title,
-                                    absolute_url=item.absolute_url(),
-                                    proposalPoint=item.proposalPoint,
-                                    state=item.estatsLlista,
-                                    portal_type=obj.portal_type,
-                                    item_path=item.absolute_url_path(),
-                                    estats=self.estatsCanvi(obj),
-                                    css=self.getColor(obj),
-                                    agreement=agreement,
-                                    id='/'.join(item.absolute_url_path().split('/')[-2:])))
+                item_dict = dict(title=obj.Title,
+                                 absolute_url=item.absolute_url(),
+                                 proposalPoint=item.proposalPoint,
+                                 state=item.estatsLlista,
+                                 portal_type=obj.portal_type,
+                                 item_path=item.absolute_url_path(),
+                                 estats=self.estatsCanvi(obj),
+                                 css=self.getColor(obj),
+                                 agreement=agreement,
+                                 id='/'.join(item.absolute_url_path().split('/')[-2:]))
+
+            # OPTIMIZATION: Pre-calculate files for subpunts
+            item_dict['files'] = self.filesinside(item_dict)
+
+            results.append(item_dict)
         return results
 
     def filesinside(self, item):
