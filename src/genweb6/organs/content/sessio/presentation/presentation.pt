@@ -16,7 +16,8 @@
 <tal:block i18n:domain="genweb6.organs" tal:condition="view/canView"
            tal:define="status view/status;
                        items view/PuntsInside;
-                       anonim view/Anonim">
+                       anonim view/Anonim;
+                       changeEstat view/changeEstat">
 
   <!-- TITULO -->
   <div class="d-flex justify-content-between align-items-center border-bottom border-2 border-primary mt-4 mb-3 pb-2">
@@ -107,7 +108,7 @@
                       [ACORD]
                     </span>
 
-                    <div class="btn-group float-end" role="group" aria-label="Change current state" tal:condition="view/changeEstat">
+                    <div class="btn-group float-end" role="group" aria-label="Change current state" tal:condition="changeEstat">
                       <tal:block tal:condition="item/state">
                         <button class="badge btn btn-outline-secondary ms-2 px-2 py-2 text-dark dropdown-toggle bullet-toggle" type="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -219,7 +220,7 @@
                                   tal:content="agreement">
                               [ACORD]
                             </span>
-                            <div class="btn-group float-end" role="group" aria-label="Change current state" tal:condition="view/changeEstat">
+                            <div class="btn-group float-end" role="group" aria-label="Change current state" tal:condition="changeEstat">
                               <tal:block tal:condition="itemSubpunt/state">
                                 <button class="badge btn btn-outline-secondary ms-2 px-2 py-2 text-dark dropdown-toggle bullet-toggle" type="button"
                                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -356,7 +357,7 @@
   
   <script type="text/javascript"
           src="++theme++genweb6.organs/js/content/presentation_modify.min.js"
-          tal:condition="view/changeEstat"></script>
+          tal:condition="changeEstat"></script>
 
 </tal:block>
 </metal:content-core>
