@@ -199,20 +199,20 @@
             <i class="bi bi-check2"></i>&nbsp;<tal:omit-tag i18n:translate="">Agreements list</tal:omit-tag>
           </button>
         </li>
-        <li tal:condition="python:loginfo and viewHistory" class="nav-item" role="presentation">
+        <li tal:condition="view/showHistoryTab" class="nav-item" role="presentation">
           <button class="nav-link" id="notificationsTab-tab" data-bs-toggle="tab" data-bs-target="#notificationsTab"
                   type="button" role="tab" aria-controls="notificationsTab" aria-selected="false">
             <i class="bi bi-table"></i>&nbsp;<tal:omit-tag i18n:translate="">Historial</tal:omit-tag>
           </button>
         </li>
-        <li tal:condition="python:excuses and viewExcusesAndPoints" class="nav-item" role="presentation">
+        <li tal:condition="view/showExcusesTab" class="nav-item" role="presentation">
           <button class="nav-link" id="excusesTab-tab" data-bs-toggle="tab" data-bs-target="#excusesTab" type="button"
                   role="tab" aria-controls="excusesTab" aria-selected="false">
             <i class="bi bi-table"></i>&nbsp;<tal:omit-tag i18n:translate="">Info excusats</tal:omit-tag>
           </button>
         </li>
         <tal:block tal:condition="canViewResultsVote">
-          <li tal:condition="python: getAllResultsVotes or getInfoQuorums" class="nav-item" role="presentation">
+          <li tal:condition="view/showResultsTab" class="nav-item" role="presentation">
             <button class="nav-link" id="resultsVotesTab-tab" data-bs-toggle="tab" data-bs-target="#resultsVotesTab"
                     type="button" role="tab" aria-controls="resultsVotesTab" aria-selected="false">
               <i class="bi bi-pie-chart"></i>&nbsp;<tal:omit-tag i18n:translate="">Resultats votacions /
@@ -446,7 +446,7 @@
           </div>
         </div>
 
-        <div class="tab-pane fade" id="notificationsTab" tal:condition="python:loginfo and viewHistory">
+        <div class="tab-pane fade" id="notificationsTab" tal:condition="view/showHistoryTab">
           <div class="table-responsive mb-3">
             <table class="table table-bordered">
               <thead>
@@ -471,7 +471,7 @@
           </div>
         </div>
 
-        <div class="tab-pane fade" id="excusesTab" tal:condition="python:view.getAnnotationsExcuse() and view.viewExcusesAndPoints()">
+        <div class="tab-pane fade" id="excusesTab" tal:condition="view/showExcusesTab">
           <div class="table-responsive mb-3">
             <table class="table table-bordered">
               <thead>
@@ -696,12 +696,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr tal:repeat="quorum quorums">
-                  <tal:block tal:define="quorumInfo python: quorums[quorum]">
-                    <td tal:content="quorumInfo/start"></td>
-                    <td tal:content="quorumInfo/end"></td>
-                    <td class="text-center" tal:content="quorumInfo/total"></td>
-                  </tal:block>
+                <tr tal:repeat="quorumInfo quorums/values">
+                  <td tal:content="quorumInfo/start"></td>
+                  <td tal:content="quorumInfo/end"></td>
+                  <td class="text-center" tal:content="quorumInfo/total"></td>
                 </tr>
               </tbody>
             </table>
@@ -1100,9 +1098,9 @@ P Conclusions</code>
                       </tal:block>
                     </div>
                   </div>
-                  <tal:block-contenidos tal:define="files python:view.filesinsidePunt(item);
-                                                    subpunts python:view.SubpuntsInside(item);
-                                                    contenidos python:files or subpunts">
+                  <tal:block-contenidos tal:define="files item/files;
+                                                    subpunts item/subpunts;
+                                                    contenidos item/hasContent">
                     <div class="puntTitle col-12 d-flex flex-wrap flex-md-nowrap justify-content-between justify-content-md-start align-items-baseline"
                          tal:attributes="id string:punt-${item/id}">
                       <div class="fletxaSpan me-2 w-3">
@@ -1529,7 +1527,7 @@ P Conclusions</code>
                               </div>
                             </tal:block>
 
-                            <tal:files tal:define="files python:view.filesinsidePunt(itemSubpunt)">
+                            <tal:files tal:define="files itemSubpunt/files">
                               <ul class="listFiles list-unstyled" tal:condition="files">
                                 <tal:documents repeat="item files">
                                   <li class="filesinTable w-100 mt-2">

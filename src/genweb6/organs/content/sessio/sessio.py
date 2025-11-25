@@ -302,10 +302,29 @@ class View(BrowserView):
         self._cached_roles = utils.getUserRoles(
             self, self.context, self._cached_username)
 
+        # OPTIMIZATION: Pre-calcular condiciones booleanas para evitar python: en template
+        self._show_history_tab = self.viewHistory() and bool(self.getAnnotations())
+        self._show_excuses_tab = self.viewExcusesAndPoints() and bool(self.getAnnotationsExcuse())
+        all_votes = self.getAllResultsVotes()
+        all_quorums = self.getInfoQuorums()
+        self._show_results_tab = bool(all_votes or all_quorums)
+
         return self.index()
 
     def isAnon(self):
         return api.user.is_anonymous()
+
+    def showHistoryTab(self):
+        """OPTIMIZATION: Retorna valor pre-calculado para evitar python: en template"""
+        return getattr(self, '_show_history_tab', False)
+
+    def showExcusesTab(self):
+        """OPTIMIZATION: Retorna valor pre-calculado para evitar python: en template"""
+        return getattr(self, '_show_excuses_tab', False)
+
+    def showResultsTab(self):
+        """OPTIMIZATION: Retorna valor pre-calculado para evitar python: en template"""
+        return getattr(self, '_show_results_tab', False)
 
     def viewHistory(self):
         # Només els Secretaris i Managers poden veure el LOG
@@ -446,6 +465,7 @@ class View(BrowserView):
 
     def PuntsInside(self):
         """ Retorna punts i acords d'aquí dintre (sense tenir compte estat)
+        OPTIMIZATION: Pre-calcula files i subpunts per evitar crides des del template
         """
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         folder_path = '/'.join(self.context.getPhysicalPath())
@@ -577,6 +597,12 @@ class View(BrowserView):
                 # Pre-calculate canModify to avoid repeated template calls
                 item_dict['canModify'] = self.canModifyPunt(item_dict)
 
+                # OPTIMIZATION: Pre-calculate files and subpunts to avoid python: calls in template
+                item_dict['files'] = self.filesinsidePunt(item_dict)
+                item_dict['subpunts'] = self.SubpuntsInside(item_dict)
+                item_dict['hasContent'] = bool(
+                    item_dict['files'] or item_dict['subpunts'])
+
                 results.append(item_dict)
         return results
 
@@ -685,6 +711,9 @@ class View(BrowserView):
 
             # Pre-calculate canModify to avoid repeated template calls
             item_dict['canModify'] = self.canModifyPunt(item_dict)
+
+            # OPTIMIZATION: Pre-calculate files for subpunts
+            item_dict['files'] = self.filesinsidePunt(item_dict)
 
             results.append(item_dict)
         return results
@@ -1203,23 +1232,18 @@ class View(BrowserView):
                       'depth': 1})
 
             if acordObj.estatVotacio in ['open', 'close']:
-                data = {'UID': acord.UID, 
-                        'URL': acordObj.absolute_url(),
-                        'title': acordObj.title, 
-                        'code': acordObj.agreement if acordObj.agreement else _(u"Acord sense numeració"),
-                        'state': _(u'open') if acordObj.estatVotacio == 'open' else _(u'close'),
+                data = {'UID': acord.UID, 'URL': acordObj.absolute_url(),
+                        'title': acordObj.title, 'code': acordObj.agreement
+                        if acordObj.agreement else _(u"Acord sense numeració"),
+                        'state': _(u'open')
+                        if acordObj.estatVotacio == 'open' else _(u'close'),
                         'isOpen': acordObj.estatVotacio == 'open',
                         'isPublic': acordObj.tipusVotacio ==
                         'public' and self.canViewManageVote(),
                         'hourOpen': acordObj.horaIniciVotacio,
-                        'hourClose': acordObj.horaFiVotacio, 
-                        'favorVote': 0,
-                        'againstVote': 0, 
-                        'whiteVote': 0, 
-                        'totalVote': 0,
-                        'isEsmena': False, 
-                        'isVote': True, 
-                        'canReopen': True}
+                        'hourClose': acordObj.horaFiVotacio, 'favorVote': 0,
+                        'againstVote': 0, 'whiteVote': 0, 'totalVote': 0,
+                        'isEsmena': False, 'isVote': True, 'canReopen': True}
 
                 if acordObj.estatVotacio == 'open':
                     data['canReopen'] = False
@@ -1267,22 +1291,14 @@ class View(BrowserView):
                 results.append(data)
 
             if esmenas and acordObj.estatVotacio == None:
-                data = {'UID': acord.UID,
-                        'URL': acordObj.absolute_url(),
-                        'title': acordObj.title,
-                        'code': acordObj.agreement if acordObj.agreement else _(u"Acord sense numeració"),
-                        'state': '',
-                        'isOpen': False,
-                        'isPublic': False,
+                data = {'UID': acord.UID, 'URL': acordObj.absolute_url(),
+                        'title': acordObj.title, 'code': acordObj.agreement
+                        if acordObj.agreement else _(u"Acord sense numeració"),
+                        'state': '', 'isOpen': False, 'isPublic': False,
                         'hourOpen': acordObj.horaIniciVotacio,
-                        'hourClose': acordObj.horaFiVotacio,
-                        'favorVote': '',
-                        'againstVote': '',
-                        'whiteVote': '',
-                        'totalVote': '',
-                        'isEsmena': False,
-                        'isVote': False,
-                        'canReopen': False}
+                        'hourClose': acordObj.horaFiVotacio, 'favorVote': '',
+                        'againstVote': '', 'whiteVote': '', 'totalVote': '',
+                        'isEsmena': False, 'isVote': False, 'canReopen': False}
 
                 results.append(data)
 
