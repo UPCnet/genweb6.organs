@@ -80,10 +80,7 @@ class Search(BrowserView):
             all_roles = api.user.get_roles(username=username, obj=organ)
             roles = [o for o in all_roles if o in ['OG1-Secretari',
                                                    'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat']]
-            if utils.checkhasRol(
-                ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat',
-                 'OG5-Convidat'],
-                    roles):
+            if roles:
                 results.append(dict(
                     url=organ.absolute_url(),
                     title=obj.Title,
