@@ -509,7 +509,7 @@ table.table-bordered thead th {
   /* line 151, ../scss/_print.scss */
   table td,
   table th {
-    padding: 0rem !important;
+    padding: .15rem .3rem !important;
   }
   /* line 156, ../scss/_print.scss */
   table thead {
