@@ -53,10 +53,10 @@
     <!-- Barra d'accions -->
     <div class="d-flex justify-content-end mb-3 gap-2">
       <tal:block tal:condition="not:view/isSigned">
-        <a id="printActaBtn" 
-          class="btn btn-outline-primary" 
-          tal:condition="view/viewPrintButon" 
-          href="#" 
+        <a id="printActaBtn"
+          class="btn btn-outline-primary"
+          tal:condition="view/viewPrintButon"
+          href="#"
           tal:attributes="data-url string:${absolute_url}">
           <i class="bi bi-printer me-1"></i>
           <span i18n:translate="">Imprimir</span>
@@ -64,10 +64,10 @@
 
         <iframe id="printActaIframe" name="printActaIframe" style="display:none;width:0;height:0;border:0;" src=""></iframe>
 
-        <a id="previewActaBtn" 
-          class="btn btn-outline-primary" 
-          tal:condition="view/viewPrintButon" 
-          tal:attributes="data-url string:${absolute_url}/previewActa" 
+        <a id="previewActaBtn"
+          class="btn btn-outline-primary"
+          tal:condition="view/viewPrintButon"
+          tal:attributes="data-url string:${absolute_url}/previewActa"
           href="#">
           <i class="bi bi-eye me-1"></i>
           <span i18n:translate="">Previsualitza</span>
@@ -87,13 +87,13 @@
     <!-- Estat firma -->
     <tal:block tal:condition="not:view/isAnon">
       <div tal:condition="hasFirma" class="mb-3">
-        <span tal:define="estatFirma view/estatFirma" 
+        <span tal:define="estatFirma view/estatFirma"
               tal:attributes="class string:badge rounded-pill text-bg-${estatFirma/class}">
           <tal:block i18n:translate="">Acta: </tal:block>
           <tal:block tal:replace="estatFirma/text">PENDENT_SIGNANTS</tal:block>
         </span>
       </div>
-    </tal:block> 
+    </tal:block>
 
     <ul class="nav nav-tabs mb-2" id="actaTabs" role="tablist">
       <li class="nav-item" role="presentation">
@@ -107,7 +107,7 @@
         </button>
       </li>
     </ul>
-      
+
     <div class="tab-content" id="actaTabContent">
 
       <!-- Dades -->
@@ -159,19 +159,19 @@
             </button>
           </li>
           <li class="nav-item" tal:condition="membresConvidats" role="presentation">
-            <button tal:attributes="class python:'nav-link active' if not membresConvocats else 'nav-link'" 
+            <button tal:attributes="class view/getNavConvidatsClass"
                     id="tab-convidats" data-bs-toggle="pill" data-bs-target="#pane-convidats" type="button" role="tab">
               <span i18n:translate="">Invited members</span>
             </button>
           </li>
           <li class="nav-item" tal:condition="llistaExcusats" role="presentation">
-            <button tal:attributes="class python:'nav-link active' if not membresConvocats and not membresConvidats else 'nav-link'" 
+            <button tal:attributes="class view/getNavExcusatsClass"
                     id="tab-excusats" data-bs-toggle="pill" data-bs-target="#pane-excusats" type="button" role="tab">
               <span i18n:translate="">Excused members</span>
             </button>
           </li>
           <li class="nav-item" tal:condition="llistaNoAssistens" role="presentation">
-            <button tal:attributes="class python:'nav-link active' if not membresConvocats and not membresConvidats and not llistaExcusats else 'nav-link'" 
+            <button tal:attributes="class view/getNavNoassistClass"
                     id="tab-noassist" data-bs-toggle="pill" data-bs-target="#pane-noassist" type="button" role="tab">
               <span i18n:translate="">No assistents</span>
             </button>
@@ -186,7 +186,7 @@
               </div>
             </div>
           </div>
-          <div tal:attributes="class python:'tab-pane fade show active' if not membresConvocats else 'tab-pane fade'" 
+          <div tal:attributes="class view/getPaneConvidatsClass"
                id="pane-convidats" role="tabpanel" aria-labelledby="tab-convidats" tal:condition="membresConvidats">
             <div class="card">
               <div class="card-body">
@@ -194,7 +194,7 @@
               </div>
             </div>
           </div>
-          <div tal:attributes="class python:'tab-pane fade show active' if not membresConvocats and not membresConvidats else 'tab-pane fade'" 
+          <div tal:attributes="class view/getPaneExcusatsClass"
                id="pane-excusats" role="tabpanel" aria-labelledby="tab-excusats" tal:condition="llistaExcusats">
             <div class="card">
               <div class="card-body">
@@ -202,7 +202,7 @@
               </div>
             </div>
           </div>
-          <div tal:attributes="class python:'tab-pane fade show active' if not membresConvocats and not membresConvidats and not llistaExcusats else 'tab-pane fade'" 
+          <div tal:attributes="class view/getPaneNoassistClass"
                id="pane-noassist" role="tabpanel" aria-labelledby="tab-noassist" tal:condition="llistaNoAssistens">
             <div class="card">
               <div class="card-body">
@@ -220,16 +220,14 @@
     <!-- Annexes & Acta PDF -->
     <tal:block tal:condition="not:isSigned">
       <div class="mt-5" tal:condition="annexes">
-        <tal:block tal:define="multiple_annexes python:len(annexes)>1">
-          <h2 class="mb-2" tal:condition="multiple_annexes" i18n:translate="">Fitxers adjunts</h2>
-          <h2 class="mb-2" tal:condition="not:multiple_annexes" i18n:translate="">Fitxer adjunt</h2>
-        </tal:block>
+        <h2 class="mb-2" tal:condition="view/hasMultipleAnnexes" i18n:translate="">Fitxers adjunts</h2>
+        <h2 class="mb-2" tal:condition="not:view/hasMultipleAnnexes" i18n:translate="">Fitxer adjunt</h2>
         <ul class="list-unstyled">
           <tal:repeat repeat="item annexes">
             <li>
               <i class="bi bi-paperclip"></i>
               <a tal:attributes="href string:${item/absolute_url}/@@display-file/file/" tal:content="item/filename">annex</a>
-              <span class="text-muted fs-s ms-2">(<span tal:replace="python:round(item['sizeKB'], 2)"></span> KB)</span>
+              <span class="text-muted fs-s ms-2">(<span tal:replace="item/sizeKB_rounded"></span> KB)</span>
               <a tal:attributes="href string:${item/absolute_url}/@@download/file/${item/filename}" class="ms-1"><i class="bi bi-download"></i></a>
             </li>
           </tal:repeat>
@@ -241,8 +239,8 @@
         <p>
           <i class="bi bi-file-earmark-pdf me-1"></i>
           <a tal:attributes="href string:${absolute_url}/@@display-file/acta/; target string:_blank" tal:content="context/acta/filename">acta</a>
-          <span class="text-muted fs-s ms-2" tal:define="size context/acta/getSize; kb python:round(size/1024, 2)">
-            (<span tal:replace="kb"></span> KB)
+          <span class="text-muted fs-s ms-2">
+            (<span tal:replace="view/getActaUnsignedSizeRounded"></span> KB)
           </span>
           <a tal:attributes="href string:${absolute_url}/@@download/acta/${context/acta/filename}" class="ms-2">
             <i class="bi bi-download"></i>
@@ -253,17 +251,15 @@
 
     <tal:block tal:condition="isSigned" tal:define="acta view/getPFDActa">
       <div class="mt-5" tal:condition="annexes">
-        <tal:block tal:define="multiple_annexes python:len(annexes)>1">
-          <h2 class="mb-2" tal:condition="multiple_annexes" i18n:translate="">Fitxers adjunts</h2>
-          <h2 class="mb-2" tal:condition="not:multiple_annexes" i18n:translate="">Fitxer adjunt</h2>
-        </tal:block>
+        <h2 class="mb-2" tal:condition="view/hasMultipleAnnexes" i18n:translate="">Fitxers adjunts</h2>
+        <h2 class="mb-2" tal:condition="not:view/hasMultipleAnnexes" i18n:translate="">Fitxer adjunt</h2>
         <ul class="list-unstyled">
           <tal:repeat repeat="item annexes">
             <li>
               <i class="bi bi-paperclip"></i>
               <a tal:attributes="href item/absolute_url" tal:content="item/filename">annex</a>
               <span class="text-muted fs-s ms-2">
-                (<span tal:replace="python:round(item['sizeKB'], 2)"></span> KB)
+                (<span tal:replace="item/sizeKB_rounded"></span> KB)
               </span>
               <a tal:attributes="href item/download_url" class="ms-1"><i class="bi bi-download"></i></a>
             </li>
@@ -277,7 +273,7 @@
           <i class="bi bi-file-earmark-pdf me-1"></i>
           <a tal:attributes="href string:${absolute_url}/viewActa" tal:content="acta/filename">acta</a>
           <span class="text-muted fs-s ms-2">
-            (<span tal:replace="python:round(acta['sizeKB'], 2)"></span> KB)
+            (<span tal:replace="view/getActaSizeRounded"></span> KB)
           </span>
           <a tal:attributes="href string:${absolute_url}/downloadActa;" class="ms-2">
             <i class="bi bi-download"></i>

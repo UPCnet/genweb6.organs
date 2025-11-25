@@ -389,7 +389,93 @@ class View(BrowserView, UtilsFirmaDocumental):
         # Deshabilitar CSRF
         if CSRF:
             alsoProvides(self.request, IDisableCSRFProtection)
+
+        # OPTIMIZATION: Precalcular clases CSS para tabs de assistentes
+        self._prepareAssistentsTabs()
+
+        # OPTIMIZATION: Precalcular dades d'annexes
+        self._prepareAnnexesData()
+
         return self.index()
+
+    def _prepareAssistentsTabs(self):
+        """OPTIMIZATION: Precalcula clases CSS per als tabs d'assistents"""
+        membresConvocats = self.context.membresConvocats
+        membresConvidats = self.context.membresConvidats
+        llistaExcusats = self.context.llistaExcusats
+
+        # Nav-link classes
+        self._nav_convidats_class = 'nav-link active' if not membresConvocats else 'nav-link'
+        self._nav_excusats_class = 'nav-link active' if not membresConvocats and not membresConvidats else 'nav-link'
+        self._nav_noassist_class = 'nav-link active' if not membresConvocats and not membresConvidats and not llistaExcusats else 'nav-link'
+
+        # Tab-pane classes
+        self._pane_convidats_class = 'tab-pane fade show active' if not membresConvocats else 'tab-pane fade'
+        self._pane_excusats_class = 'tab-pane fade show active' if not membresConvocats and not membresConvidats else 'tab-pane fade'
+        self._pane_noassist_class = 'tab-pane fade show active' if not membresConvocats and not membresConvidats and not llistaExcusats else 'tab-pane fade'
+
+    def _prepareAnnexesData(self):
+        """OPTIMIZATION: Precalcula dades dels annexes"""
+        annexes = self.AnnexInside()
+        if annexes:
+            self._has_multiple_annexes = len(annexes) > 1
+            # Precalcular sizeKB arrodonit per cada annex
+            for annex in annexes:
+                annex['sizeKB_rounded'] = round(annex['sizeKB'], 2)
+        else:
+            self._has_multiple_annexes = False
+
+        # Precalcular dades de l'acta PDF si està signada
+        if self.isSigned():
+            acta_pdf = self.getPFDActa()
+            if acta_pdf:
+                self._acta_size_rounded = round(acta_pdf['sizeKB'], 2)
+            else:
+                self._acta_size_rounded = None
+        else:
+            # Precalcular mida de l'acta no signada
+            if self.context.acta:
+                size = self.context.acta.getSize()
+                self._acta_unsigned_size_rounded = round(size / 1024, 2)
+            else:
+                self._acta_unsigned_size_rounded = None
+            self._acta_size_rounded = None
+
+    def getNavConvidatsClass(self):
+        """OPTIMIZATION: Retorna classe CSS precalculada"""
+        return getattr(self, '_nav_convidats_class', 'nav-link')
+
+    def getNavExcusatsClass(self):
+        """OPTIMIZATION: Retorna classe CSS precalculada"""
+        return getattr(self, '_nav_excusats_class', 'nav-link')
+
+    def getNavNoassistClass(self):
+        """OPTIMIZATION: Retorna classe CSS precalculada"""
+        return getattr(self, '_nav_noassist_class', 'nav-link')
+
+    def getPaneConvidatsClass(self):
+        """OPTIMIZATION: Retorna classe CSS precalculada"""
+        return getattr(self, '_pane_convidats_class', 'tab-pane fade')
+
+    def getPaneExcusatsClass(self):
+        """OPTIMIZATION: Retorna classe CSS precalculada"""
+        return getattr(self, '_pane_excusats_class', 'tab-pane fade')
+
+    def getPaneNoassistClass(self):
+        """OPTIMIZATION: Retorna classe CSS precalculada"""
+        return getattr(self, '_pane_noassist_class', 'tab-pane fade')
+
+    def hasMultipleAnnexes(self):
+        """OPTIMIZATION: Retorna si hi ha múltiples annexes"""
+        return getattr(self, '_has_multiple_annexes', False)
+
+    def getActaSizeRounded(self):
+        """OPTIMIZATION: Retorna mida de l'acta signada arrodonida"""
+        return getattr(self, '_acta_size_rounded', None)
+
+    def getActaUnsignedSizeRounded(self):
+        """OPTIMIZATION: Retorna mida de l'acta no signada arrodonida"""
+        return getattr(self, '_acta_unsigned_size_rounded', None)
 
     def isAnon(self):
         return api.user.is_anonymous()
