@@ -1,21 +1,21 @@
-<html 
-  xmlns="http://www.w3.org/1999/xhtml" 
-  xml:lang="en" 
-  xmlns:tal="http://xml.zope.org/namespaces/tal" 
-  xmlns:metal="http://xml.zope.org/namespaces/metal" 
-  xmlns:i18n="http://xml.zope.org/namespaces/i18n" 
-  lang="ca" 
-  metal:use-macro="context/main_template/macros/master" 
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xml:lang="en"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  lang="ca"
+  metal:use-macro="context/main_template/macros/master"
   i18n:domain="genweb6.organs">
 <body>
 <metal:main fill-slot="main" tal:condition="view/canView">
-<tal:main-macro metal:define-macro="main" 
-                tal:define="items view/PuntsInside; 
-                            canModify view/canModify; 
-                            hihaDocs view/hihaDocs; 
-                            getTitlePrompt view/getTitlePrompt; 
-                            getErrorPrompt view/getErrorPrompt; 
-                            acta view/activeActa; 
+<tal:main-macro metal:define-macro="main"
+                tal:define="items view/PuntsInside;
+                            canModify view/canModify;
+                            hihaDocs view/hihaDocs;
+                            getTitlePrompt view/getTitlePrompt;
+                            getErrorPrompt view/getErrorPrompt;
+                            acta view/activeActa;
                             checkSerieGDoc view/checkSerieGDoc;">
 
   <div tal:replace="structure provider:plone.abovecontenttitle"></div>
@@ -25,7 +25,7 @@
 
   <div class="mb-3">
     <a class="btn btn-outline-primary" tal:attributes="href context/absolute_url">
-      <i class="bi bi-chevron-left me-1" aria-hidden="true"></i> 
+      <i class="bi bi-chevron-left me-1" aria-hidden="true"></i>
       <tal:omit-tag i18n:translate="">Tornar</tal:omit-tag>
     </a>
   </div>
@@ -34,14 +34,14 @@
     <ul id="tabs" class="nav nav-tabs mb-2" data-bs-toggle="tabs">
       <li class="nav-item" tal:condition="hihaDocs">
         <a class="nav-link active" href="#documentsTab" data-bs-toggle="tab">
-          <i class="bi bi-list me-1" aria-hidden="True"></i> 
+          <i class="bi bi-list me-1" aria-hidden="True"></i>
           <tal:omit-tag i18n:translate="">Documentació</tal:omit-tag>
         </a>
       </li>
       <li class="nav-item">
-        <a tal:attributes="class python:'nav-link' if hihaDocs else 'nav-link active'" 
+        <a tal:attributes="class view/getNavLinkActaClass"
            href="#actaTab" data-bs-toggle="tab">
-          <i class="bi bi-file-text-o me-1" aria-hidden="True"></i> 
+          <i class="bi bi-file-text-o me-1" aria-hidden="True"></i>
           <tal:omit-tag i18n:translate="">Acta</tal:omit-tag>
         </a>
       </li>
@@ -95,13 +95,13 @@
               <tal:block tal:define="agreement item/agreement">
                 <li tal:attributes="id item/id">
                   <div class="row px-3 py-2 justify-content-end" tal:condition="item/show">
-                    <tal:block-contenidos tal:define="files python:view.filesinsidePunt(item);
-                                                      subpunts python:view.SubpuntsInside(item);
-                                                      contenidos python:files or subpunts">
+                    <tal:block-contenidos tal:define="files item/files;
+                                                      subpunts item/subpunts;
+                                                      contenidos item/hasContent">
 
                       <div class="puntTitle col-12 d-flex flex-nowrap align-items-baseline">
                         <div class="fletxaSpan me-2 w-3">
-                          <button type="button" class="btn px-0 py-0 btn-expand-collapse" 
+                          <button type="button" class="btn px-0 py-0 btn-expand-collapse"
                                   tal:condition="contenidos"
                                   data-bs-toggle="collapse"
                                   tal:attributes="data-bs-target string:#collapse-${item/id}"
@@ -117,8 +117,8 @@
                         </div>
 
                         <div class="titleSpan me-2 w-92">
-                          <a tal:attributes="data-id item/id; 
-                                            href item/absolute_url" 
+                          <a tal:attributes="data-id item/id;
+                                            href item/absolute_url"
                             data-url="changeTitle"
                             class="editTitle titleSize text-dark">
                             <tal:omit-tag tal:content="item/title">Item Title</tal:omit-tag>
@@ -131,8 +131,8 @@
                         </div>
 
                       </div>
-                      <div class="collapse multi-collapse-points show" 
-                           tal:attributes="id string:collapse-${item/id}" 
+                      <div class="collapse multi-collapse-points show"
+                           tal:attributes="id string:collapse-${item/id}"
                            tal:condition="contenidos">
                         <tal:files tal:condition="files">
                           <ul class="listFiles list-unstyled">
@@ -140,13 +140,13 @@
                               <li class="filesinTable w-100 mt-2 d-flex">
                                 <div class="titleSpan d-flex w-100">
                                   <i tal:attributes="class string:${file_item/classCSS} me-1"></i>
-                                  <a tal:attributes="href file_item/absolute_url;" 
+                                  <a tal:attributes="href file_item/absolute_url;"
                                     tal:condition="file_item/new_tab"
                                     target="_blank"
                                     class="text-dark">
                                     <tal:omit-tag tal:content="file_item/title"> Doc title</tal:omit-tag>
                                     <p class="mb-0 text-danger-emphasis"
-                                       tal:condition="not:file_item/info_firma/success" 
+                                       tal:condition="not:file_item/info_firma/success"
                                        tal:content="file_item/info_firma/message"></p>
                                   </a>
                                   <a tal:attributes="href file_item/absolute_url;"
@@ -154,7 +154,7 @@
                                     class="text-dark">
                                     <tal:omit-tag tal:content="file_item/title"> Doc title</tal:omit-tag>
                                     <p class="mb-0 text-danger-emphasis"
-                                       tal:condition="not:file_item/info_firma/success" 
+                                       tal:condition="not:file_item/info_firma/success"
                                        tal:content="file_item/info_firma/message"></p>
                                   </a>
                                   <div class="ms-auto d-flex align-items-center">
@@ -165,7 +165,7 @@
                                     <tal:block tal:condition="view/canFirm">
                                       <input class="form-check-input mt-0 ms-1" type="checkbox" autocomplete="off"
                                               tal:condition="not:file_item/info_firma/success"
-                                              tal:attributes="name python:'check:'+file_item['uuid']; value file_item/uuid" 
+                                              tal:attributes="name python:'check:'+file_item['uuid']; value file_item/uuid"
                                               checked="checked" />
                                     </tal:block>
                                   </div>
@@ -176,21 +176,21 @@
                         </tal:files>
                         <div tal:condition="subpunts">
                           <tal:subpunts repeat="itemSubpunt subpunts">
-                            <div class="li_subgrups row mt-2 justify-content-end" 
-                                 tal:attributes="id itemSubpunt/id" 
+                            <div class="li_subgrups row mt-2 justify-content-end"
+                                 tal:attributes="id itemSubpunt/id"
                                  tal:define="agreement itemSubpunt/agreement;
                                              itemSubpunt_id itemSubpunt/id;">
 
                               <div class="subpuntTitle col-12 d-flex flex-nowrap align-items-baseline">
                                 <div class="numberSpan me-2 w-5">
-                                  <span class="proposalNumberSubpunt text-primary fw-bold" 
+                                  <span class="proposalNumberSubpunt text-primary fw-bold"
                                         tal:content="itemSubpunt/proposalPoint"></span>
                                 </div>
 
                                 <div class="titleSpan me-2 w-95">
-                                  <a tal:attributes="data-id itemSubpunt_id; 
+                                  <a tal:attributes="data-id itemSubpunt_id;
                                                      href itemSubpunt/absolute_url"
-                                    data-type="text" data-url="changeTitle" 
+                                    data-type="text" data-url="changeTitle"
                                     class="editTitle subtitleSize text-dark">
                                     <tal:omit-tag tal:content="itemSubpunt/title">Item Title</tal:omit-tag>
                                   </a>
@@ -202,26 +202,26 @@
                                 </div>
 
                               </div>
-                              <tal:files tal:define="files python:view.filesinsidePunt(itemSubpunt)">
+                              <tal:files tal:define="files itemSubpunt/files">
                                 <ul class="listFiles list-unstyled" tal:condition="files">
                                   <tal:documents repeat="item files">
                                     <li class="filesinTable w-100 mt-2 d-flex">
                                       <i tal:attributes="class string:${item/classCSS} me-1"></i>
-                                      <a tal:attributes="href item/absolute_url;" 
+                                      <a tal:attributes="href item/absolute_url;"
                                           tal:condition="item/new_tab"
                                           target="_blank"
                                           class="text-dark">
                                         <tal:omit-tag tal:content="item/title"> Doc title</tal:omit-tag>
                                         <p class="mb-0 text-danger-emphasis"
-                                           tal:condition="not:item/info_firma/success" 
+                                           tal:condition="not:item/info_firma/success"
                                            tal:content="item/info_firma/message"></p>
                                       </a>
-                                      <a tal:attributes="href item/absolute_url;" 
+                                      <a tal:attributes="href item/absolute_url;"
                                           tal:condition="not:item/new_tab"
                                           class="text-dark">
                                         <tal:omit-tag tal:content="item/title"> Doc title</tal:omit-tag>
                                         <p class="mb-0 text-danger-emphasis"
-                                           tal:condition="not:item/info_firma/success" 
+                                           tal:condition="not:item/info_firma/success"
                                            tal:content="item/info_firma/message"></p>
                                       </a>
                                       <div class="ms-auto d-flex align-items-center">
@@ -232,7 +232,7 @@
                                         <tal:block tal:condition="view/canFirm">
                                           <input class="form-check-input mt-0 ms-1" type="checkbox" autocomplete="off"
                                                 tal:condition="not:item/info_firma/success"
-                                                tal:attributes="name python:'check:'+item['uuid']; value item/uuid" 
+                                                tal:attributes="name python:'check:'+item['uuid']; value item/uuid"
                                                 checked="checked" />
                                         </tal:block>
                                       </div>
@@ -254,22 +254,23 @@
         </div>
       </div>
 
-      <div id="actaTab" 
+      <div id="actaTab"
            tal:condition="acta"
-           tal:attributes="class python: 'tab-pane' + ('' if hihaDocs else ' active')"
-           tal:define="isSigned python:view.isSigned(acta)">
+           tal:attributes="class view/getTabActaClass"
+           tal:define="actaData view/getActaData;
+                       isSigned actaData/isSigned">
         <div tal:define="ordenDelDia acta/ordenDelDia;
-                         audio python:view.AudioInsideActa(acta);
-                         annexes python:view.AnnexInsideActa(acta);
+                         audio actaData/audio;
+                         annexes actaData/annexes;
                          enllacVideo acta/enllacVideo;
                          absolute_url acta/absolute_url;
-                         hasFirma python:view.hasFirma(acta);">
+                         hasFirma actaData/hasFirma;">
 
           <div class="d-flex justify-content-end mb-3">
-                          
+
             <tal:block tal:condition="hasFirma">
 
-              <span tal:define="estatFirma python:view.estatFirma(acta)"
+              <span tal:define="estatFirma actaData/estatFirma"
                     tal:attributes="class string:badge rounded-pill estatFirma ${estatFirma/class}">
                 <tal:block i18n:translate="">Acta: </tal:block>
                 <tal:block tal:content="estatFirma/text">PENDENT_SIGNANTS</tal:block>
@@ -280,8 +281,8 @@
             <tal:block tal:condition="view/canFirm">
 
               <tal:block tal:condition="not:hasFirma">
-                <a id="previewActaBtn" class="btn btn-outline-secondary me-3" 
-                  tal:attributes="data-url string:${absolute_url}/previewActa" 
+                <a id="previewActaBtn" class="btn btn-outline-secondary me-3"
+                  tal:attributes="data-url string:${absolute_url}/previewActa"
                   href="#">
                   <i class="bi bi-eye"></i> <span i18n:translate="">Previsualitza</span>
                 </a>
@@ -305,7 +306,7 @@
 
           <tal:block tal:condition="not:isSigned">
             <tal:block tal:condition="annexes">
-              <tal:block tal:define="multiple_annexes python:len(annexes)>1">
+              <tal:block tal:define="multiple_annexes actaData/hasMultipleAnnexes">
                 <h2 class="mt-4 mb-2" tal:condition="multiple_annexes" i18n:translate="">Fitxers adjunts</h2>
                 <h2 class="mt-4 mb-2" tal:condition="not:multiple_annexes" i18n:translate="">Fitxer adjunt</h2>
               </tal:block>
@@ -348,9 +349,9 @@
             </tal:block>
           </tal:block>
 
-          <tal:block tal:condition="isSigned" tal:define="actaPDF python:view.getPDFActa(acta)">
+          <tal:block tal:condition="isSigned" tal:define="actaPDF actaData/actaPDF">
             <tal:block tal:condition="annexes">
-              <tal:block tal:define="multiple_annexes python:len(annexes)>1">
+              <tal:block tal:define="multiple_annexes actaData/hasMultipleAnnexes">
                 <h2 class="mt-4 mb-2" tal:condition="multiple_annexes" i18n:translate="">Fitxers adjunts</h2>
                 <h2 class="mt-4 mb-2" tal:condition="not:multiple_annexes" i18n:translate="">Fitxer adjunt</h2>
               </tal:block>
@@ -373,8 +374,7 @@
             </tal:block>
 
             <div tal:define="public_acta_download_url string:${absolute_url}/downloadActa;
-                            public_acta_view_url string:${absolute_url}/viewActa;
-                            isSigned python:view.isSigned(acta)">
+                            public_acta_view_url string:${absolute_url}/viewActa">
               <h2 class="mt-4 mb-2" i18n:translate="">Acta signada</h2>
               <p>
                 <a tal:attributes="href public_acta_view_url">
@@ -393,13 +393,13 @@
         </div>
       </div>
 
-      <div id="actaTab" 
-           tal:attributes="class python: 'tab-pane' + ('' if hihaDocs else ' active')" 
+      <div id="actaTab"
+           tal:attributes="class view/getTabActaClass"
            tal:condition="not:acta">
         <div class="alert alert-warning" role="alert">
           <strong i18n:translate="">Alerta</strong>
           <span i18n:translate="">Encara no s'ha generat cap acta per signar.</span>
-          <a class="alert-link" tal:attributes="href python:context.absolute_url() + '/++add++genweb.organs.acta/'">
+          <a class="alert-link" tal:attributes="href view/getAddActaURL">
             <span i18n:translate="">Afegeix un acta</span>
           </a>
         </div>
@@ -442,9 +442,9 @@
               <tal:block tal:define="agreement item/agreement">
                 <li tal:attributes="id item/id">
                   <div class="row px-3 py-2" tal:condition="item/show">
-                    <tal:block-contenidos tal:condition="python: view.hasUnsentFiles(item, depth=2)"
-                                          tal:define="files python:view.filesinsidePunt(item);
-                                                      subpunts python:view.SubpuntsInside(item);">
+                    <tal:block-contenidos tal:condition="item/hasUnsentFiles"
+                                          tal:define="files item/files;
+                                                      subpunts item/subpunts;">
 
                       <div class="puntTitle col-12 d-flex flex-nowrap align-items-baseline">
                         <div class="numberSpan me-2 w-5 text-end">
@@ -453,8 +453,8 @@
                         </div>
 
                         <div class="titleSpan me-2 w-75">
-                          <a tal:attributes="data-id item/id; 
-                                            href item/absolute_url" 
+                          <a tal:attributes="data-id item/id;
+                                            href item/absolute_url"
                             data-url="changeTitle"
                             class="editTitle titleSize text-dark">
                             <tal:omit-tag tal:content="item/title">Item Title</tal:omit-tag>
@@ -484,22 +484,22 @@
 
                       <div class="container-subpunts" tal:condition="subpunts">
                         <tal:subpunts repeat="itemSubpunt subpunts">
-                          <div class="li_subgrups row mt-2 justify-content-end" 
-                              tal:condition="python:view.hasUnsentFiles(itemSubpunt)"
-                              tal:attributes="id itemSubpunt/id" 
+                          <div class="li_subgrups row mt-2 justify-content-end"
+                              tal:condition="itemSubpunt/hasUnsentFiles"
+                              tal:attributes="id itemSubpunt/id"
                               tal:define="agreement itemSubpunt/agreement;
                                           itemSubpunt_id itemSubpunt/id;">
 
                             <div class="subpuntTitle col-12 d-flex flex-nowrap align-items-baseline">
                               <div class="numberSpan me-2 w-5">
-                                <span class="proposalNumberSubpunt text-primary fw-bold" 
+                                <span class="proposalNumberSubpunt text-primary fw-bold"
                                       tal:content="itemSubpunt/proposalPoint"></span>
                               </div>
 
                               <div class="titleSpan me-2 w-95">
-                                <a tal:attributes="data-id itemSubpunt_id; 
+                                <a tal:attributes="data-id itemSubpunt_id;
                                                   href itemSubpunt/absolute_url"
-                                  data-type="text" data-url="changeTitle" 
+                                  data-type="text" data-url="changeTitle"
                                   class="editTitle subtitleSize text-dark">
                                   <tal:omit-tag tal:content="itemSubpunt/title">Item Title</tal:omit-tag>
                                 </a>
@@ -511,7 +511,7 @@
                               </div>
                             </div>
 
-                            <tal:files tal:define="files python:view.filesinsidePunt(itemSubpunt)">
+                            <tal:files tal:define="files itemSubpunt/files">
                               <ul class="listFiles list-unstyled" tal:condition="files">
                                 <tal:documents repeat="item files">
                                   <li class="filesinTable w-100 mt-2"
@@ -542,13 +542,13 @@
   </div>
 
   <script type="text/javascript"
-          src="++theme++genweb6.organs/js/content/sessio.min.js"></script>    
+          src="++theme++genweb6.organs/js/content/sessio.min.js"></script>
 
   <script type="text/javascript"
-          src="++theme++genweb6.organs/js/content/acta.min.js"></script>    
+          src="++theme++genweb6.organs/js/content/acta.min.js"></script>
 
   <script type="text/javascript"
-          src="++theme++genweb6.organs/js/content/sign_sessio.min.js"></script>    
+          src="++theme++genweb6.organs/js/content/sign_sessio.min.js"></script>
 
 </tal:main-macro>
 </metal:main>

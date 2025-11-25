@@ -49,6 +49,14 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
         # durante el renderizado (conversión de strings a dicts para compatibilidad)
         if CSRF:
             alsoProvides(self.request, IDisableCSRFProtection)
+
+        # OPTIMIZATION: Pre-calcular datos para evitar python: en template
+        self._acta = self.activeActa()
+        if self._acta:
+            self._acta_data = self._prepareActaData(self._acta)
+        else:
+            self._acta_data = None
+
         return self.index()
 
     def canView(self):
@@ -145,7 +153,8 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
             return False
 
     def PuntsInside(self):
-        """ Retorna punts i acords d'aquí dintre (sense tenir compte estat)
+        """Retorna punts i acords d'aquí dintre (sense tenir compte estat)
+        OPTIMIZATION: Pre-calcula files, subpunts i hasUnsentFiles per evitar crides des del template
         """
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         folder_path = '/'.join(self.context.getPhysicalPath())
@@ -184,21 +193,29 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
                 agreement = False
                 isPunt = True
 
-            results.append(
-                dict(
-                    title=obj.Title, portal_type=obj.portal_type,
-                    absolute_url=item.absolute_url(),
-                    item_path=item.absolute_url_path(),
-                    proposalPoint=item.proposalPoint, agreement=agreement,
-                    state=item.estatsLlista, css=self.getColor(obj),
-                    estats=self.estatsCanvi(obj),
-                    id=obj.id, show=True, isPunt=isPunt, classe=classe,
-                    items_inside=inside, info_firma=item.info_firma
-                    if hasattr(item, 'info_firma') else None))
+            item_dict = dict(
+                title=obj.Title, portal_type=obj.portal_type,
+                absolute_url=item.absolute_url(),
+                item_path=item.absolute_url_path(),
+                proposalPoint=item.proposalPoint, agreement=agreement,
+                state=item.estatsLlista, css=self.getColor(obj),
+                estats=self.estatsCanvi(obj),
+                id=obj.id, show=True, isPunt=isPunt, classe=classe,
+                items_inside=inside, info_firma=item.info_firma
+                if hasattr(item, 'info_firma') else None)
+
+            # OPTIMIZATION: Pre-calculate files, subpunts and hasUnsentFiles to avoid python: calls
+            item_dict['files'] = self.filesinsidePunt(item_dict)
+            item_dict['subpunts'] = self.SubpuntsInside(item_dict)
+            item_dict['hasContent'] = bool(item_dict['files'] or item_dict['subpunts'])
+            item_dict['hasUnsentFiles'] = self.hasUnsentFiles(item_dict, depth=2)
+
+            results.append(item_dict)
         return results
 
     def SubpuntsInside(self, data):
-        """ Retorna les sessions d'aquí dintre (sense tenir compte estat)
+        """Retorna les sessions d'aquí dintre (sense tenir compte estat)
+        OPTIMIZATION: Pre-calcula files i hasUnsentFiles per evitar crides des del template
         """
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         folder_path = '/'.join(self.context.getPhysicalPath()) + '/' + data['id']
@@ -218,7 +235,7 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
                     agreement = _(u"sense numeracio")
             else:
                 agreement = False
-            results.append(dict(
+            item_dict = dict(
                 title=obj.Title,
                 portal_type=obj.portal_type,
                 absolute_url=item.absolute_url(),
@@ -229,7 +246,13 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
                 estats=self.estatsCanvi(obj),
                 css=self.getColor(obj),
                 id='/'.join(item.absolute_url_path().split('/')[-2:]),
-            ))
+            )
+
+            # OPTIMIZATION: Pre-calculate files and hasUnsentFiles for subpunts
+            item_dict['files'] = self.filesinsidePunt(item_dict)
+            item_dict['hasUnsentFiles'] = self.hasUnsentFiles(item_dict)
+
+            results.append(item_dict)
         return results
 
     def hasUnsentFiles(self, item, depth=1):
@@ -436,3 +459,34 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
         return {'visible_gdoc': True,
                 'valid_serie': True,
                 'msg_error': ''}
+
+    def _prepareActaData(self, acta):
+        """OPTIMIZATION: Pre-calcula dades de l'acta per evitar python: en template"""
+        return {
+            'acta': acta,
+            'isSigned': self.isSigned(acta),
+            'audio': self.AudioInsideActa(acta),
+            'annexes': self.AnnexInsideActa(acta),
+            'hasFirma': self.hasFirma(acta),
+            'estatFirma': self.estatFirma(acta) if self.hasFirma(acta) else None,
+            'actaPDF': self.getPDFActa(acta) if self.isSigned(acta) else None,
+            'hasMultipleAnnexes': len(self.AnnexInsideActa(acta) or []) > 1,
+        }
+
+    def getActaData(self):
+        """OPTIMIZATION: Retorna dades pre-calculades de l'acta"""
+        return getattr(self, '_acta_data', None)
+
+    def getTabActaClass(self):
+        """OPTIMIZATION: Calcula la classe CSS de la tab d'acta"""
+        hihaDocs = self.hihaDocs()
+        return 'tab-pane' if hihaDocs else 'tab-pane active'
+
+    def getNavLinkActaClass(self):
+        """OPTIMIZATION: Calcula la classe CSS del nav-link d'acta"""
+        hihaDocs = self.hihaDocs()
+        return 'nav-link' if hihaDocs else 'nav-link active'
+
+    def getAddActaURL(self):
+        """OPTIMIZATION: Pre-calcula la URL per afegir acta"""
+        return self.context.absolute_url() + '/++add++genweb.organs.acta/'
