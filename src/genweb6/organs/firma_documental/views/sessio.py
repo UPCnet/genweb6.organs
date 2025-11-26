@@ -55,7 +55,18 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
         if self._acta:
             self._acta_data = self._prepareActaData(self._acta)
         else:
-            self._acta_data = None
+            # FIX: Retornar diccionario con valores por defecto cuando no hay acta
+            # para evitar LocationError en template al acceder a actaData/isSigned
+            self._acta_data = {
+                'acta': None,
+                'isSigned': False,
+                'audio': False,
+                'annexes': False,
+                'hasFirma': False,
+                'estatFirma': None,
+                'actaPDF': None,
+                'hasMultipleAnnexes': False,
+            }
 
         return self.index()
 
