@@ -28,7 +28,7 @@ import traceback
 
 logger = logging.getLogger(__name__)
 
-TMP_FOLDER = os.environ.get('TMPDIR', '/tmp/')
+TMP_FOLDER = os.environ.get('TMPDIR', '/tmp')
 
 
 class FirmesMixin(object):
@@ -282,7 +282,7 @@ class SignActa(BrowserView, FirmesMixin):
         options = {'cookie': [('__ac', self.request.cookies['__ac']),
                               ('I18N_LANGUAGE', self.request.cookies.get('I18N_LANGUAGE', 'ca'))]}
         pdfkit.from_url(
-            self.context.absolute_url() + '/printActa', TMP_FOLDER + self.context.id +
+            self.context.absolute_url() + '/printActa', TMP_FOLDER + '/' + self.context.id +
             '.pdf', options=options, verbose=True)
         return open(TMP_FOLDER + self.context.id + '.pdf', 'rb')
 
