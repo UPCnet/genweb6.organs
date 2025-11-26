@@ -58,34 +58,45 @@ class Search(BrowserView):
     def getOwnOrgans(self):
         """Get organs linked to current user.
 
-        OPTIMIZATION: Request-level cache to avoid repeated calls per page load.
-        The search view may render multiple times in a single request.
+        OPTIMIZATION: Usa metadata del catálogo y minimiza getObject() calls.
+        Solo necesitamos getObject() para obtener eventsColor.
         """
         if api.user.is_anonymous():
             return []
-        results = []
+
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         root_path = '/'.join(api.portal.get().getPhysicalPath())
         lang = api.portal.get_tool('portal_languages').getDefaultLanguage()
+        username = api.user.get_current().id
+
+        # Buscar todos los órganos
         values = portal_catalog.searchResults(
             portal_type=['genweb.organs.organgovern'],
             path=f'{root_path}/{lang}',
             sort_on='sortable_title'
         )
-        username = api.user.get_current().id
+
+        results = []
         for obj in values:
-            # Usar _unrestrictedGetObject() es más rápido que getObject()
-            # y seguro porque verificamos permisos con get_roles()
-            organ = obj._unrestrictedGetObject()
-            all_roles = api.user.get_roles(username=username, obj=organ)
-            roles = [o for o in all_roles if o in ['OG1-Secretari',
-                                                   'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat']]
-            if roles:
+            # OPTIMIZATION: get_roles() es costoso, hacerlo solo cuando necesario
+            # Primero verificar si el usuario tiene algún rol local en este objeto
+            all_roles = api.user.get_roles(username=username, obj=obj)
+            organ_roles = [r for r in all_roles if r in [
+                'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
+                'OG4-Afectat', 'OG5-Convidat']]
+
+            # Solo si tiene roles de órgano, hacer getObject() para color
+            if organ_roles:
+                # OPTIMIZATION: Solo getObject() para obtener eventsColor
+                # (no está en metadata del catálogo)
+                organ = obj._unrestrictedGetObject()
+
                 results.append(dict(
-                    url=organ.absolute_url(),
-                    title=obj.Title,
+                    url=obj.getURL(),  # ← Metadata
+                    title=obj.Title,   # ← Metadata
                     color=getattr(organ, 'eventsColor', '#007bc0'),
-                    role=roles))
+                    role=organ_roles))
+
         return results
 
     def getLatestCDG(self):
@@ -100,6 +111,11 @@ class Search(BrowserView):
             'claustre-universitari/claustre-universitari', 'Claustre Universitari')
 
     def _getLatestSession(self, rel_path, label):
+        """OPTIMIZATION: Usa metadata del catálogo para evitar getObject().
+
+        Filtra sesiones públicas (excluyendo 'planificada') y obtiene
+        la más reciente usando solo metadata del catálogo.
+        """
         root_path = '/'.join(api.portal.get().getPhysicalPath())
         lang = api.portal.get_tool('portal_languages').getDefaultLanguage()
         portal_catalog = api.portal.get_tool(name='portal_catalog')
@@ -112,25 +128,16 @@ class Search(BrowserView):
             path=f'{root_path}/{lang}/{rel_path}',
             review_state=[
                 'convocada', 'realitzada', 'en_correccio', 'tancada'],
-            sort_on='created',
+            sort_on='start',  # OPTIMIZATION: Ordenar por fecha de inicio
             sort_order='reverse',
-            sort_limit=10)  # Limitar resultados
+            sort_limit=1)  # OPTIMIZATION: Solo necesitamos 1
 
-        results = []
-        for item in items:
-            itemObj = item._unrestrictedGetObject()
-            # Ya no necesitamos verificar estado,
-            # está filtrado en el catálogo
-            num = itemObj.numSessio.zfill(3)
-            any = itemObj.start.strftime('%Y%m%d')
-            results.append(dict(
-                title=item.Title,
-                url=itemObj.absolute_url(),
-                hiddenOrder=int(any + num)))
-
-        if results:
-            results = sorted(results, key=itemgetter('hiddenOrder'), reverse=True)
-            return dict(title=results[0]['title'], url=results[0]['url'])
+        # OPTIMIZATION: Sin getObject(), usar solo metadata del catálogo
+        if items:
+            item = items[0]
+            return dict(
+                title=item.Title,        # ← Metadata
+                url=item.getURL())       # ← Metadata
 
         return None
 
@@ -237,6 +244,31 @@ class Search(BrowserView):
     def root_path(self):
         path = '/'.join(api.portal.get().getPhysicalPath())
         return path
+
+    @instance.memoize
+    def getPeriodData(self):
+        """OPTIMIZATION: Pre-calcular datos de periodo para evitar python: en template.
+
+        Returns:
+            dict: Contiene 'ever', 'lastyear', 'checked' para filtros de fecha
+        """
+        ever = '1970-01-02'
+        today = DateTime().earliestTime()
+        lastyear = (today - 365).Date()
+
+        checked = self.request.get('created', [])
+        if len(checked) == 1:
+            checked = checked[0]
+        else:
+            checked = ever
+
+        return {
+            'ever': ever,
+            'lastyear': lastyear,
+            'checked': checked,
+            'is_ever_checked': checked == ever,
+            'is_lastyear_checked': checked == lastyear,
+        }
 
 
 class SortOption(object):

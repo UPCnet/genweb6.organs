@@ -145,24 +145,18 @@
               <label class="form-check-label" for="claustreCheck" i18n:translate="">Claustre Universitari</label>
             </div>
           </div>
-          <div class="col-md-4"
-               tal:define="DateTime python:modules['DateTime'].DateTime;
-                           today python:DateTime().earliestTime();
-                           lastyear python:(today-365).Date();
-                           ever string:1970-01-02;
-                           checked python:request.get('created', []);
-                           checked python:(len(checked) == 1) and checked[0] or ever">
+          <div class="col-md-4" tal:define="periodData view/getPeriodData">
             <label class="form-label" i18n:translate="">Període</label>
             <div class="form-check">
               <input class="form-check-input" type="radio" value="any" id="periodeAny" name="created.query:record:list:date"
-                     tal:attributes="value ever;
-                                     checked python:checked==ever and 'checked' or '';"/>
+                     tal:attributes="value periodData/ever;
+                                     checked periodData/is_ever_checked | nothing"/>
               <label class="form-check-label" for="periodeAny" i18n:translate="">Qualsevol data</label>
             </div>
             <div class="form-check">
               <input class="form-check-input" type="radio" value="darrer" id="periodeDarrer" name="created.query:record:list:date"
-                     tal:attributes="value lastyear;
-                                     checked python:checked==lastyear and 'checked' or '';"/>
+                     tal:attributes="value periodData/lastyear;
+                                     checked periodData/is_lastyear_checked | nothing"/>
               <label class="form-check-label" for="periodeDarrer" i18n:translate="">Darrer any</label>
             </div>
             <input type="hidden" name="sort_on" value="Date" />
@@ -193,12 +187,13 @@
                         <div class="text-muted fs-s" tal:define="portal_url context/portal_url;
                                                     lang request/LANGUAGE|string:ca;
                                                     creator item/Creator;
-                                                    author_url string:${portal_url}/${lang}/author/${creator}">
+                                                    author_url string:${portal_url}/${lang}/author/${creator};
+                                                    modified item/modified|item/created">
                           <span i18n:translate="">per</span>
                           <a tal:attributes="href author_url" tal:content="creator" class="text-decoration-none"></a>
                           —
                           <span i18n:translate="">darrera modificació</span>
-                          <tal:block tal:replace="python:toLocalizedTime(item.modified if hasattr(item,'modified') else item.created, long_format=True)" />
+                          <tal:block tal:replace="python:toLocalizedTime(modified, long_format=True)" />
                         </div>
                         <cite class="documentLocation link-location text-muted fs-s"
                               tal:define="breadcrumbs python:view.breadcrumbs(item); is_rtl context/@@plone_portal_state/is_rtl;"
