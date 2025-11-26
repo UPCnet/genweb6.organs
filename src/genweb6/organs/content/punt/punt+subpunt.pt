@@ -21,7 +21,7 @@
 
       <span class="btn badge bg-secondary disabled bg-secondaryString fs-xl"
             tal:define="color view/getColor">
-        <i class="bi bi-circle-fill me-1" aria-hidden="true" 
+        <i class="bi bi-circle-fill me-1" aria-hidden="true"
            tal:attributes="style string:color:${color};"></i>
         <span tal:content="context/estatsLlista">Esborrany</span>
       </span>
@@ -40,15 +40,15 @@
           <li tal:repeat="item filesinside">
             <a tal:define="title item/title"
                class="text-decoration-none d-flex align-items-center"
-               tal:attributes="href item/absolute_url; 
-                               target python:item.get('new_tab') and '_blank' or None; 
-                               title title; 
+               tal:attributes="href item/absolute_url;
+                               target item/new_tab_target;
+                               title title;
                                alt title">
               <i tal:attributes="class string:${item/classCSS} me-1"></i>
               <tal:omit-tag tal:content="title">Nom fitxer</tal:omit-tag>
             </a>
-          </li>   
-        </ul>             
+          </li>
+        </ul>
       </div>
     </div>
 
@@ -71,8 +71,8 @@
                 <tal:omit-tag tal:content="item/state">Nom fitxer</tal:omit-tag>
               </div>
             </div>
-          </li>   
-        </ul>             
+          </li>
+        </ul>
       </div>
     </div>
   </div>
