@@ -75,7 +75,9 @@ class VotacioAcordView(BrowserView):
 
         estatSessio = utils.session_wf_state(self)
 
-        if estatSessio == 'planificada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
+        if estatSessio == 'planificada' and utils.checkhasRol(
+            ['OG1-Secretari', 'OG2-Editor'],
+                roles):
             return True
         elif estatSessio in ['convocada', 'realitzada', 'tancada', 'en_correccio'] and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre'], roles):
             return True
@@ -94,7 +96,9 @@ class ReopenVote(BrowserView):
             self.context.estatVotacio = 'open'
             self.context.reindexObject()
             transaction.commit()
-            addEntryLog(self.context.__parent__.__parent__, None, _(u'Reoberta votacio esmena'), self.context.__parent__.absolute_url())
+            addEntryLog(self.context.__parent__.__parent__, None,
+                        _(u'Reoberta votacio esmena'),
+                        self.context.__parent__.absolute_url())
             return {"status": 'success', "msg": ''}
 
 
@@ -105,64 +109,50 @@ class CloseVote(BrowserView):
         self.context.horaFiVotacio = datetime.datetime.now().strftime('%d/%m/%Y %H:%M')
         self.context.reindexObject()
         transaction.commit()
-        addEntryLog(self.context.__parent__.__parent__, None, _(u'Tancada votacio esmena'), self.context.__parent__.absolute_url())
+        addEntryLog(self.context.__parent__.__parent__, None,
+                    _(u'Tancada votacio esmena'),
+                    self.context.__parent__.absolute_url())
+
+
+def _register_vote(context, vote_type, vote_label):
+    """OPTIMIZATION: Función auxiliar para registrar votos y evitar duplicación"""
+    if context.estatVotacio == 'close':
+        return {"status": 'error', "msg": _(u'La votació ja està tancada, el seu vot no s\'ha registrat.')}
+
+    if not isinstance(context.infoVotacio, dict):
+        context.infoVotacio = ast.literal_eval(context.infoVotacio)
+
+    user = api.user.get_current().id
+    context.infoVotacio.update({user: vote_type})
+    context.reindexObject()
+    transaction.commit()
+    sendVoteEmail(context, vote_label)
+    return {"status": 'success', "msg": ''}
 
 
 class FavorVote(BrowserView):
 
     @json_response
     def __call__(self):
-        if self.context.estatVotacio == 'close':
-            return {"status": 'error', "msg": _(u'La votació ja està tancada, el seu vot no s\'ha registrat.')}
-
-        if not isinstance(self.context.infoVotacio, dict):
-            self.context.infoVotacio = ast.literal_eval(self.context.infoVotacio)
-
-        user = api.user.get_current().id
-        self.context.infoVotacio.update({user: 'favor'})
-        self.context.reindexObject()
-        transaction.commit()
-        sendVoteEmail(self.context, 'a favor')
-        return {"status": 'success', "msg": ''}
+        return _register_vote(self.context, 'favor', 'a favor')
 
 
 class AgainstVote(BrowserView):
 
     @json_response
     def __call__(self):
-        if self.context.estatVotacio == 'close':
-            return {"status": 'error', "msg": _(u'La votació ja està tancada, el seu vot no s\'ha registrat.')}
-
-        if not isinstance(self.context.infoVotacio, dict):
-            self.context.infoVotacio = ast.literal_eval(self.context.infoVotacio)
-
-        user = api.user.get_current().id
-        self.context.infoVotacio.update({user: 'against'})
-        self.context.reindexObject()
-        transaction.commit()
-        sendVoteEmail(self.context, 'en contra')
-        return {"status": 'success', "msg": ''}
+        return _register_vote(self.context, 'against', 'en contra')
 
 
 class WhiteVote(BrowserView):
 
     @json_response
     def __call__(self):
-        if self.context.estatVotacio == 'close':
-            return {"status": 'error', "msg": _(u'La votació ja està tancada, el seu vot no s\'ha registrat.')}
-
-        if not isinstance(self.context.infoVotacio, dict):
-            self.context.infoVotacio = ast.literal_eval(self.context.infoVotacio)
-
-        user = api.user.get_current().id
-        self.context.infoVotacio.update({user: 'white'})
-        self.context.reindexObject()
-        transaction.commit()
-        sendVoteEmail(self.context, 'en blanc')
-        return {"status": 'success', "msg": ''}
+        return _register_vote(self.context, 'white', 'en blanc')
 
 
 def sendVoteEmail(context, vote):
+    """OPTIMIZATION: Envía email de confirmación de voto"""
     context = aq_inner(context)
 
     # /acl_users/plugins/manage_plugins?plugin_type=IPropertiesPlugin
@@ -170,78 +160,76 @@ def sendVoteEmail(context, vote):
     # Otherwise member.getProperty('email') won't work properly.
 
     user_email = api.user.get_current().getProperty('email')
-    if user_email:
-        mailhost = getToolByName(context, 'MailHost')
+    if not user_email:
+        return
 
-        portal = api.portal.get()
-        email_charset = portal.getProperty('email_charset')
+    # OPTIMIZATION: Cachear valores comunes
+    mailhost = getToolByName(context, 'MailHost')
+    portal = api.portal.get()
+    email_charset = portal.getProperty('email_charset')
+    organ = utils.get_organ(context)
+    sender_email = organ.fromMail
+    now = datetime.datetime.now()
 
-        organ = utils.get_organ(context)
-        sender_email = organ.fromMail
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = user_email
+    msg['Subject'] = escape(safe_unicode(_(u'Votació Govern UPC')))
+    msg['charset'] = email_charset
 
-        msg = MIMEMultipart()
-        msg['From'] = sender_email
-        msg['To'] = user_email
-        msg['Subject'] = escape(safe_unicode(_(u'Votació Govern UPC')))
-        msg['charset'] = email_charset
-
-        message = """En data {data}, hora {hora}, has votat {vot} l'esmena {esmena} de l'acord {acord} de la sessió {sessio} de l'òrgan {organ}.
+    message = """En data {data}, hora {hora}, has votat {vot} l'esmena {esmena} de l'acord {acord} de la sessió {sessio} de l'òrgan {organ}.
 
 Missatge automàtic generat per https://govern.upc.edu/"""
 
-        now = datetime.datetime.now()
-        if context.aq_parent.aq_parent.portal_type == 'genweb.organs.sessio':
+    # OPTIMIZATION: Consolidar lógica de construcción de datos
+    parent_type = context.aq_parent.aq_parent.portal_type
+    if parent_type == 'genweb.organs.sessio':
+        data = {
+            'data': now.strftime("%d/%m/%Y"),
+            'hora': now.strftime("%H:%M"),
+            'vot': vote,
+            'esmena': context.title,
+            'acord': context.aq_parent.title,
+            'sessio': context.aq_parent.aq_parent.title,
+            'organ': context.aq_parent.aq_parent.aq_parent.title,
+        }
+    elif parent_type == 'genweb.organs.punt':
+        data = {
+            'data': now.strftime("%d/%m/%Y"),
+            'hora': now.strftime("%H:%M"),
+            'vot': vote,
+            'esmena': context.title,
+            'acord': context.aq_parent.title,
+            'sessio': context.aq_parent.aq_parent.aq_parent.title,
+            'organ': context.aq_parent.aq_parent.aq_parent.aq_parent.title,
+        }
+    else:
+        return  # Tipo no reconocido, no enviar email
 
-            data = {
-                'data': now.strftime("%d/%m/%Y"),
-                'hora': now.strftime("%H:%M"),
-                'vot': vote,
-                'esmena': context.title,
-                'acord': context.aq_parent.title,
-                'sessio': context.aq_parent.aq_parent.title,
-                'organ': context.aq_parent.aq_parent.aq_parent.title,
-            }
-
-            msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
-            # Normalizar finales de línea a CRLF para cumplir con RFC 5321
-            msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
-            mailhost.send(msg_string)
-
-        elif context.aq_parent.aq_parent.portal_type == 'genweb.organs.punt':
-
-            data = {
-                'data': now.strftime("%d/%m/%Y"),
-                'hora': now.strftime("%H:%M"),
-                'vot': vote,
-                'esmena': context.title,
-                'acord': context.aq_parent.title,
-                'sessio': context.aq_parent.aq_parent.aq_parent.title,
-                'organ': context.aq_parent.aq_parent.aq_parent.aq_parent.title,
-            }
-
-            msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
-            # Normalizar finales de línea a CRLF para cumplir con RFC 5321
-            msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
-            mailhost.send(msg_string)
+    msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
+    # Normalizar finales de línea a CRLF para cumplir con RFC 5321
+    msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
+    mailhost.send(msg_string)
 
 
 def sendRemoveVoteEmail(context):
+    """OPTIMIZATION: Envía email de notificación de voto eliminado"""
     context = aq_inner(context)
-    mailhost = getToolByName(context, 'MailHost')
 
+    # OPTIMIZATION: Cachear valores comunes
+    mailhost = getToolByName(context, 'MailHost')
     portal = api.portal.get()
     email_charset = portal.getProperty('email_charset')
-
     organ = utils.get_organ(context)
     sender_email = organ.fromMail
 
-    user_emails = []
-
+    # OPTIMIZATION: Extraer emails de votantes
     infoVotacio = context.infoVotacio
     if isinstance(infoVotacio, str):
         infoVotacio = ast.literal_eval(infoVotacio)
 
-    for key, value in infoVotacio.items():
+    user_emails = []
+    for key in infoVotacio.keys():
         try:
             email = api.user.get(username=key).getProperty('email')
             if email:
@@ -249,59 +237,63 @@ def sendRemoveVoteEmail(context):
         except:
             pass
 
-    if user_emails:
-        msg = MIMEMultipart()
-        msg['From'] = sender_email
-        msg['Bcc'] = ', '.join(user_emails)
-        msg['Subject'] = escape(safe_unicode(_(u'Votació anul·lada Govern UPC')))
-        msg['charset'] = email_charset
+    if not user_emails:
+        return  # No hay emails, salir early
 
-        message = """En data {data}, hora {hora}, la votació de l'esmena {esmena} de l'acord {acord} de la sessió {sessio} de l'òrgan {organ} ha estat anul·lada i el teu vot emès ha estat eliminat.
+    now = datetime.datetime.now()
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['Bcc'] = ', '.join(user_emails)
+    msg['Subject'] = escape(safe_unicode(_(u'Votació anul·lada Govern UPC')))
+    msg['charset'] = email_charset
+
+    message = """En data {data}, hora {hora}, la votació de l'esmena {esmena} de l'acord {acord} de la sessió {sessio} de l'òrgan {organ} ha estat anul·lada i el teu vot emès ha estat eliminat.
 
     Missatge automàtic generat per https://govern.upc.edu/"""
 
-        now = datetime.datetime.now()
-        if context.aq_parent.aq_parent.portal_type == 'genweb.organs.sessio':
+    # OPTIMIZATION: Consolidar lógica de construcción de datos
+    parent_type = context.aq_parent.aq_parent.portal_type
+    if parent_type == 'genweb.organs.sessio':
+        data = {
+            'data': now.strftime("%d/%m/%Y"),
+            'hora': now.strftime("%H:%M"),
+            'esmena': context.title,
+            'acord': context.aq_parent.title,
+            'sessio': context.aq_parent.aq_parent.title,
+            'organ': context.aq_parent.aq_parent.aq_parent.title,
+        }
+    elif parent_type == 'genweb.organs.punt':
+        data = {
+            'data': now.strftime("%d/%m/%Y"),
+            'hora': now.strftime("%H:%M"),
+            'esmena': context.title,
+            'acord': context.aq_parent.title,
+            'sessio': context.aq_parent.aq_parent.aq_parent.title,
+            'organ': context.aq_parent.aq_parent.aq_parent.aq_parent.title,
+        }
+    else:
+        return  # Tipo no reconocido, no enviar email
 
-            data = {
-                'data': now.strftime("%d/%m/%Y"),
-                'hora': now.strftime("%H:%M"),
-                'esmena': context.title,
-                'acord': context.aq_parent.title,
-                'sessio': context.aq_parent.aq_parent.title,
-                'organ': context.aq_parent.aq_parent.aq_parent.title,
-            }
-
-            msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
-            # Normalizar finales de línea a CRLF para cumplir con RFC 5321
-            msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
-            mailhost.send(msg_string)
-
-        elif context.aq_parent.aq_parent.portal_type == 'genweb.organs.punt':
-
-            data = {
-                'data': now.strftime("%d/%m/%Y"),
-                'hora': now.strftime("%H:%M"),
-                'esmena': context.title,
-                'acord': context.aq_parent.title,
-                'sessio': context.aq_parent.aq_parent.aq_parent.title,
-                'organ': context.aq_parent.aq_parent.aq_parent.aq_parent.title,
-            }
-
-            msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
-            # Normalizar finales de línea a CRLF para cumplir con RFC 5321
-            msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
-            mailhost.send(msg_string)
+    msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
+    # Normalizar finales de línea a CRLF para cumplir con RFC 5321
+    msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
+    mailhost.send(msg_string)
 
 
 class RemoveVote(BrowserView):
-    
+
     def __call__(self):
+        # OPTIMIZATION: Solo enviar email si la sesión está en estado activo
         estatSessio = utils.session_wf_state(self)
         if estatSessio not in ['realitzada', 'tancada', 'en_correccio']:
             sendRemoveVoteEmail(self.context)
 
+        # OPTIMIZATION: Cachear parent y log antes de eliminar
         parent = self.context.aq_parent
-        parent.manage_delObjects([self.context.getId()])
+        log_parent = self.context.__parent__.__parent__
+        log_url = self.context.__parent__.absolute_url()
+        context_id = self.context.getId()
+
+        parent.manage_delObjects([context_id])
         transaction.commit()
-        addEntryLog(self.context.__parent__.__parent__, None, _(u'Eliminada votacio esmena'), self.context.__parent__.absolute_url())
+        addEntryLog(log_parent, None, _(u'Eliminada votacio esmena'), log_url)
