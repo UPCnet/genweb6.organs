@@ -59,16 +59,18 @@ class ManualImport(BrowserView):
         # Creating new objects
         text = message
 
-        # Obtener el órgano usando utils.get_organ como en createElement
+        # OPTIMIZATION: Cachear órgano y estado por defecto
         organ = utils.get_organ(self.context)
 
         values = organ.estatsLlista
         if hasattr(values, 'raw'):
             values = values.raw
         value = values.split('</p>')[0]
-        item_net = unicodedata.normalize("NFKD", value).rstrip(' ').replace('<p>', '').replace('</p>', '').replace('\r\n', '')
+        item_net = unicodedata.normalize("NFKD", value).rstrip(
+            ' ').replace('<p>', '').replace('</p>', '').replace('\r\n', '')
         defaultEstat = ' '.join(item_net.split()[:-1]).lstrip()
 
+        # OPTIMIZATION: Cachear catalog y folder_path
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         folder_path = '/'.join(self.context.getPhysicalPath())
         puntsInFolder = portal_catalog.searchResults(
@@ -85,72 +87,71 @@ class ManualImport(BrowserView):
         for line in content:
             if len(line) == 0:
                 continue
-            else:
-                if line.startswith((' ', '\t')) is False:
-                    # No hi ha blanks, es un punt o un acord
-                    # Obtenim una A o un P per saber si es Acord o Punt
-                    portal_type = line.lstrip().rstrip().split(' ')[0].upper()
-                    if str(portal_type) == 'A':  # Es tracta d'un acord
-                        line = ' '.join(line.lstrip().rstrip().split(' ')[1:])
-                        with api.env.adopt_roles(['OG1-Secretari']):
-                            obj = api.content.create(
-                                type='genweb.organs.acord',
-                                title=line,
-                                container=self.context)
-                    elif str(portal_type) == 'P':  # Es tracta d'un punt
-                        line = ' '.join(line.lstrip().rstrip().split(' ')[1:])
-                        with api.env.adopt_roles(['OG1-Secretari']):
-                            obj = api.content.create(
-                                type='genweb.organs.punt',
-                                title=line,
-                                container=self.context)
-                    else:  # Supossem que per defecte sense espais es un Punt
-                        line = line.lstrip().rstrip()
-                        with api.env.adopt_roles(['OG1-Secretari']):
-                            obj = api.content.create(
-                                type='genweb.organs.punt',
-                                title=line,
-                                container=self.context)
-                    obj.proposalPoint = str(index)
-                    obj.estatsLlista = defaultEstat
-                    index = index + 1
-                    subindex = 1
-                    previousPuntContainer = obj
-                    obj.reindexObject()
-                else:
-                    # hi ha blanks, es un subpunt o un acord
-                    portal_type = line.lstrip().rstrip().split(' ')[0].upper()
-                    if previousPuntContainer.portal_type == 'genweb.organs.punt':
-                        if str(portal_type) == 'A':  # Es tracta d'un acord
-                            line = ' '.join(line.lstrip().rstrip().split(' ')[1:])
-                            with api.env.adopt_roles(['OG1-Secretari']):
-                                newobj = api.content.create(
-                                    type='genweb.organs.acord',
-                                    title=line,
-                                    container=previousPuntContainer)
-                        elif str(portal_type) == 'P':  # Es tracta d'un punt
-                            line = ' '.join(line.lstrip().rstrip().split(' ')[1:])
-                            with api.env.adopt_roles(['OG1-Secretari']):
-                                newobj = api.content.create(
-                                    type='genweb.organs.subpunt',
-                                    title=line,
-                                    container=previousPuntContainer)
-                        else:  # Supossem que per defecte sense espais es un Punt
-                            line = line.lstrip().rstrip()
-                            with api.env.adopt_roles(['OG1-Secretari']):
-                                newobj = api.content.create(
-                                    type='genweb.organs.subpunt',
-                                    title=line,
-                                    container=previousPuntContainer)
 
-                        newobj.proposalPoint = str(index - 1) + '.' + str(subindex)
-                        newobj.estatsLlista = defaultEstat
-                        newobj.reindexObject()
-                        subindex = subindex + 1
-                    else:
-                        # dintre d'un acord no podem crear res...
-                        errors = _(u"No s'han creat tot els elements perque no segueixen la norma. Dintre d'un Acord no es pot afeigr res.")
-                        subindex = subindex - 1
+            # OPTIMIZATION: Cachear line.strip() y split para evitar llamadas repetidas
+            line_stripped = line.lstrip().rstrip()
+            is_top_level = not line.startswith((' ', '\t'))
+
+            if is_top_level:
+                # No hi ha blanks, es un punt o un acord
+                # OPTIMIZATION: Evitar split múltiple, hacer solo una vez
+                parts = line_stripped.split(' ')
+                portal_type = parts[0].upper()
+                title = ' '.join(parts[1:]) if len(parts) > 1 else line_stripped
+
+                # OPTIMIZATION: Determinar tipo de contenido sin conversión str redundante
+                if portal_type == 'A':  # Es tracta d'un acord
+                    content_type = 'genweb.organs.acord'
+                elif portal_type == 'P':  # Es tracta d'un punt
+                    content_type = 'genweb.organs.punt'
+                else:  # Supossem que per defecte sense espais es un Punt
+                    content_type = 'genweb.organs.punt'
+                    title = line_stripped
+
+                with api.env.adopt_roles(['OG1-Secretari']):
+                    obj = api.content.create(
+                        type=content_type,
+                        title=title,
+                        container=self.context)
+
+                obj.proposalPoint = str(index)
+                obj.estatsLlista = defaultEstat
+                index = index + 1
+                subindex = 1
+                previousPuntContainer = obj
+                obj.reindexObject()
+            else:
+                # hi ha blanks, es un subpunt o un acord
+                # OPTIMIZATION: Evitar split múltiple, hacer solo una vez
+                parts = line_stripped.split(' ')
+                portal_type = parts[0].upper()
+                title = ' '.join(parts[1:]) if len(parts) > 1 else line_stripped
+
+                if previousPuntContainer.portal_type == 'genweb.organs.punt':
+                    # OPTIMIZATION: Determinar tipo de contenido sin conversión str redundante
+                    if portal_type == 'A':  # Es tracta d'un acord
+                        content_type = 'genweb.organs.acord'
+                    elif portal_type == 'P':  # Es tracta d'un punt (subpunt)
+                        content_type = 'genweb.organs.subpunt'
+                    else:  # Supossem que per defecte sense espais es un Subpunt
+                        content_type = 'genweb.organs.subpunt'
+                        title = line_stripped
+
+                    with api.env.adopt_roles(['OG1-Secretari']):
+                        newobj = api.content.create(
+                            type=content_type,
+                            title=title,
+                            container=previousPuntContainer)
+
+                    newobj.proposalPoint = str(index - 1) + '.' + str(subindex)
+                    newobj.estatsLlista = defaultEstat
+                    newobj.reindexObject()
+                    subindex = subindex + 1
+                else:
+                    # dintre d'un acord no podem crear res...
+                    errors = _(
+                        u"No s'han creat tot els elements perque no segueixen la norma. Dintre d'un Acord no es pot afeigr res.")
+                    subindex = subindex - 1
 
         transaction.commit()
 
