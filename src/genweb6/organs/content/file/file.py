@@ -48,6 +48,8 @@ class VisibleFileValidator(SimpleFieldValidator):
                 raise InvalidPDFFile(mimetype)
 
 # Define la función defaultFactory para el campo 'title'
+
+
 @provider(IContextAwareDefaultFactory)
 def title_default_factory(context):
     """Genera el valor predeterminado para el campo 'title'."""
@@ -138,7 +140,8 @@ class Edit(edit.DefaultEditForm):
         if info_firma.get('public', {}).get('uploaded', False):
             old_visiblefile = getattr(self.context, 'visiblefile', None)
             new_visiblefile = data.get('visiblefile', None)
-            if new_visiblefile is not NOT_CHANGED and (not old_visiblefile or new_visiblefile != old_visiblefile):
+            if new_visiblefile is not NOT_CHANGED and (
+                    not old_visiblefile or new_visiblefile != old_visiblefile):
                 info_firma['public'].update({  # hará que aparezca el check de subir a gDOC con estado amarillo
                     'replaced': True,
                     'uploaded': False,
@@ -151,11 +154,12 @@ class Edit(edit.DefaultEditForm):
                 # genweb6.organs.firmadocumental.webservices.uploadFileGDoc
             elif new_visiblefile is None:
                 info_firma.pop('private', None)
-                
+
         if info_firma.get('private', {}).get('uploaded', False):
             old_hiddenfile = getattr(self.context, 'hiddenfile', None)
-            new_hiddenfile = data.get('hiddenfile', None)     
-            if new_hiddenfile is not NOT_CHANGED and (not old_hiddenfile or new_hiddenfile != old_hiddenfile):           
+            new_hiddenfile = data.get('hiddenfile', None)
+            if new_hiddenfile is not NOT_CHANGED and (
+                    not old_hiddenfile or new_hiddenfile != old_hiddenfile):
                 info_firma['private'].update({  # hará que aparezca el check de subir a gDOC con estado amarillo
                     'replaced': True,
                     'uploaded': False,
@@ -187,7 +191,67 @@ class View(BrowserView):
     index = ViewPageTemplateFile("file.pt")
 
     def __call__(self):
+        # OPTIMIZATION: Precalcular dades per evitar python: en template
+        self._prepareFileData()
         return self.index()
+
+    def _prepareFileData(self):
+        """OPTIMIZATION: Precalcula dades dels fitxers per evitar python: en template"""
+        # Precalcular tamaños de archivos
+        if self.context.hiddenfile:
+            size = self.context.hiddenfile.getSize()
+            self._hidden_file_size_kb_rounded = round(size / 1024, 2)
+        else:
+            self._hidden_file_size_kb_rounded = None
+
+        if self.context.visiblefile:
+            size = self.context.visiblefile.getSize()
+            self._visible_file_size_kb_rounded = round(size / 1024, 2)
+        else:
+            self._visible_file_size_kb_rounded = None
+
+        # Precalcular clases CSS de iconos
+        icon = self.icon_type()
+        self._icon_class_danger = f'bi bi-{icon} text-danger me-1'
+        self._icon_class_info = f'bi bi-{icon} text-info me-1'
+
+        # Precalcular condiciones combinadas
+        session_closed = self.sessionIsClosed()
+        change_reserved = self.changeReserved()
+        change_public = self.changePublic()
+
+        self._change_file = change_public or change_reserved
+        self._can_change_reserved_not_closed = change_reserved and not session_closed
+        self._can_change_public_not_closed = change_public and not session_closed
+
+    def getHiddenFileSizeKBRounded(self):
+        """OPTIMIZATION: Retorna mida del fitxer restringit en KB arrodonida"""
+        return getattr(self, '_hidden_file_size_kb_rounded', None)
+
+    def getVisibleFileSizeKBRounded(self):
+        """OPTIMIZATION: Retorna mida del fitxer públic en KB arrodonida"""
+        return getattr(self, '_visible_file_size_kb_rounded', None)
+
+    def getIconClassDanger(self):
+        """OPTIMIZATION: Retorna classe CSS de l'icona amb color danger"""
+        return getattr(self, '_icon_class_danger',
+                       'bi bi-file-earmark text-danger me-1')
+
+    def getIconClassInfo(self):
+        """OPTIMIZATION: Retorna classe CSS de l'icona amb color info"""
+        return getattr(self, '_icon_class_info', 'bi bi-file-earmark text-info me-1')
+
+    def getChangeFile(self):
+        """OPTIMIZATION: Retorna si es pot canviar el fitxer"""
+        return getattr(self, '_change_file', False)
+
+    def canChangeReservedNotClosed(self):
+        """OPTIMIZATION: Retorna si es pot canviar reservat i no està tancada"""
+        return getattr(self, '_can_change_reserved_not_closed', False)
+
+    def canChangePublicNotClosed(self):
+        """OPTIMIZATION: Retorna si es pot canviar públic i no està tancada"""
+        return getattr(self, '_can_change_public_not_closed', False)
 
     def icon_type(self):
         """Devuelve el sufijo de Bootstrap Icon según mimetype."""
@@ -228,6 +292,20 @@ class View(BrowserView):
         if self.context.hiddenfile:
             ct = self.context.hiddenfile.contentType
             return 'video/' in ct
+        else:
+            return None
+
+    def video_public(self):
+        if self.context.visiblefile:
+            ct = self.context.visiblefile.contentType
+            return 'video/' in ct
+        else:
+            return None
+
+    def audio_public(self):
+        if self.context.visiblefile:
+            ct = self.context.visiblefile.contentType
+            return 'audio/' in ct
         else:
             return None
 

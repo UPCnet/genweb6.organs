@@ -15,12 +15,14 @@
                  hihaReserved view/hihaReserved;
                  changePublic view/changePublic;
                  changeReserved view/changeReserved;
-                 changeFile python:changePublic or changeReserved;
+                 changeFile view/getChangeFile;
                  absolute_url context/absolute_url;
                  icon view/icon_type;
                  pdf view/pdf_reserved;
                  audio view/audio_reserved;
                  video view/video_reserved;
+                 audio_public view/audio_public;
+                 video_public view/video_public;
                  isPDFpublic view/isPDFpublic;
                  isPDFprivat view/isPDFprivat;
                  privateFileUploadedGdoc view/privateFileUploadedGdoc;
@@ -54,7 +56,7 @@
 
             <!-- Fila de metadatos y enlace -->
             <p class="mb-0">
-              <i tal:attributes="class python:'bi bi-' + icon + ' text-danger me-1'" aria-hidden="true"></i>
+              <i tal:attributes="class view/getIconClassDanger" aria-hidden="true"></i>
               <tal:block tal:condition="not:isPDFprivat">
                 <tal:name tal:content="context/hiddenfile/filename">Filename</tal:name>
               </tal:block>
@@ -63,10 +65,8 @@
                   <tal:name tal:content="context/hiddenfile/filename">Filename</tal:name>
                 </a>
               </tal:block>
-              <span class="text-muted fs-s ms-2"
-                    tal:define="size context/hiddenfile/getSize; 
-                                kb python:round(size/1024, 2)">
-                (<span tal:replace="kb"></span> KB)
+              <span class="text-muted fs-s ms-2">
+                (<span tal:replace="view/getHiddenFileSizeKBRounded"></span> KB)
               </span>
               <a tal:attributes="href reserved_file_download_url"
                  class="ms-2" title="Descarrega">
@@ -75,7 +75,7 @@
             </p>
 
             <!-- Acciones de visibilidad -->
-            <div tal:condition="python: changeReserved and not sessionIsClosed">
+            <div tal:condition="view/canChangeReservedNotClosed">
               <a class="btn btn-outline-secondary btn-sm confirmRedirect"
                 tal:attributes="data-redirect string:${absolute_url}/hiddenToVisible">
                 <i class="bi bi-arrow-clockwise"></i>
@@ -87,7 +87,7 @@
 
           <!-- Vista prèvia -->
           <div>
-            <tal:block tal:condition="pdf">
+            <tal:block tal:condition="isPDFprivat">
               <object type="application/pdf" width="100%" height="480"
                       tal:attributes="data reserved_file_view_url"></object>
             </tal:block>
@@ -115,7 +115,7 @@
 
             <!-- Fila de metadatos y enlace -->
             <p class="mb-0">
-              <i tal:attributes="class python:'bi bi-' + icon + ' text-info me-1'" aria-hidden="true"></i>
+              <i tal:attributes="class view/getIconClassInfo" aria-hidden="true"></i>
               <tal:block tal:condition="not:isPDFpublic">
                 <tal:name tal:content="context/visiblefile/filename">Filename</tal:name>
               </tal:block>
@@ -124,10 +124,8 @@
                   <tal:name tal:content="context/visiblefile/filename">Filename</tal:name>
                 </a>
               </tal:block>
-              <span class="text-muted fs-s ms-2"
-                    tal:define="size context/visiblefile/getSize; 
-                                kb python:round(size/1024, 2)">
-                (<span tal:replace="kb"></span> KB)
+              <span class="text-muted fs-s ms-2">
+                (<span tal:replace="view/getVisibleFileSizeKBRounded"></span> KB)
               </span>
               <a tal:attributes="href public_file_download_url"
                  class="ms-2" title="Descarrega">
@@ -136,26 +134,26 @@
             </p>
 
             <!-- Acciones de visibilidad -->
-            <div tal:condition="python: changePublic and not sessionIsClosed">
+            <div tal:condition="view/canChangePublicNotClosed">
               <a class="btn btn-outline-secondary btn-sm confirmRedirect"
                 tal:attributes="data-redirect string:${absolute_url}/visibleToHidden">
                 <i class="bi bi-arrow-counterclockwise"></i>
                 <span class="ms-1" i18n:translate="">Passar a reservat</span>
               </a>
             </div>
-            
+
           </div>
 
           <!-- Vista prèvia -->
-          <div tal:condition="isPDFpublic">
-            <tal:block tal:condition="pdf">
+          <div>
+            <tal:block tal:condition="isPDFpublic">
               <object type="application/pdf" width="100%" height="480"
                       tal:attributes="data public_file_view_url"></object>
             </tal:block>
-            <video tal:condition="video" controls class="w-100" style="max-height:320px;">
+            <video tal:condition="video_public" controls class="w-100" style="max-height:320px;">
               <source tal:attributes="src public_file_download_url; type public_content_type"/>
             </video>
-            <audio tal:condition="audio" controls class="w-100">
+            <audio tal:condition="audio_public" controls class="w-100">
               <source tal:attributes="src public_file_download_url; type public_content_type"/>
             </audio>
           </div>
