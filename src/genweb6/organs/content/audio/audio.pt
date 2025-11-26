@@ -9,7 +9,7 @@
 
 <div metal:fill-slot="main" tal:condition="view/canView">
 
-  <div class="content-core"        
+  <div class="content-core"
        tal:define="content_type context/file/contentType|nothing;
                    download_url string:${context/absolute_url}/@@download/file/${context/file/filename}">
 
@@ -24,10 +24,8 @@
       <a tal:attributes="href download_url;" target="_blank">
         <tal:name tal:content="context/file/filename">Filename</tal:name>
       </a>
-      <span class="text-muted fs-s ms-2"
-            tal:define="size context/file/getSize; 
-                        kb python:round(size/1024, 2)">
-        (<span tal:replace="kb"></span> KB)
+      <span class="text-muted fs-s ms-2">
+        (<span tal:replace="view/getFileSizeKBRounded"></span> KB)
       </span>
     </p>
 
@@ -43,7 +41,7 @@
       <source tal:attributes="src download_url; type content_type"></source>
     </audio>
 
-    <div tal:condition="python: content_type.startswith('text')">
+    <div tal:condition="view/isTextFile">
       <h2 i18n:translate="">File contents</h2>
       <pre tal:content="context/file/data|nothing"></pre>
     </div>

@@ -95,7 +95,31 @@ class View(BrowserView):
     index = ViewPageTemplateFile("audio.pt")
 
     def __call__(self):
+        # OPTIMIZATION: Precalcular datos del fitxer
+        self._prepareFileData()
         return self.index()
+
+    def _prepareFileData(self):
+        """OPTIMIZATION: Precalcula dades del fitxer per evitar python: en template"""
+        if self.context.file:
+            # Precalcular tamaño del archivo
+            size = self.context.file.getSize()
+            self._file_size_kb_rounded = round(size / 1024, 2)
+
+            # Precalcular si es un archivo de texto
+            content_type = self.context.file.contentType or ''
+            self._is_text_file = content_type.startswith('text')
+        else:
+            self._file_size_kb_rounded = None
+            self._is_text_file = False
+
+    def getFileSizeKBRounded(self):
+        """OPTIMIZATION: Retorna mida del fitxer en KB arrodonida"""
+        return getattr(self, '_file_size_kb_rounded', None)
+
+    def isTextFile(self):
+        """OPTIMIZATION: Retorna si és un fitxer de text"""
+        return getattr(self, '_is_text_file', False)
 
     @property
     def title(self):
