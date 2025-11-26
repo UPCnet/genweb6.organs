@@ -86,7 +86,9 @@ def llistaEstats(context):
             # The value for the vocabulary term is the state name.
             # The token must be a unique, ASCII-safe string.
             # We use the term_title to create a safe token.
-            token = unicodedata.normalize('NFKD', term_title).encode('ascii', 'ignore').decode('ascii')
+            token = unicodedata.normalize(
+                'NFKD', term_title).encode(
+                'ascii', 'ignore').decode('ascii')
 
             # createTerm(value, token, title)
             # Both value and title will be the state name string.
@@ -109,6 +111,8 @@ llistaTipusVotacio = SimpleVocabulary(
 )
 
 # Define la función defaultFactory para el campo 'proposalPoint'
+
+
 @provider(IContextAwareDefaultFactory)
 def proposal_point_default_factory(context):
     """Genera el valor predeterminado para el campo 'proposalPoint'."""
@@ -124,7 +128,8 @@ def proposal_point_default_factory(context):
 
     # Buscar objetos existentes usando el catálogo
     values = portal_catalog.searchResults(
-        portal_type=['genweb.organs.punt', 'genweb.organs.acord', 'genweb.organs.subpunt'],
+        portal_type=['genweb.organs.punt', 'genweb.organs.acord',
+                     'genweb.organs.subpunt'],
         path={'query': folder_path, 'depth': 1})
 
     subpunt_id = int(len(values)) + 1
@@ -140,13 +145,12 @@ def proposal_point_default_factory(context):
             punt_id = context.proposalPoint
         return str(punt_id) + '.' + str(subpunt_id)
 
+
 class IAcord(model.Schema):
     """ Acord """
 
-    fieldset('acord',
-             label=_(u'Tab acord'),
-             fields=['title', 'proposalPoint', 'agreement', 'defaultContent', 'estatsLlista']
-             )
+    fieldset('acord', label=_(u'Tab acord'), fields=[
+             'title', 'proposalPoint', 'agreement', 'defaultContent', 'estatsLlista'])
 
     textindexer.searchable('title')
     title = schema.TextLine(
@@ -201,6 +205,7 @@ class IAcord(model.Schema):
     directives.omitted('infoVotacio')
     infoVotacio = schema.Text(title=u'', required=False, default=u'{}')
 
+
 @indexer(IAcord)
 def index_proposalPoint(obj):
     value = getattr(obj, 'proposalPoint', None)
@@ -240,7 +245,9 @@ class View(BrowserView, UtilsFirmaDocumental):
     def canViewVotacionsInside(self):
         roles = utils.getUserRoles(self, self.context, api.user.get_current().id)
         estatSessio = utils.session_wf_state(self)
-        if estatSessio == 'planificada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
+        if estatSessio == 'planificada' and utils.checkhasRol(
+            ['OG1-Secretari', 'OG2-Editor'],
+                roles):
             return True
         elif estatSessio in ['convocada', 'realitzada', 'tancada', 'en_correccio'] and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre'], roles):
             return True
@@ -276,18 +283,23 @@ class View(BrowserView, UtilsFirmaDocumental):
         color = '#777777'
         for value in values.split('</p>'):
             if value != '':
-                item_net = unicodedata.normalize("NFKD", value).rstrip(' ').replace('<p>', '').replace('</p>', '').replace('\r\n', '')
+                item_net = unicodedata.normalize("NFKD", value).rstrip(
+                    ' ').replace('<p>', '').replace('</p>', '').replace('\r\n', '')
                 if isinstance(estat, bytes):
                     estat = estat.decode('utf-8')
                 if estat == ' '.join(item_net.split()[:-1]).lstrip():
-                    return item_net.split(' ')[-1:][0].rstrip(' ').replace('<p>', '').replace('</p>', '').lstrip(' ')
+                    return item_net.split(' ')[
+                        -1:][0].rstrip(' ').replace(
+                        '<p>', '').replace(
+                        '</p>', '').lstrip(' ')
         return color
 
     def AcordTitle(self):
         if self.context.agreement:
             return _(u'[Acord ') + self.context.agreement + ']'
         else:
-            return _(u'[Acord sense numeracio]') if not getattr(self.context, 'omitAgreement', False) else ''
+            return _(u'[Acord sense numeracio]') if not getattr(
+                self.context, 'omitAgreement', False) else ''
 
     def canView(self):
         # Permissions to view ACORDS. Poden estar a 1 i 2 nivells
@@ -300,7 +312,9 @@ class View(BrowserView, UtilsFirmaDocumental):
         organ_tipus = self.context.organType
 
         if organ_tipus == 'open_organ':
-            if estatSessio == 'planificada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
+            if estatSessio == 'planificada' and utils.checkhasRol(
+                ['OG1-Secretari', 'OG2-Editor'],
+                    roles):
                 return True
             elif estatSessio == 'convocada':
                 return True
@@ -314,7 +328,9 @@ class View(BrowserView, UtilsFirmaDocumental):
                 raise Unauthorized
 
         if organ_tipus == 'restricted_to_members_organ':
-            if estatSessio == 'planificada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
+            if estatSessio == 'planificada' and utils.checkhasRol(
+                ['OG1-Secretari', 'OG2-Editor'],
+                    roles):
                 return True
             elif estatSessio == 'convocada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
                 return True
@@ -328,7 +344,9 @@ class View(BrowserView, UtilsFirmaDocumental):
                 raise Unauthorized
 
         if organ_tipus == 'restricted_to_affected_organ':
-            if estatSessio == 'planificada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
+            if estatSessio == 'planificada' and utils.checkhasRol(
+                ['OG1-Secretari', 'OG2-Editor'],
+                    roles):
                 return True
             elif estatSessio == 'convocada' and utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
                 return True
@@ -350,20 +368,24 @@ class OpenPublicVote(BrowserView):
         self.context.horaIniciVotacio = datetime.datetime.now().strftime('%d/%m/%Y %H:%M')
         self.context.reindexObject()
         transaction.commit()
-        addEntryLog(self.context.__parent__, None, _(u'Oberta votacio acord'), self.context.absolute_url())
+        addEntryLog(self.context.__parent__, None, _(
+            u'Oberta votacio acord'), self.context.absolute_url())
 
 
 class OpenOtherPublicVote(BrowserView):
 
     def __call__(self):
         if 'title' in self.request.form and self.request.form['title'] and self.request.form['title'] != '':
-            item = createContentInContainer(self.context, "genweb.organs.votacioacord", title=self.request.form['title'])
+            item = createContentInContainer(
+                self.context, "genweb.organs.votacioacord", title=self.request.form
+                ['title'])
             item.estatVotacio = 'open'
             item.tipusVotacio = 'public'
             item.horaIniciVotacio = datetime.datetime.now().strftime('%d/%m/%Y %H:%M')
             item.reindexObject()
             transaction.commit()
-            addEntryLog(self.context.__parent__, None, _(u'Oberta votacio esmena'), self.context.absolute_url())
+            addEntryLog(self.context.__parent__, None, _(
+                u'Oberta votacio esmena'), self.context.absolute_url())
 
 
 # class OpenSecretVote(BrowserView):
@@ -399,7 +421,8 @@ class ReopenVote(BrowserView):
             self.context.estatVotacio = 'open'
             self.context.reindexObject()
             transaction.commit()
-            addEntryLog(self.context.__parent__, None, _(u'Reoberta votacio acord'), self.context.absolute_url())
+            addEntryLog(self.context.__parent__, None, _(
+                u'Reoberta votacio acord'), self.context.absolute_url())
             return {"status": 'success', "msg": ''}
 
 
@@ -410,64 +433,49 @@ class CloseVote(BrowserView):
         self.context.horaFiVotacio = datetime.datetime.now().strftime('%d/%m/%Y %H:%M')
         self.context.reindexObject()
         transaction.commit()
-        addEntryLog(self.context.__parent__, None, _(u'Tancada votacio acord'), self.context.absolute_url())
+        addEntryLog(self.context.__parent__, None, _(
+            u'Tancada votacio acord'), self.context.absolute_url())
+
+
+def _register_vote(context, vote_type, vote_label):
+    """OPTIMIZATION: Función auxiliar para registrar votos y evitar duplicación"""
+    if context.estatVotacio == 'close':
+        return {"status": 'error', "msg": _(u'La votació ja està tancada, el seu vot no s\'ha registrat.')}
+
+    if not isinstance(context.infoVotacio, dict):
+        context.infoVotacio = ast.literal_eval(context.infoVotacio)
+
+    user = api.user.get_current().id
+    context.infoVotacio.update({user: vote_type})
+    context.reindexObject()
+    transaction.commit()
+    sendVoteEmail(context, vote_label)
+    return {"status": 'success', "msg": ''}
 
 
 class FavorVote(BrowserView):
 
     @json_response
     def __call__(self):
-        if self.context.estatVotacio == 'close':
-            return {"status": 'error', "msg": _(u'La votació ja està tancada, el seu vot no s\'ha registrat.')}
-
-        if not isinstance(self.context.infoVotacio, dict):
-            self.context.infoVotacio = ast.literal_eval(self.context.infoVotacio)
-
-        user = api.user.get_current().id
-        self.context.infoVotacio.update({user: 'favor'})
-        self.context.reindexObject()
-        transaction.commit()
-        sendVoteEmail(self.context, 'a favor')
-        return {"status": 'success', "msg": ''}
+        return _register_vote(self.context, 'favor', 'a favor')
 
 
 class AgainstVote(BrowserView):
 
     @json_response
     def __call__(self):
-        if self.context.estatVotacio == 'close':
-            return {"status": 'error', "msg": _(u'La votació ja està tancada, el seu vot no s\'ha registrat.')}
-
-        if not isinstance(self.context.infoVotacio, dict):
-            self.context.infoVotacio = ast.literal_eval(self.context.infoVotacio)
-
-        user = api.user.get_current().id
-        self.context.infoVotacio.update({user: 'against'})
-        self.context.reindexObject()
-        transaction.commit()
-        sendVoteEmail(self.context, 'en contra')
-        return {"status": 'success', "msg": ''}
+        return _register_vote(self.context, 'against', 'en contra')
 
 
 class WhiteVote(BrowserView):
 
     @json_response
     def __call__(self):
-        if self.context.estatVotacio == 'close':
-            return {"status": 'error', "msg": _(u'La votació ja està tancada, el seu vot no s\'ha registrat.')}
-
-        if not isinstance(self.context.infoVotacio, dict):
-            self.context.infoVotacio = ast.literal_eval(self.context.infoVotacio)
-
-        user = api.user.get_current().id
-        self.context.infoVotacio.update({user: 'white'})
-        self.context.reindexObject()
-        transaction.commit()
-        sendVoteEmail(self.context, 'en blanc')
-        return {"status": 'success', "msg": ''}
+        return _register_vote(self.context, 'white', 'en blanc')
 
 
 def sendVoteEmail(context, vote):
+    """OPTIMIZATION: Envía email de confirmación de voto"""
     context = aq_inner(context)
 
     # /acl_users/plugins/manage_plugins?plugin_type=IPropertiesPlugin
@@ -475,76 +483,74 @@ def sendVoteEmail(context, vote):
     # Otherwise member.getProperty('email') won't work properly.
 
     user_email = api.user.get_current().getProperty('email')
-    if user_email:
-        mailhost = getToolByName(context, 'MailHost')
+    if not user_email:
+        return
 
-        portal = api.portal.get()
-        email_charset = portal.getProperty('email_charset')
+    # OPTIMIZATION: Cachear valores comunes
+    mailhost = getToolByName(context, 'MailHost')
+    portal = api.portal.get()
+    email_charset = portal.getProperty('email_charset')
+    organ = utils.get_organ(context)
+    sender_email = organ.fromMail
+    now = datetime.datetime.now()
 
-        organ = utils.get_organ(context)
-        sender_email = organ.fromMail
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = user_email
+    msg['Subject'] = escape(safe_unicode(_(u'Votació Govern UPC')))
+    msg['charset'] = email_charset
 
-        msg = MIMEMultipart()
-        msg['From'] = sender_email
-        msg['To'] = user_email
-        msg['Subject'] = escape(safe_unicode(_(u'Votació Govern UPC')))
-        msg['charset'] = email_charset
-
-        message = """En data {data}, hora {hora}, has votat {vot} a l'acord {acord} de la sessió {sessio} de l'òrgan {organ}.
+    message = """En data {data}, hora {hora}, has votat {vot} a l'acord {acord} de la sessió {sessio} de l'òrgan {organ}.
 
 Missatge automàtic generat per https://govern.upc.edu/"""
 
-        now = datetime.datetime.now()
-        if context.aq_parent.portal_type == 'genweb.organs.sessio':
+    # OPTIMIZATION: Consolidar lógica de construcción de datos
+    parent_type = context.aq_parent.portal_type
+    if parent_type == 'genweb.organs.sessio':
+        data = {
+            'data': now.strftime("%d/%m/%Y"),
+            'hora': now.strftime("%H:%M"),
+            'vot': vote,
+            'acord': context.title,
+            'sessio': context.aq_parent.title,
+            'organ': context.aq_parent.aq_parent.title,
+        }
+    elif parent_type == 'genweb.organs.punt':
+        data = {
+            'data': now.strftime("%d/%m/%Y"),
+            'hora': now.strftime("%H:%M"),
+            'vot': vote,
+            'acord': context.title,
+            'sessio': context.aq_parent.aq_parent.title,
+            'organ': context.aq_parent.aq_parent.aq_parent.title,
+        }
+    else:
+        return  # Tipo no reconocido, no enviar email
 
-            data = {
-                'data': now.strftime("%d/%m/%Y"),
-                'hora': now.strftime("%H:%M"),
-                'vot': vote,
-                'acord': context.title,
-                'sessio': context.aq_parent.title,
-                'organ': context.aq_parent.aq_parent.title,
-            }
-
-            msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
-            # Normalizar finales de línea a CRLF para cumplir con RFC 5321
-            msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
-            mailhost.send(msg_string)
-
-        elif context.aq_parent.portal_type == 'genweb.organs.punt':
-
-            data = {
-                'data': now.strftime("%d/%m/%Y"),
-                'hora': now.strftime("%H:%M"),
-                'vot': vote,
-                'acord': context.title,
-                'sessio': context.aq_parent.aq_parent.title,
-                'organ': context.aq_parent.aq_parent.aq_parent.title,
-            }
-
-            msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
-            # Normalizar finales de línea a CRLF para cumplir con RFC 5321
-            msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
-            mailhost.send(msg_string)
+    msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
+    # Normalizar finales de línea a CRLF para cumplir con RFC 5321
+    msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
+    mailhost.send(msg_string)
 
 
 def sendRemoveVoteEmail(context):
+    """OPTIMIZATION: Envía email de notificación de voto eliminado"""
     context = aq_inner(context)
-    mailhost = getToolByName(context, 'MailHost')
 
+    # OPTIMIZATION: Cachear valores comunes
+    mailhost = getToolByName(context, 'MailHost')
     portal = api.portal.get()
     email_charset = portal.getProperty('email_charset')
-
     organ = utils.get_organ(context)
     sender_email = organ.fromMail
 
-    user_emails = []
-
+    # OPTIMIZATION: Extraer emails de votantes
     infoVotacio = context.infoVotacio
     if isinstance(infoVotacio, str):
         infoVotacio = ast.literal_eval(infoVotacio)
 
-    for key, value in infoVotacio.items():
+    user_emails = []
+    for key in infoVotacio.keys():
         try:
             email = api.user.get(username=key).getProperty('email')
             if email:
@@ -552,48 +558,45 @@ def sendRemoveVoteEmail(context):
         except:
             pass
 
-    if user_emails:
-        msg = MIMEMultipart()
-        msg['From'] = sender_email
-        msg['Bcc'] = ', '.join(user_emails)
-        msg['Subject'] = escape(safe_unicode(_(u'Votació anul·lada Govern UPC')))
-        msg['charset'] = email_charset
+    if not user_emails:
+        return  # No hay emails, salir early
 
-        message = """En data {data}, hora {hora}, la votació de l'acord {acord} de la sessió {sessio} de l'òrgan {organ} ha estat anul·lada i el teu vot emès ha estat eliminat.
+    now = datetime.datetime.now()
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['Bcc'] = ', '.join(user_emails)
+    msg['Subject'] = escape(safe_unicode(_(u'Votació anul·lada Govern UPC')))
+    msg['charset'] = email_charset
+
+    message = """En data {data}, hora {hora}, la votació de l'acord {acord} de la sessió {sessio} de l'òrgan {organ} ha estat anul·lada i el teu vot emès ha estat eliminat.
 
     Missatge automàtic generat per https://govern.upc.edu/"""
 
-        now = datetime.datetime.now()
-        if context.aq_parent.portal_type == 'genweb.organs.sessio':
+    # OPTIMIZATION: Consolidar lógica de construcción de datos
+    parent_type = context.aq_parent.portal_type
+    if parent_type == 'genweb.organs.sessio':
+        data = {
+            'data': now.strftime("%d/%m/%Y"),
+            'hora': now.strftime("%H:%M"),
+            'acord': context.title,
+            'sessio': context.aq_parent.title,
+            'organ': context.aq_parent.aq_parent.title,
+        }
+    elif parent_type == 'genweb.organs.punt':
+        data = {
+            'data': now.strftime("%d/%m/%Y"),
+            'hora': now.strftime("%H:%M"),
+            'acord': context.title,
+            'sessio': context.aq_parent.aq_parent.title,
+            'organ': context.aq_parent.aq_parent.aq_parent.title,
+        }
+    else:
+        return  # Tipo no reconocido, no enviar email
 
-            data = {
-                'data': now.strftime("%d/%m/%Y"),
-                'hora': now.strftime("%H:%M"),
-                'acord': context.aq_parent.title,
-                'sessio': context.aq_parent.aq_parent.title,
-                'organ': context.aq_parent.aq_parent.aq_parent.title,
-            }
-
-            msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
-            # Normalizar finales de línea a CRLF para cumplir con RFC 5321
-            msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
-            mailhost.send(msg_string)
-
-        elif context.aq_parent.portal_type == 'genweb.organs.punt':
-
-            data = {
-                'data': now.strftime("%d/%m/%Y"),
-                'hora': now.strftime("%H:%M"),
-                'esmena': context.title,
-                'acord': context.aq_parent.title,
-                'sessio': context.aq_parent.aq_parent.aq_parent.title,
-                'organ': context.aq_parent.aq_parent.aq_parent.aq_parent.title,
-            }
-
-            msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
-            # Normalizar finales de línea a CRLF para cumplir con RFC 5321
-            msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
-            mailhost.send(msg_string)
+    msg.attach(MIMEText(message.format(**data), 'plain', email_charset))
+    # Normalizar finales de línea a CRLF para cumplir con RFC 5321
+    msg_string = msg.as_string().replace('\r\n', '\n').replace('\n', '\r\n')
+    mailhost.send(msg_string)
 
 
 class RemoveVote(BrowserView):
@@ -610,8 +613,8 @@ class RemoveVote(BrowserView):
         self.context.horaFiVotacio = None
         self.context.reindexObject()
         transaction.commit()
-        addEntryLog(self.context.__parent__, None, _(u'Eliminada votacio acord'), self.context.absolute_url())
-
+        addEntryLog(self.context.__parent__, None, _(
+            u'Eliminada votacio acord'), self.context.absolute_url())
 
 
 class HideAgreement(BrowserView):
@@ -638,7 +641,8 @@ class HideAgreement(BrowserView):
         value = False
         if review_state in ['planificada', 'convocada', 'realitzada', 'en_correccio'] and 'OG1-Secretari' in roles:
             value = True
-        if review_state in ['planificada', 'convocada', 'realitzada'] and 'OG2-Editor' in roles:
+        if review_state in [
+                'planificada', 'convocada', 'realitzada'] and 'OG2-Editor' in roles:
             value = True
         return value or 'Manager' in roles
 
