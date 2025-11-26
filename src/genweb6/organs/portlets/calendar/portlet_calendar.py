@@ -3,21 +3,17 @@ from ComputedAttribute import ComputedAttribute
 from plone.app.contenttypes.behaviors.collection import ISyndicatableCollection
 from plone.app.contenttypes.interfaces import IFolder
 from plone.app.event import _
-from plone.app.event.base import _prepare_range
 from plone.app.event.base import construct_calendar
-from plone.app.event.base import expand_events
 from plone.app.event.base import first_weekday
-from plone.app.event.base import get_events
 from plone.app.event.base import localized_today
-from plone.app.event.base import RET_MODE_OBJECTS
-from plone.app.event.base import start_end_query
 from plone.app.event.base import wkday_to_mon1
 from plone.app.event.portlets import get_calendar_url
 from plone.app.portlets.portlets import base
-from plone.app.querystring import queryparser
 from plone.app.uuid.utils import uuidToObject
 from plone.app.vocabularies.catalog import CatalogSource
 from plone.event.interfaces import IEventAccessor
+from plone.event.interfaces import IEvent
+from plone.memoize import instance
 from plone.portlets.interfaces import IPortletDataProvider
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
@@ -28,8 +24,6 @@ from zope.i18nmessageid import MessageFactory
 from zope.interface import implementer
 from datetime import datetime
 from plone import api
-from plone.event.interfaces import IEvent
-from plone.event.interfaces import IEventAccessor
 
 import calendar
 import json
@@ -195,14 +189,6 @@ class Renderer(base.Renderer):
             items_path.append(obj.getPath())
         return items_path
 
-    def getclasstag_event(self, day):
-        # Returns class color to render inside the calendar
-        classtag = ''
-        if day['events']:
-            if len(day['events']) > 1:
-                classtag += ' event-multiple '
-        return classtag
-
     def getDateEvents(self):
         formatDate = "%Y-%m-%d"
         if 'day' in self.request.form:
@@ -222,16 +208,12 @@ class Renderer(base.Renderer):
         end = event.end.strftime('%d/%m')
         endhour = eventhour.end.strftime('%H:%M')
         end = None if end == start else end
-        return dict(title=event.title,
-                    url=event.absolute_url(),
+        return dict(title=event.title, url=event.absolute_url(),
                     organ_title=event.aq_parent.title,
                     organ_url=event.aq_parent.absolute_url(),
-                    start=start,
-                    starthour=starthour,
-                    end=end,
-                    endhour=endhour,
-                    color=event.aq_parent.eventsColor if event.aq_parent.eventsColor else '#007BC1'
-                    )
+                    start=start, starthour=starthour, end=end, endhour=endhour,
+                    color=event.aq_parent.eventsColor
+                    if event.aq_parent.eventsColor else '#007BC1')
 
     def filterOccurrenceEvents(self, events):
         filter_events = []
@@ -248,10 +230,49 @@ class Renderer(base.Renderer):
 
         return filter_events
 
+    @instance.memoize
+    def _get_calendar_events(self):
+        """OPTIMIZATION: Cachear eventos del mes para evitar queries duplicadas.
+
+        Este método consolida la lógica duplicada entre getCalendarDict() y cal_data.
+        El caché es por instancia, por lo que cada usuario verá solo sus eventos.
+        """
+        year, month = self.year_month_display()
+        monthdates = [dat for dat in self.cal.itermonthdates(year, month)]
+        start = monthdates[0]
+        end = monthdates[-1]
+
+        date_range_query = {'query': (start, end), 'range': 'min:max'}
+        portal_catalog = api.portal.get_tool(name='portal_catalog')
+        events = []
+
+        if api.user.is_anonymous():
+            items = portal_catalog.unrestrictedSearchResults(
+                portal_type='genweb.organs.sessio',
+                start=date_range_query,
+                path=self.get_public_organs_fields())
+            for event in items:
+                events.append(event._unrestrictedGetObject())
+        else:
+            items = portal_catalog.unrestrictedSearchResults(
+                portal_type='genweb.organs.sessio',
+                start=date_range_query)
+            username = api.user.get_current().id
+            for event in items:
+                session = event._unrestrictedGetObject()
+                roles = api.user.get_roles(username=username, obj=session)
+                if ('OG1-Secretari' in roles or 'OG2-Editor' in roles or
+                        'OG3-Membre' in roles or 'OG4-Afectat' in roles or
+                        'Manager' in roles or session.aq_parent.visiblefields):
+                    events.append(session)
+
+        return events, start, end
+
     def getDayEventsGroup(self):
         request = self.request
         if 'day' in request.form:
-            return self.getDayEvents(self.getDateEvents())  # Solo si hay día seleccionado
+            # Solo si hay día seleccionado
+            return self.getDayEvents(self.getDateEvents())
         else:
             # Mostrar solo los eventos del día actual como preview
             today = localized_today(self.context)
@@ -267,66 +288,23 @@ class Renderer(base.Renderer):
         return list_events
 
     def getCalendarDict(self):
-        year, month = self.year_month_display()
-        monthdates = [dat for dat in self.cal.itermonthdates(year, month)]
-        start = monthdates[0]
-        end = monthdates[-1]
-
-        date_range_query = {'query': (start, end), 'range': 'min:max'}
-        portal_catalog = api.portal.get_tool(name='portal_catalog')
-        events = []
-        if api.user.is_anonymous():
-            items = portal_catalog.unrestrictedSearchResults(
-                portal_type='genweb.organs.sessio',
-                start=date_range_query,
-                path=self.get_public_organs_fields())
-            for event in items:
-                events.append(event._unrestrictedGetObject())
-        else:
-            items = portal_catalog.unrestrictedSearchResults(
-                portal_type='genweb.organs.sessio',
-                start=date_range_query)
-            username = api.user.get_current().id
-            for event in items:
-                session = event._unrestrictedGetObject()
-                roles = api.user.get_roles(username=username, obj=session)
-                if 'OG1-Secretari' in roles or 'OG2-Editor' in roles or 'OG3-Membre' in roles or 'OG4-Afectat' in roles or 'Manager' in roles or session.aq_parent.visiblefields:
-                    events.append(session)
-
+        """OPTIMIZATION: Reutilizar eventos cacheados de _get_calendar_events()"""
+        events, start, end = self._get_calendar_events()
         return construct_calendar(events, start=start, end=end)
 
     @property
     def cal_data(self):
         """Calendar iterator over weeks and days of the month to display.
+
+        OPTIMIZATION: Pre-calcula clases CSS y reutiliza eventos cacheados.
         """
         context = aq_inner(self.context)
         today = localized_today(context)
         year, month = self.year_month_display()
+
+        # OPTIMIZATION: Reutilizar eventos cacheados
+        events, start, end = self._get_calendar_events()
         monthdates = [dat for dat in self.cal.itermonthdates(year, month)]
-        start = monthdates[0]
-        end = monthdates[-1]
-
-        date_range_query = {'query': (start, end), 'range': 'min:max'}
-        portal_catalog = api.portal.get_tool(name='portal_catalog')
-        events = []
-        if api.user.is_anonymous():
-            items = portal_catalog.unrestrictedSearchResults(
-                portal_type='genweb.organs.sessio',
-                start=date_range_query,
-                path=self.get_public_organs_fields())
-            for event in items:
-                events.append(event._unrestrictedGetObject())
-        else:
-            items = portal_catalog.unrestrictedSearchResults(
-                portal_type='genweb.organs.sessio',
-                start=date_range_query)
-            username = api.user.get_current().id
-            for event in items:
-                session = event._unrestrictedGetObject()
-                roles = api.user.get_roles(username=username, obj=session)
-                if 'OG1-Secretari' in roles or 'OG2-Editor' in roles or 'OG3-Membre' in roles or 'OG4-Afectat' in roles or 'Manager' in roles or session.aq_parent.visiblefields:
-                    events.append(session)
-
         cal_dict = construct_calendar(events, start=start, end=end)
 
         # [[day1week1, day2week1, ... day7week1], [day1week2, ...]]
@@ -334,29 +312,40 @@ class Renderer(base.Renderer):
         for dat in monthdates:
             if len(caldata[-1]) == 7:
                 caldata.append([])
-            date_events = None
+
             isodat = dat.isoformat()
-            if isodat in cal_dict:
-                date_events = cal_dict[isodat]
+            date_events = cal_dict.get(isodat, None)
+
+            # OPTIMIZATION: Pre-calcular clases CSS en Python
+            css_classes = ['event']
+            if dat.year == today.year and dat.month == today.month and dat.day == today.day:
+                css_classes.append('today')
+            if dat.month < month:
+                css_classes.append('cal_prev_month')
+            if dat.month > month:
+                css_classes.append('cal_next_month')
+            if date_events:
+                css_classes.append('cal_has_events')
 
             color = ''
             if date_events:
-                for occ in date_events:
-                    color = occ.aq_parent.eventsColor
+                # Tomar el color del primer evento
+                color = date_events[0].aq_parent.eventsColor
 
-            caldata[-1].append(
-                {'date': dat,
-                 'day': dat.day,
-                 'month': dat.month,
-                 'year': dat.year,
-                 'prev_month': dat.month < month,
-                 'next_month': dat.month > month,
-                 'color': color,
-                 'today':
-                    dat.year == today.year and
-                    dat.month == today.month and
-                    dat.day == today.day,
-                 'events': date_events})
+            caldata[-1].append({
+                'date': dat,
+                'day': dat.day,
+                'month': dat.month,
+                'year': dat.year,
+                'prev_month': dat.month < month,
+                'next_month': dat.month > month,
+                'color': color,
+                'today': dat.year == today.year and dat.month == today.month and dat.day == today.day,
+                'events': date_events,
+                'css_class': ' '.join(css_classes),  # OPTIMIZATION: Pre-calculado
+                # OPTIMIZATION: Pre-calculado
+                'has_multiple': len(date_events) > 1 if date_events else False,
+            })
         return caldata
 
     def nav_pattern_options(self, year, month):

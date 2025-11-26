@@ -48,31 +48,20 @@
       <tbody>
         <tr tal:repeat="week view/cal_data">
           <tal:block repeat="day week">
-            <td class="event" tal:define="
-                    today day/today;
-                    next_month day/next_month;
-                    prev_month day/prev_month;
-                    events day/events;
-                    color day/color;
-                    limit python:len(events) if events is not None else 0;
-                  " tal:attributes="
-                    class python:u'event%s%s%s%s' %
-                            ((' today' if today else ''),
-                            (' cal_next_month' if next_month else ''),
-                            (' cal_prev_month' if prev_month else ''),
-                            (' cal_has_events' if events else ''));
-                    style python:'background-color: ' + color if color else None;
-                  ">
+            <td tal:define="events day/events;
+                            color day/color"
+                tal:attributes="class day/css_class;
+                                style python:'background-color: ' + color if color else None">
               <tal:comment tal:condition="nothing">Add span or a to style td children and not td</tal:comment>
               <span tal:condition="not:events" tal:content="day/day"></span>
               <form method="get" tal:condition="events" style="display:inline;">
                 <input type="hidden" name="year" tal:attributes="value year" />
                 <input type="hidden" name="month" tal:attributes="value month" />
                 <input type="hidden" name="day" tal:attributes="value day/day" />
-                <button type="submit" class="btn btn-link p-0 m-0 align-baseline bold-day-number"
+                <button type="submit"
                         tal:content="day/day"
                         tal:attributes="title string:Events;
-                                        class python:'btn btn-link p-0 m-0 align-baseline bold-day-number' + (' event-multiple position-relative' if events and len(events) > 1 else '')">
+                                        class python:'btn btn-link p-0 m-0 align-baseline bold-day-number' + (' event-multiple position-relative' if day['has_multiple'] else '')">
                   31
                 </button>
               </form>
