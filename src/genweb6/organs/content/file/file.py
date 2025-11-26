@@ -7,7 +7,6 @@ from Products.statusmessages.interfaces import IStatusMessage
 from plone.app.dexterity import textindexer
 from plone import api
 from Products.CMFPlone import PloneMessageFactory as _PMF
-from z3c.form import form
 from plone.namedfile.field import NamedBlobFile
 from plone.namedfile.utils import get_contenttype
 from plone.supermodel.directives import fieldset
@@ -25,9 +24,6 @@ import transaction
 
 from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from z3c.form.validator import SimpleFieldValidator
-from zope.component import adapter
-from plone.dexterity.interfaces import IDexterityContent
 from zope.interface import provider
 from zope.schema.interfaces import IContextAwareDefaultFactory
 
@@ -37,17 +33,13 @@ class InvalidPDFFile(ValidationError):
     __doc__ = _(u"Invalid PDF file")
 
 
-# @adapter(schema.interfaces.IField, IDexterityContent, schema.interfaces.IField)
-class VisibleFileValidator(SimpleFieldValidator):
-    def validate(self, value):
-        """Valida que el archivo sea un PDF."""
-        super().validate(value)
-        if value is not None:
-            mimetype = get_contenttype(value)
-            if mimetype != 'application/pdf':
-                raise InvalidPDFFile(mimetype)
-
-# Define la función defaultFactory para el campo 'title'
+def validatePDFFile(value):
+    """Valida que el archivo sea un PDF. Retorna True si es válido."""
+    if value is not None:
+        mimetype = get_contenttype(value)
+        if mimetype != 'application/pdf':
+            raise InvalidPDFFile(mimetype)
+    return True
 
 
 @provider(IContextAwareDefaultFactory)
@@ -87,27 +79,15 @@ class IFile(model.Schema):
         title=_(u"Please upload a public file"),
         description=_(u"Published file description"),
         required=False,
+        constraint=validatePDFFile,
     )
 
     hiddenfile = NamedBlobFile(
         title=_(u"Please upload a reserved file"),
         description=_(u"Reserved file description"),
         required=False,
+        constraint=validatePDFFile,
     )
-
-
-# @form.validator(field=IFile['visiblefile'])
-# def validateFileType(value):
-#     if value is not None:
-#         mimetype = get_contenttype(value)
-#         if mimetype != 'application/pdf':
-#             raise InvalidPDFFile(mimetype)
-
-
-# @form.default_value(field=IFile['title'])
-# def titleDefaultValue(data):
-#     # ficar el títol de la sessió
-#     return data.context.Title()
 
 
 class Edit(edit.DefaultEditForm):
@@ -266,48 +246,9 @@ class View(BrowserView):
 
         if 'application/pdf' in ct:
             return 'file-earmark-pdf'
-        if 'audio/' in ct:
-            return 'file-earmark-music'
-        if 'video/' in ct:
-            return 'file-earmark-play'
-        if 'image/' in ct:
-            return 'file-earmark-image'
-        return 'file-earmark-text'
 
-    def pdf_reserved(self):
-        if self.context.hiddenfile:
-            ct = self.context.hiddenfile.contentType
-            return 'application/pdf' == ct
-        else:
-            return None
+        return 'file-earmark'
 
-    def audio_reserved(self):
-        if self.context.hiddenfile:
-            ct = self.context.hiddenfile.contentType
-            return 'audio/' in ct
-        else:
-            return None
-
-    def video_reserved(self):
-        if self.context.hiddenfile:
-            ct = self.context.hiddenfile.contentType
-            return 'video/' in ct
-        else:
-            return None
-
-    def video_public(self):
-        if self.context.visiblefile:
-            ct = self.context.visiblefile.contentType
-            return 'video/' in ct
-        else:
-            return None
-
-    def audio_public(self):
-        if self.context.visiblefile:
-            ct = self.context.visiblefile.contentType
-            return 'audio/' in ct
-        else:
-            return None
 
     def hihaReserved(self):
         file = getattr(self.context, 'hiddenfile', None)

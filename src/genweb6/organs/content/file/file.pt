@@ -18,11 +18,6 @@
                  changeFile view/getChangeFile;
                  absolute_url context/absolute_url;
                  icon view/icon_type;
-                 pdf view/pdf_reserved;
-                 audio view/audio_reserved;
-                 video view/video_reserved;
-                 audio_public view/audio_public;
-                 video_public view/video_public;
                  isPDFpublic view/isPDFpublic;
                  isPDFprivat view/isPDFprivat;
                  privateFileUploadedGdoc view/privateFileUploadedGdoc;
@@ -91,12 +86,6 @@
               <object type="application/pdf" width="100%" height="480"
                       tal:attributes="data reserved_file_view_url"></object>
             </tal:block>
-            <video tal:condition="video" controls class="w-100" style="max-height:320px;">
-              <source tal:attributes="src reserved_file_download_url; type reserved_content_type"/>
-            </video>
-            <audio tal:condition="audio" controls class="w-100">
-              <source tal:attributes="src reserved_file_download_url; type reserved_content_type"/>
-            </audio>
           </div>
         </div>
       </div>
@@ -150,12 +139,6 @@
               <object type="application/pdf" width="100%" height="480"
                       tal:attributes="data public_file_view_url"></object>
             </tal:block>
-            <video tal:condition="video_public" controls class="w-100" style="max-height:320px;">
-              <source tal:attributes="src public_file_download_url; type public_content_type"/>
-            </video>
-            <audio tal:condition="audio_public" controls class="w-100">
-              <source tal:attributes="src public_file_download_url; type public_content_type"/>
-            </audio>
           </div>
         </div>
       </div>
