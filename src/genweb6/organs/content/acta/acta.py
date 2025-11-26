@@ -416,11 +416,13 @@ class View(BrowserView, UtilsFirmaDocumental):
 
     def _prepareAnnexesData(self):
         """OPTIMIZATION: Precalcula dades dels annexes"""
-        annexes = self.AnnexInside()
-        if annexes:
-            self._has_multiple_annexes = len(annexes) > 1
+        # Calcular annexes una sola vegada i cachear el resultat
+        self._cached_annexes = self._computeAnnexInside()
+
+        if self._cached_annexes:
+            self._has_multiple_annexes = len(self._cached_annexes) > 1
             # Precalcular sizeKB arrodonit per cada annex
-            for annex in annexes:
+            for annex in self._cached_annexes:
                 annex['sizeKB_rounded'] = round(annex['sizeKB'], 2)
         else:
             self._has_multiple_annexes = False
@@ -569,8 +571,8 @@ class View(BrowserView, UtilsFirmaDocumental):
 
         return False
 
-    def AnnexInside(self):
-        """ Retorna els fitxers annexos creats aquí dintre (sense tenir compte estat)
+    def _computeAnnexInside(self):
+        """ Calcula els fitxers annexos creats aquí dintre (sense tenir compte estat)
         """
         if not self.isSigned():
             folder_path = '/'.join(self.context.getPhysicalPath())
@@ -609,6 +611,10 @@ class View(BrowserView, UtilsFirmaDocumental):
                 return results
 
         return False
+
+    def AnnexInside(self):
+        """OPTIMIZATION: Retorna els annexes (amb caché si ja s'han calculat)"""
+        return getattr(self, '_cached_annexes', self._computeAnnexInside())
 
     def getPFDActa(self):
         if not hasattr(self.context, 'info_firma'):

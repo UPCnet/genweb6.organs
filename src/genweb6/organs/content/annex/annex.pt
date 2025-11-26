@@ -16,7 +16,7 @@
                     public_file_view_url string:${absolute_url}/@@display-file/file/${context/file/filename};">
 
     <h1 class="documentFirstHeading mb-3" tal:content="view/title">Annex</h1>
-    
+
     <div tal:condition="context/description" class="mb-3">
       <div tal:content="structure context/description">Descripció</div>
     </div>
@@ -26,10 +26,8 @@
       <a tal:attributes="href public_file_view_url;" target="_blank">
         <tal:name tal:content="context/file/filename">Filename</tal:name>
       </a>
-      <span class="text-muted fs-s ms-2"
-            tal:define="size context/file/getSize; 
-                        kb python:round(size/1024, 2)">
-        (<span tal:replace="kb"></span> KB)
+      <span class="text-muted fs-s ms-2">
+        (<span tal:replace="view/getFileSizeKBRounded"></span> KB)
       </span>
       <a tal:attributes="href public_file_download_url"
          class="ms-2" title="Descarrega fitxer" alt="Descarrega fitxer">

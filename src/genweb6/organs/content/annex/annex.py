@@ -91,7 +91,21 @@ class View(BrowserView):
     index = ViewPageTemplateFile("annex.pt")
 
     def __call__(self):
+        # OPTIMIZATION: Precalcular tamaño del archivo
+        self._prepareFileData()
         return self.index()
+
+    def _prepareFileData(self):
+        """OPTIMIZATION: Precalcula dades del fitxer per evitar python: en template"""
+        if self.context.file:
+            size = self.context.file.getSize()
+            self._file_size_kb_rounded = round(size / 1024, 2)
+        else:
+            self._file_size_kb_rounded = None
+
+    def getFileSizeKBRounded(self):
+        """OPTIMIZATION: Retorna mida del fitxer en KB arrodonida"""
+        return getattr(self, '_file_size_kb_rounded', None)
 
     @property
     def title(self):
