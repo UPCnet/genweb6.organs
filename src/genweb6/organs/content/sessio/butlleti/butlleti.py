@@ -93,6 +93,10 @@ class Butlleti(BrowserView):
     def getUnitat(self):
         return self.context.aq_parent.aq_parent.Title()
 
+    def getLanguage(self):
+        """OPTIMIZATION: Pre-calcula el idioma para evitar python: en template"""
+        return self.context.language
+
     def canView(self):
         # Permissions to GENERATE BUTLLETI
         roles = utils.getUserRoles(self, self.context, api.user.get_current().id)
