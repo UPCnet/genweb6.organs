@@ -971,7 +971,7 @@ class View(BrowserView):
                 results.append(dict(title=obj.Title,
                                     portal_type=obj.portal_type,
                                     absolute_url=obj.getURL(),
-                                    new_tab=False,
+                                    target=None,
                                     classCSS=classCSS,
                                     id=str(item['id']) + '/' + obj.id))
             else:
@@ -984,21 +984,21 @@ class View(BrowserView):
                             results.append(dict(title=obj.Title,
                                                 portal_type=obj.portal_type,
                                                 absolute_url=obj.getURL(),
-                                                new_tab=True,
+                                                target='_blank',
                                                 classCSS=classCSS,
                                                 id=str(item['id']) + '/' + obj.id))
                         else:
                             results.append(dict(title=obj.Title,
                                                 portal_type=obj.portal_type,
                                                 absolute_url=obj.getURL(),
-                                                new_tab=True,
+                                                target='_blank',
                                                 classCSS=classCSS,
                                                 id=str(item['id']) + '/' + obj.id))
                     elif value.defaultContent:
                         results.append(dict(title=obj.Title,
                                             portal_type=obj.portal_type,
                                             absolute_url=obj.getURL(),
-                                            new_tab=True,
+                                            target='_blank',
                                             classCSS=classCSS,
                                             id=str(item['id']) + '/' + obj.id))
                     elif value.alternateContent:
@@ -1006,7 +1006,7 @@ class View(BrowserView):
                             results.append(dict(title=obj.Title,
                                                 portal_type=obj.portal_type,
                                                 absolute_url=obj.getURL(),
-                                                new_tab=True,
+                                                target='_blank',
                                                 classCSS=classCSS,
                                                 id=str(item['id']) + '/' + obj.id))
                 # es un fitxer, mostrem part publica si la té
@@ -1025,7 +1025,7 @@ class View(BrowserView):
                             results.append(dict(title=obj.Title,
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
-                                                new_tab=True,
+                                                target='_blank',
                                                 classCSS=classCSS,
                                                 id=str(item['id']) + '/' + obj.id))
                         else:
@@ -1036,7 +1036,7 @@ class View(BrowserView):
                             results.append(dict(title=obj.Title,
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
-                                                new_tab=True,
+                                                target='_blank',
                                                 classCSS=classCSS,
                                                 id=str(item['id']) + '/' + obj.id))
                     elif value.visiblefile:
@@ -1047,7 +1047,7 @@ class View(BrowserView):
                         results.append(dict(title=obj.Title,
                                             portal_type=obj.portal_type,
                                             absolute_url=absolute_url,
-                                            new_tab=True,
+                                            target='_blank',
                                             classCSS=classCSS,
                                             id=str(item['id']) + '/' + obj.id))
                     elif value.hiddenfile:
@@ -1059,7 +1059,7 @@ class View(BrowserView):
                             results.append(dict(title=obj.Title,
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
-                                                new_tab=True,
+                                                target='_blank',
                                                 classCSS=classCSS,
                                                 id=str(item['id']) + '/' + obj.id))
         return results

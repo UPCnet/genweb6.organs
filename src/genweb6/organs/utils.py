@@ -304,7 +304,6 @@ def FilesandDocumentsInside(self):
             results.append(dict(title=obj.Title,
                                 absolute_url=obj.getURL(),
                                 classCSS=class_css,
-                                new_tab=False,
                                 target=None,
                                 hidden=False))
         else:
@@ -317,21 +316,18 @@ def FilesandDocumentsInside(self):
                         results.append(dict(title=obj.Title,
                                             portal_type=obj.portal_type,
                                             absolute_url=obj.getURL(),
-                                            new_tab=True,
                                             target='_blank',
                                             classCSS=class_css))
                     else:
                         results.append(dict(title=obj.Title,
                                             portal_type=obj.portal_type,
                                             absolute_url=obj.getURL(),
-                                            new_tab=True,
                                             target='_blank',
                                             classCSS=class_css))
                 elif value.defaultContent:
                     results.append(dict(title=obj.Title,
                                         portal_type=obj.portal_type,
                                         absolute_url=obj.getURL(),
-                                        new_tab=True,
                                         target='_blank',
                                         classCSS=class_css))
                 elif value.alternateContent:
@@ -342,7 +338,6 @@ def FilesandDocumentsInside(self):
                         results.append(dict(title=obj.Title,
                                             portal_type=obj.portal_type,
                                             absolute_url=obj.getURL(),
-                                            new_tab=True,
                                             target='_blank',
                                             classCSS=class_css))
 
@@ -364,7 +359,6 @@ def FilesandDocumentsInside(self):
                             results.append(dict(title=obj.Title,
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
-                                                new_tab=True,
                                                 target='_blank',
                                                 classCSS=class_css))
                         else:
@@ -375,7 +369,6 @@ def FilesandDocumentsInside(self):
                             results.append(dict(title=obj.Title,
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
-                                                new_tab=True,
                                                 target='_blank',
                                                 classCSS=class_css))
                     else:
@@ -387,7 +380,6 @@ def FilesandDocumentsInside(self):
                             results.append(dict(title=obj.Title,
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
-                                                new_tab=True,
                                                 target='_blank',
                                                 classCSS=class_css))
                         else:
@@ -398,7 +390,6 @@ def FilesandDocumentsInside(self):
                             results.append(dict(title=obj.Title,
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
-                                                new_tab=True,
                                                 target='_blank',
                                                 classCSS=class_css))
                 elif value.visiblefile:
@@ -408,7 +399,6 @@ def FilesandDocumentsInside(self):
                         absolute_url = obj.getURL() + '/@@display-file/visiblefile/' + value.visiblefile.filename
                     results.append(dict(title=obj.Title,
                                         absolute_url=absolute_url,
-                                        new_tab=True,
                                         target='_blank',
                                         classCSS=class_css,
                                         hidden=False))
@@ -425,7 +415,6 @@ def FilesandDocumentsInside(self):
                             results.append(dict(title=obj.Title,
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
-                                                new_tab=True,
                                                 target='_blank',
                                                 classCSS=class_css))
                     else:
@@ -436,7 +425,6 @@ def FilesandDocumentsInside(self):
                             results.append(dict(title=obj.Title,
                                                 portal_type=obj.portal_type,
                                                 absolute_url=absolute_url,
-                                                new_tab=True,
                                                 target='_blank',
                                                 classCSS=class_css))
     return results

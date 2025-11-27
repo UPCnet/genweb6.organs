@@ -141,17 +141,7 @@
                                 <div class="titleSpan d-flex w-100">
                                   <i tal:attributes="class string:${file_item/classCSS} me-1"></i>
                                   <a tal:attributes="href file_item/absolute_url;"
-                                    tal:condition="file_item/new_tab"
-                                    target="_blank"
-                                    class="text-dark">
-                                    <tal:omit-tag tal:content="file_item/title"> Doc title</tal:omit-tag>
-                                    <p class="mb-0 text-danger-emphasis"
-                                       tal:condition="not:file_item/info_firma/success"
-                                       tal:content="file_item/info_firma/message"></p>
-                                  </a>
-                                  <a tal:attributes="href file_item/absolute_url;"
-                                    tal:condition="not:file_item/new_tab"
-                                    class="text-dark">
+                                     class="text-dark">
                                     <tal:omit-tag tal:content="file_item/title"> Doc title</tal:omit-tag>
                                     <p class="mb-0 text-danger-emphasis"
                                        tal:condition="not:file_item/info_firma/success"
@@ -207,18 +197,9 @@
                                   <tal:documents repeat="item files">
                                     <li class="filesinTable w-100 mt-2 d-flex">
                                       <i tal:attributes="class string:${item/classCSS} me-1"></i>
-                                      <a tal:attributes="href item/absolute_url;"
-                                          tal:condition="item/new_tab"
-                                          target="_blank"
-                                          class="text-dark">
-                                        <tal:omit-tag tal:content="item/title"> Doc title</tal:omit-tag>
-                                        <p class="mb-0 text-danger-emphasis"
-                                           tal:condition="not:item/info_firma/success"
-                                           tal:content="item/info_firma/message"></p>
-                                      </a>
-                                      <a tal:attributes="href item/absolute_url;"
-                                          tal:condition="not:item/new_tab"
-                                          class="text-dark">
+                                      <a tal:attributes="href item/absolute_url;
+                                                         target item/target"
+                                         class="text-dark">
                                         <tal:omit-tag tal:content="item/title"> Doc title</tal:omit-tag>
                                         <p class="mb-0 text-danger-emphasis"
                                            tal:condition="not:item/info_firma/success"

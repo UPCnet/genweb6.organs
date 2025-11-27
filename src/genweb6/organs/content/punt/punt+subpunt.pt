@@ -41,7 +41,7 @@
             <a tal:define="title item/title"
                class="text-decoration-none d-flex align-items-baseline"
                tal:attributes="href item/absolute_url;
-                               target item/new_tab_target;
+                               target item/target;
                                title title;
                                alt title">
               <i tal:attributes="class string:${item/classCSS} me-1 d-flex"></i>

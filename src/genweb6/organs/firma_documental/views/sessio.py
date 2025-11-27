@@ -335,7 +335,6 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
                         title=obj.Title,
                         portal_type=obj.portal_type,
                         absolute_url=absolute_url,
-                        new_tab=False,
                         classCSS=classCSS,
                         id=str(item['id']) + '/' + obj.id,
                         uuid=visibility + '-' + str(obj.UID),
