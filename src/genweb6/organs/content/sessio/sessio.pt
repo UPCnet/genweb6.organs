@@ -778,7 +778,7 @@
               <form tal:attributes="action string:${absolute_url}/manualStructureCreation; method string:post; enctype string:multipart/form-data">
                 <div class="mb-3">
                   <label for="form-widgets-message" class="form-label" i18n:translate="">Contingut</label>
-                  <div class="fieldErrorBox" tal:condition="python: False">
+                  <div class="fieldErrorBox" tal:condition="False">
                     <div class="error">Error</div>
                   </div>
                   <textarea class="form-control" name="form.widgets.message" id="form-widgets-message" rows="10"></textarea>
