@@ -45,8 +45,8 @@
          class="btn btn-secondary"
          value="Eliminar"/>
 
-  <div id="form-widgets-select_users-modal" class="modal fade" role="dialog" data-bs-backdrop="static"
-       data-bs-keyboard="false" tabindex="-1" aria-labelledby="select_users-modal-label" aria-hidden="true">
+  <div id="form-widgets-select_users-modal" class="modal fade" role="dialog" tabindex="-1" 
+       aria-labelledby="select_users-modal-label" aria-hidden="true">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
