@@ -91,7 +91,7 @@ class Search(BrowserView):
                 results.append(dict(
                     url=obj.getURL(),  # ← Metadata del brain
                     title=obj.Title,   # ← Metadata del brain
-                    color=getattr(organ, 'eventsColor', '#007bc0'),
+                    color=getattr(organ, 'eventsColor', '#007bc0') or '#007bc0',
                     role=organ_roles))
 
         return results
