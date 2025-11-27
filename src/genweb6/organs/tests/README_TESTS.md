@@ -100,6 +100,18 @@ Esta guía documenta cómo ejecutar los tests de permisos implementados para `ge
     - Flujo completo: Múltiples puntos, acuerdos, documentos y actas
     - 5 tests implementados (4 funcionales + 1 resumen)
 
+20. **test_search_own_organs_regression.py** ⭐ NUEVO - REGRESSION TEST
+    - Test de regresión para bug de roles locales (brain vs objeto)
+    - Verifica que `getOwnOrgans()` en search.py usa objeto real
+    - Prueba usuarios con/sin roles, múltiples órganos, color por defecto
+    - 9 tests funcionales implementados
+
+21. **test_portlet_lamevavinculacio.py** ⭐ NUEVO - REGRESSION TEST
+    - Test de regresión para portlet "La Meva Vinculació"
+    - Verifica consistencia con search.py (mismo patrón brain/objeto)
+    - Verifica optimizaciones (sin doble getObject)
+    - 3 tests de integración implementados
+
 ## 🚀 Comandos de Ejecución
 
 ### Ejecutar TODOS los tests
@@ -200,6 +212,18 @@ cd /Users/pilarmarinas/Development/Plone/organs6.buildout
 ./bin/test -s genweb6.organs -t test_end_to_end_workflow
 ```
 
+#### Tests de Regresión - Roles Locales ⭐ NUEVO
+```bash
+# Test de regresión search.py (9 tests)
+./bin/test -s genweb6.organs -t test_search_own_organs_regression
+
+# Test de regresión portlet (3 tests)
+./bin/test -s genweb6.organs -t test_portlet_lamevavinculacio
+
+# Ejecutar ambos tests de regresión (12 tests)
+./bin/test -s genweb6.organs -t test_search_own_organs_regression -t test_portlet_lamevavinculacio
+```
+
 #### Ejecutar todos los tests ultra-exhaustivos (baja prioridad) ⭐ NUEVO
 ```bash
 # Ejecutar los 3 tests de baja prioridad (Manager, Annex, E2E)
@@ -249,6 +273,10 @@ Los tests incluyen prints informativos con emojis para facilitar el seguimiento:
 - ✓ **Checkmark**: Verificación individual exitosa
 - ⚠️ **Warning**: Advertencia o nota informativa
 - 📊 **Gráfico**: Resumen de permisos
+- 🐛 **Bug**: Test de regresión para prevenir bugs conocidos
+- 🔍 **Lupa**: Verificación de consistencia entre componentes
+- ⚡ **Rayo**: Optimizaciones de performance
+- ℹ️ **Info**: Información de debug
 
 ### Ejemplo de output
 
@@ -266,6 +294,20 @@ Los tests incluyen prints informativos con emojis para facilitar el seguimiento:
   ✓ Verificando acceso permitido en sesión CONVOCADA
   ✓ Acceso permitido en sesión CONVOCADA
   ✓ Verificación completa como OG3-Membre
+
+🐛 REGRESSION TEST: Brain vs Objeto para roles locales
+======================================================================
+  ❌ Probando api.user.get_roles() con BRAIN del catálogo:
+     Roles devueltos: ['Member', 'Authenticated']
+     ✓ Brain NO tiene roles locales (comportamiento esperado)
+
+  ✅ Probando api.user.get_roles() con OBJETO REAL:
+     Roles devueltos: ['OG1-Secretari', 'Member', 'Authenticated']
+     ✓ Objeto real SÍ tiene roles locales (correcto)
+     ✓ getOwnOrgans() usa objeto real correctamente
+
+  ✅ REGRESSION TEST PASADO: Bug de brain vs objeto no ocurre
+======================================================================
 ```
 
 ## 🔍 Debugging
@@ -447,9 +489,9 @@ directory = coverage_report
 
 ## 📊 Resumen de Tests Implementados
 
-**Total: 19/19 archivos de test (100%)**
+**Total: 21/21 archivos de test (100%)**
 
-**107 tests funcionales en total**:
+**119 tests funcionales en total**:
 - ✅ 8 tests - Pestañas del órgano
 - ✅ 22 tests - Acciones sobre sesiones por estado
 - ✅ 12 tests - Acciones sobre el órgano
@@ -457,14 +499,41 @@ directory = coverage_report
 - ✅ 12 tests - Sistema de quorum
 - ✅ 9 tests - Acciones sobre actas
 - ✅ 13 tests - Document/Fitxer en Punts
-- ✅ 8 tests - Permisos CRWDE (5 estados de workflow) ⭐ +2 tests nuevos
-- ✅ 7 tests - Permisos Manager (6 funcionales + 1 resumen) ⭐ NUEVO
-- ✅ 6 tests - Estructura Annex (5 funcionales + 1 resumen) ⭐ NUEVO
-- ✅ 5 tests - Flujos End-to-End (4 funcionales + 1 resumen) ⭐ NUEVO
+- ✅ 8 tests - Permisos CRWDE (5 estados de workflow)
+- ✅ 7 tests - Permisos Manager (6 funcionales + 1 resumen)
+- ✅ 6 tests - Estructura Annex (5 funcionales + 1 resumen)
+- ✅ 5 tests - Flujos End-to-End (4 funcionales + 1 resumen)
+- ✅ 9 tests - Regresión search.py (brain vs objeto) ⭐ NUEVO
+- ✅ 3 tests - Regresión portlet La Meva Vinculació ⭐ NUEVO
 - ✅ Tests adicionales para tipos de órganos y otros casos
 
 **Estado**: ✅ 0 failures, 0 errors
 **Cobertura**: ✅ 100% ULTRA-EXHAUSTIVA de tablas de permisos documentadas
+
+### 🐛 Tests de Regresión (Brain vs Objeto)
+
+Los nuevos tests de regresión previenen un bug crítico donde `api.user.get_roles()`
+no devolvía roles locales al pasarle un brain del catálogo en lugar del objeto real.
+
+**📚 Documentación técnica completa**: Ver [`docs/BUGFIX_2025-11-27_LOCAL_ROLES.md`](../../docs/BUGFIX_2025-11-27_LOCAL_ROLES.md) para:
+- Explicación detallada del problema (código incorrecto vs correcto)
+- Debugging paso a paso con ipdb
+- Verificación manual con comandos shell
+- Conceptos técnicos (brain vs objeto, por qué roles no están en metadata)
+- Lecciones aprendidas
+
+**Archivos afectados**:
+- `search.py::getOwnOrgans()` - Vista de búsqueda
+- `portlet/lamevavinculacio.py::getOwnOrgans()` - Portlet de vinculación
+
+**Bug**: Los roles locales (`__ac_local_roles__`) NO están en metadata del catálogo.
+**Solución**: Siempre hacer `organ = obj._unrestrictedGetObject()` antes de
+llamar `api.user.get_roles(obj=organ)`.
+
+**Optimizaciones**:
+- ✅ Usar metadata del brain (`obj.getURL()`, `obj.Title`) cuando sea posible
+- ✅ Solo leer del objeto real lo que NO está en metadata (`eventsColor`, roles)
+- ✅ Protección doble contra `None`: `getattr(..., default) or default`
 
 ### 🎯 Tests de Quorum
 
@@ -483,7 +552,8 @@ El test de quorum (`test_quorum.py`) verifica 3 permisos específicos:
 
 ---
 
-**Última actualización**: Noviembre 2025
+**Última actualización**: 27 Noviembre 2025
 **Versión de Plone**: 6.0.11
-**Tests implementados**: 19/19 (100%) ✅
-**Total tests funcionales**: 107 (0 failures, 0 errors) ✅
+**Tests implementados**: 21/21 (100%) ✅
+**Total tests funcionales**: 119 (0 failures, 0 errors) ✅
+**Bugfix**: ⭐ Bug de roles locales (brain vs objeto) - 12 tests de regresión añadidos

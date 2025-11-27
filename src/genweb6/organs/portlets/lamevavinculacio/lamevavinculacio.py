@@ -45,15 +45,20 @@ class Renderer(base.Renderer):
             username = api.user.get_current().id
 
             for obj in values:
+                # NOTE: No se puede optimizar más - api.user.get_roles() necesita
+                # el objeto real para leer roles locales (no están en metadata)
                 organ = obj._unrestrictedGetObject()
+
                 all_roles = api.user.get_roles(username=username, obj=organ)
-                roles = [o for o in all_roles if o in ['OG1-Secretari',
-                                                       'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat']]
+                roles = [o for o in all_roles if o in [
+                    'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
+                    'OG4-Afectat', 'OG5-Convidat']]
+
                 if roles:
                     results.append(dict(
-                        url=obj.getObject().absolute_url(),
-                        title=obj.Title,
-                        color=organ.eventsColor,
+                        url=obj.getURL(),  # ← Metadata del brain (no doble getObject)
+                        title=obj.Title,   # ← Metadata del brain
+                        color=getattr(organ, 'eventsColor', '#007bc0') or '#007bc0',
                         role=roles))
 
             return results

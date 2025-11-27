@@ -13,7 +13,8 @@
           <tal:omit-tag tal:content="role" i18n:translate="">Secretari </tal:omit-tag>
         </span>
       </tal:roles>
-      <span tal:attributes="style string:background-color:${organ/color};">&nbsp;</span>
+      <span tal:attributes="style string:background-color:${organ/color};"
+            tal:condition="organ/color">&nbsp;</span>
       <span class="icon-genweb-organs-organgovern"></span>
       <a tal:attributes="href organ/url;" class="fw-bold text-decoration-none ms-2">
         <tal:event content="organ/title"> Organ Title </tal:event>
