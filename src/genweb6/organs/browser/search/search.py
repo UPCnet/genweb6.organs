@@ -78,22 +78,19 @@ class Search(BrowserView):
 
         results = []
         for obj in values:
-            # OPTIMIZATION: get_roles() es costoso, hacerlo solo cuando necesario
-            # Primero verificar si el usuario tiene algún rol local en este objeto
-            all_roles = api.user.get_roles(username=username, obj=obj)
+            # NOTE: No se puede optimizar más - api.user.get_roles() necesita
+            # el objeto real para leer roles locales (no están en metadata)
+            organ = obj._unrestrictedGetObject()
+
+            all_roles = api.user.get_roles(username=username, obj=organ)
             organ_roles = [r for r in all_roles if r in [
                 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
                 'OG4-Afectat', 'OG5-Convidat']]
 
-            # Solo si tiene roles de órgano, hacer getObject() para color
             if organ_roles:
-                # OPTIMIZATION: Solo getObject() para obtener eventsColor
-                # (no está en metadata del catálogo)
-                organ = obj._unrestrictedGetObject()
-
                 results.append(dict(
-                    url=obj.getURL(),  # ← Metadata
-                    title=obj.Title,   # ← Metadata
+                    url=obj.getURL(),  # ← Metadata del brain
+                    title=obj.Title,   # ← Metadata del brain
                     color=getattr(organ, 'eventsColor', '#007bc0'),
                     role=organ_roles))
 
