@@ -167,7 +167,6 @@ class Presentation(BrowserView):
             visibleRaw = None
             hiddenRaw = None
             hasPublic = hasPrivate = isGODocument = isGOFile = file = raw_content = listFile = False
-            visibleUrl = obj._unrestrictedGetObject().absolute_url()
             anonymous = api.user.is_anonymous()
             file = obj._unrestrictedGetObject()
             if anonymous:
@@ -316,6 +315,7 @@ class Presentation(BrowserView):
                                     publicRaw=visibleRaw,
                                     reservedRaw=hiddenRaw,
                                     id=obj.id))
+
         return results
 
     def getSessionTitle(self):
