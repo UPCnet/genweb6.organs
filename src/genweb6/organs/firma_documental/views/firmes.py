@@ -284,11 +284,11 @@ class SignActa(BrowserView, FirmesMixin):
         pdfkit.from_url(
             self.context.absolute_url() + '/printActa', TMP_FOLDER + '/' + self.context.id +
             '.pdf', options=options, verbose=True)
-        return open(TMP_FOLDER + self.context.id + '.pdf', 'rb')
+        return open(TMP_FOLDER + '/' +self.context.id + '.pdf', 'rb')
 
     def removeActaPDF(self):
         try:
-            os.remove(TMP_FOLDER + self.context.id + '.pdf')
+            os.remove(TMP_FOLDER + '/' + self.context.id + '.pdf')
         except Exception:
             pass
 
@@ -298,13 +298,13 @@ class SignActa(BrowserView, FirmesMixin):
         _filename = filename.replace('/', ' ')
         pdfkit.from_url(
             document.absolute_url() + '/printDocument?visibility=' + visibility,
-            TMP_FOLDER + _filename, options=options, verbose=True)
-        return open(TMP_FOLDER + _filename, 'rb')
+            TMP_FOLDER + '/' + _filename, options=options, verbose=True)
+        return open(TMP_FOLDER + '/' + _filename, 'rb')
 
     def removeDocumentPDF(self, filename):
         _filename = filename.replace('/', ' ')
         try:
-            os.remove(TMP_FOLDER + _filename)
+            os.remove(TMP_FOLDER + '/' + _filename)
         except Exception:
             pass
 
@@ -444,7 +444,7 @@ class SignActa(BrowserView, FirmesMixin):
                 is_acta=True
             )
             self.context.info_firma['acta'].update({
-                'sizeKB': os.path.getsize(TMP_FOLDER + self.context.id + '.pdf') / 1024
+                'sizeKB': os.path.getsize(TMP_FOLDER + '/' + self.context.id + '.pdf') / 1024
             })
 
             logger.info('5. Puja dels fitxers adjunts al gDOC')
