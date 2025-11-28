@@ -93,54 +93,14 @@ class View(BrowserView):
             return True
 
         organ_tipus = self.context.organType
-
-        if self.context.defaultContent and self.context.alternateContent:
-            if organ_tipus == 'open_organ':
-                if utils.checkhasRol(['OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'], roles):
-                    return False
-                else:
-                    return True
-            elif organ_tipus == 'restricted_to_members_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
-                    return True
-                else:
-                    return False
-            elif organ_tipus == 'restricted_to_affected_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG4-Afectat'], roles):
-                    return True
-                else:
-                    return False
-        elif self.context.alternateContent:
-            if organ_tipus == 'open_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'], roles):
-                    return True
-                else:
-                    return False
-            elif organ_tipus == 'restricted_to_members_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
-                    return True
-                else:
-                    return False
-            elif organ_tipus == 'restricted_to_affected_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
-                    return True
-                else:
-                    return False
-        elif self.context.defaultContent:
-            if organ_tipus == 'open_organ':
-                return True
-            elif organ_tipus == 'restricted_to_members_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
-                    return True
-                else:
-                    return False
-            elif organ_tipus == 'restricted_to_affected_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'], roles):
-                    return True
-                else:
-                    return False
-        else:
-            raise Unauthorized
+        if organ_tipus == 'open_organ':
+            return True
+        elif organ_tipus == 'restricted_to_members_organ':
+            return utils.checkhasRol(
+                ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles)
+        elif organ_tipus == 'restricted_to_affected_organ':
+            return utils.checkhasRol(
+                ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'], roles)
 
     def viewDocumentReserved(self):
         """ Cuando se muestra la parte privada del documento
@@ -150,44 +110,14 @@ class View(BrowserView):
             return True
 
         organ_tipus = self.context.organType
-
-        if self.context.defaultContent and self.context.alternateContent:
-            if organ_tipus == 'open_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'], roles):
-                    return True
-                else:
-                    return False
-            elif organ_tipus == 'restricted_to_members_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
-                    return True
-                else:
-                    return False
-            elif organ_tipus == 'restricted_to_affected_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
-                    return True
-                else:
-                    return False
-        elif self.context.alternateContent:
-            if organ_tipus == 'open_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'], roles):
-                    return True
-                else:
-                    return False
-            elif organ_tipus == 'restricted_to_members_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
-                    return True
-                else:
-                    return False
-            elif organ_tipus == 'restricted_to_affected_organ':
-                if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
-                    return True
-                else:
-                    return False
-        elif self.context.defaultContent:
-            if organ_tipus == 'open_organ':
-                    return True
-        else:
-            raise Unauthorized
+        if organ_tipus == 'open_organ':
+            return True
+        elif organ_tipus == 'restricted_to_members_organ':
+            return utils.checkhasRol(
+                ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles)
+        elif organ_tipus == 'restricted_to_affected_organ':
+            return utils.checkhasRol(
+                ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles)
 
     def canView(self):
         # Permissions to view DOCUMENT
