@@ -392,105 +392,106 @@ table.table-bordered thead th {
   div.sessionCustomActions,
   .template-printacta #content-header,
   .template-printdocument #content-header,
-  .template-printdocument #portal-footer-wrapper {
+  .template-printdocument #portal-footer-wrapper,
+  #usercentrics-root {
     display: none !important;
   }
 
-  /* line 56, ../scss/_print.scss */
+  /* line 57, ../scss/_print.scss */
   #portal-column-content {
     margin: 0 !important;
     width: 100% !important;
   }
 
-  /* line 61, ../scss/_print.scss */
+  /* line 62, ../scss/_print.scss */
   #peu .col-md-8 {
     width: 100% !important;
   }
 
-  /* line 65, ../scss/_print.scss */
+  /* line 66, ../scss/_print.scss */
   div.pageBreak {
     page-break-before: always !important;
   }
 
-  /* line 69, ../scss/_print.scss */
+  /* line 70, ../scss/_print.scss */
   #portal-breadcrumbs {
     display: inline !important;
   }
 
-  /* line 73, ../scss/_print.scss */
+  /* line 74, ../scss/_print.scss */
   a {
     text-decoration: underline;
     color: black;
   }
-  /* line 77, ../scss/_print.scss */
+  /* line 78, ../scss/_print.scss */
   a:hover {
     text-decoration: none;
   }
 
-  /* line 82, ../scss/_print.scss */
+  /* line 83, ../scss/_print.scss */
   .plain a {
     color: #555555;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.8rem;
   }
 
-  /* line 88, ../scss/_print.scss */
+  /* line 89, ../scss/_print.scss */
   h2,
   h3 {
     color: #557C95;
   }
 
-  /* line 93, ../scss/_print.scss */
+  /* line 94, ../scss/_print.scss */
   h1 {
     font-size: 1.6rem !important;
     margin-top: 0px !important;
   }
 
-  /* line 98, ../scss/_print.scss */
+  /* line 99, ../scss/_print.scss */
   h2 {
     font-size: 1.4rem !important;
     margin-bottom: 0.8rem !important;
   }
 
-  /* line 103, ../scss/_print.scss */
+  /* line 104, ../scss/_print.scss */
   h3 {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1.3rem !important;
   }
 
-  /* line 108, ../scss/_print.scss */
+  /* line 109, ../scss/_print.scss */
   h4 {
     font-size: 1.2rem !important;
   }
 
-  /* line 112, ../scss/_print.scss */
+  /* line 113, ../scss/_print.scss */
   h3,
   h4 {
     margin-bottom: 0.5rem !important;
   }
 
-  /* line 117, ../scss/_print.scss */
+  /* line 118, ../scss/_print.scss */
   hr {
     margin: .5rem 0 !important;
   }
 
-  /* line 121, ../scss/_print.scss */
+  /* line 122, ../scss/_print.scss */
   p {
     margin: 0 0 6px !important;
   }
 
-  /* line 125, ../scss/_print.scss */
+  /* line 126, ../scss/_print.scss */
   .h4Print {
     color: #557C95;
   }
 
-  /* line 129, ../scss/_print.scss */
+  /* line 130, ../scss/_print.scss */
   .caixa {
     width: 9cm;
     vertical-align: top;
   }
 
-  /* line 134, ../scss/_print.scss */
+  /* line 135, ../scss/_print.scss */
   table,
   p,
   strong,
@@ -502,36 +503,36 @@ table.table-bordered thead th {
     line-height: 120% !important;
   }
 
-  /* line 147, ../scss/_print.scss */
+  /* line 148, ../scss/_print.scss */
   table * {
     font-size: var(--gw-font-size-xxs) !important;
   }
-  /* line 151, ../scss/_print.scss */
+  /* line 152, ../scss/_print.scss */
   table td,
   table th {
     padding: .15rem .3rem !important;
   }
-  /* line 156, ../scss/_print.scss */
+  /* line 157, ../scss/_print.scss */
   table thead {
     border-bottom: 5px solid var(--bs-primary) !important;
   }
-  /* line 162, ../scss/_print.scss */
+  /* line 163, ../scss/_print.scss */
   table tbody > tr {
     height: auto !important;
   }
 
-  /* line 168, ../scss/_print.scss */
+  /* line 169, ../scss/_print.scss */
   #portal-header,
   #portal-footer-wrapper {
     border: 0px;
   }
 
-  /* line 173, ../scss/_print.scss */
+  /* line 174, ../scss/_print.scss */
   section#content-area {
     margin-top: 0px;
   }
 
-  /* line 177, ../scss/_print.scss */
+  /* line 178, ../scss/_print.scss */
   .h2butlleti {
     line-height: inherit;
   }
