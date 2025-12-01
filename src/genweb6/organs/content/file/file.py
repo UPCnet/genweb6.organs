@@ -249,7 +249,6 @@ class View(BrowserView):
 
         return 'file-earmark'
 
-
     def hihaReserved(self):
         file = getattr(self.context, 'hiddenfile', None)
         if file is not None:

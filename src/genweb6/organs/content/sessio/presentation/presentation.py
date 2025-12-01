@@ -223,7 +223,6 @@ class Presentation(BrowserView):
                 if obj.portal_type == 'genweb.organs.file':
                     # Tractem els files i fiquem colors...
                     isGOFile = True
-                    raw_content = None
                     abs_path = file.absolute_url_path()
                     roles = api.user.get_roles(username=username, obj=self.context)
                     classCSS = 'bi bi-file-earmark-pdf'
