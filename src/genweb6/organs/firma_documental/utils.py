@@ -93,8 +93,10 @@ class UtilsFirmaDocumental():
 def estatFirmaActa(acta):
     estats_map = {
         "pendent": "Enviada i pendent de signatura",
+        "pendent_signants": "Enviada i pendent de signatura",
         "signada": "Desada i signada",
         "rebutjada": "Signatura rebutjada",
+        "cancelat": "Signatura cancel·lada",
     }
     estat_firma = getattr(acta, 'estat_firma', None)
     if estat_firma:

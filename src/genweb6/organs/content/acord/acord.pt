@@ -33,7 +33,7 @@
     <!-- Firma (si aplica) -->
     <div class="mb-3" tal:condition="view/hasFirma">
       <span tal:define="estatFirma view/estatFirma"
-            tal:attributes="class string:py-2 px-3 rounded-pill rounded-pill text-bg-${estatFirma} fw-bold fs-xs"
+            tal:attributes="class string:py-2 px-3 rounded-pill rounded-pill estat-firma text-bg-${estatFirma} fw-bold fs-xs"
             tal:content="estatFirma">PENDENT_SIGNANTS</span>
     </div>
 
