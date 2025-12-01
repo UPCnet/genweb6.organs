@@ -521,13 +521,13 @@
     </div>
   </div>
 
-  <script type="text/javascript"
+  <script defer
           src="++theme++genweb6.organs/js/content/sessio.min.js"></script>
 
-  <script type="text/javascript"
+  <script defer
           src="++theme++genweb6.organs/js/content/acta.min.js"></script>
 
-  <script type="text/javascript"
+  <script defer
           src="++theme++genweb6.organs/js/content/sign_sessio.min.js"></script>
 
 </tal:main-macro>

@@ -349,13 +349,13 @@
 
   </div>
 
-  <script type="text/javascript"
+  <script defer
           src="++theme++genweb6.organs/js/content/sessio.min.js"></script>
 
-  <script type="text/javascript"
+  <script defer
           src="++theme++genweb6.organs/js/content/presentation.min.js"></script>
 
-  <script type="text/javascript"
+  <script defer
           src="++theme++genweb6.organs/js/content/presentation_modify.min.js"
           tal:condition="changeEstat"></script>
 

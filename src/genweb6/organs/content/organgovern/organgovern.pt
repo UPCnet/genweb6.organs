@@ -163,9 +163,9 @@
                 </div>
               </div>
             </div>
-          </div>    
+          </div>
         </tal:block>
-        
+
         <div class="panel with-nav-tabs panel-primary mt-3" tal:condition="not:multipleTab">
           <div tal:condition="membresOrgan" tal:attributes="class string:tab-pane fade${activeClassMembresTab}" id="tab1primary-tab-panel" aria-labelledby="tab1primary-tab" tabindex="0">
             <div class="card mt-3">
@@ -179,7 +179,7 @@
               <div class="card-body">
                 <span tal:replace="structure convidatsPermanentsOrgan/output"></span>
               </div>
-            </div>          
+            </div>
           </div>
         </div>
       </div>
@@ -249,7 +249,7 @@
     </div>
   </div>
 
-  <script type="text/javascript" src="++theme++genweb6.organs/js/content/organgovern.min.js" ></script>
+  <script defer src="++theme++genweb6.organs/js/content/organgovern.min.js" ></script>
 
 </metal:content-core>
 

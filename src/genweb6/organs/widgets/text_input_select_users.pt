@@ -45,7 +45,7 @@
          class="btn btn-secondary"
          value="Eliminar"/>
 
-  <div id="form-widgets-select_users-modal" class="modal fade" role="dialog" tabindex="-1" 
+  <div id="form-widgets-select_users-modal" class="modal fade" role="dialog" tabindex="-1"
        aria-labelledby="select_users-modal-label" aria-hidden="true">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
@@ -88,6 +88,6 @@
     </div>
   </div>
 
-  <script type="text/javascript" src="++theme++genweb6.organs/js/widgets/text_input_select_users.min.js"></script>
+  <script defer src="++theme++genweb6.organs/js/widgets/text_input_select_users.min.js"></script>
 
 </html>

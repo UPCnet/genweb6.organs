@@ -224,7 +224,7 @@
       </form>
     </section>
 
-    <script type="text/javascript" src="++theme++genweb6.organs/js/views/search.min.js"></script>
+    <script defer src="++theme++genweb6.organs/js/views/search.min.js"></script>
 
     <tal:banners>
       <div class="row">

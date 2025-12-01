@@ -1565,29 +1565,29 @@ P Conclusions</code>
       </div>
     </div>
 
-    <script type="text/javascript"
+    <script defer
             src="++theme++genweb6.organs/js/jquery-ui.min.js"></script>
 
-    <script type="text/javascript"
+    <script defer
             src="++theme++genweb6.organs/js/content/sessio.min.js"></script>
 
-    <script type="text/javascript"
+    <script defer
             src="++theme++genweb6.organs/js/content/sessio_modify.min.js"
             tal:condition="canModify"></script>
 
-    <script type="text/javascript"
+    <script defer
             src="++theme++genweb6.organs/js/content/sessio_quorum_manage.min.js"
             tal:condition="canViewManageQuorumButtons"></script>
 
-    <script type="text/javascript"
+    <script defer
             src="++theme++genweb6.organs/js/content/sessio_quorum_add.min.js"
             tal:condition="canViewAddQuorumButtons"></script>
 
-    <script type="text/javascript"
+    <script defer
             src="++theme++genweb6.organs/js/content/sessio_vote_manage.min.js"
             tal:condition="canViewManageVote"></script>
 
-    <script type="text/javascript"
+    <script defer
             src="++theme++genweb6.organs/js/content/sessio_vote_view.min.js"
             tal:condition="canViewVoteButtons"></script>
 
