@@ -47,7 +47,7 @@
 
     <!-- Purge Varnish cache on content creation/modification -->
     <!-- OrganGovern -->
-    <subscriber
+    <!-- <subscriber
         for="genweb6.organs.content.organgovern.organgovern.IOrgangovern
              zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
@@ -56,10 +56,10 @@
         for="genweb6.organs.content.organgovern.organgovern.IOrgangovern
              zope.lifecycleevent.interfaces.IObjectModifiedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
-    />
+    /> -->
 
     <!-- OrgansFolder -->
-    <subscriber
+    <!-- <subscriber
         for="genweb6.organs.content.organsfolder.organsfolder.IOrgansfolder
              zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
@@ -68,10 +68,10 @@
         for="genweb6.organs.content.organsfolder.organsfolder.IOrgansfolder
              zope.lifecycleevent.interfaces.IObjectModifiedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
-    />
+    /> -->
 
     <!-- Sessio -->
-    <subscriber
+    <!-- <subscriber
         for="genweb6.organs.content.sessio.sessio.ISessio
              zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
@@ -80,10 +80,10 @@
         for="genweb6.organs.content.sessio.sessio.ISessio
              zope.lifecycleevent.interfaces.IObjectModifiedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
-    />
+    /> -->
 
     <!-- Acta -->
-    <subscriber
+    <!-- <subscriber
         for="genweb6.organs.content.acta.acta.IActa
              zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
@@ -92,10 +92,10 @@
         for="genweb6.organs.content.acta.acta.IActa
              zope.lifecycleevent.interfaces.IObjectModifiedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
-    />
+    /> -->
 
     <!-- Punt -->
-    <subscriber
+    <!-- <subscriber
         for="genweb6.organs.content.punt.punt.IPunt
              zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
@@ -104,10 +104,10 @@
         for="genweb6.organs.content.punt.punt.IPunt
              zope.lifecycleevent.interfaces.IObjectModifiedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
-    />
+    /> -->
 
     <!-- SubPunt -->
-    <subscriber
+    <!-- <subscriber
         for="genweb6.organs.content.punt.subpunt.ISubpunt
              zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
@@ -116,10 +116,10 @@
         for="genweb6.organs.content.punt.subpunt.ISubpunt
              zope.lifecycleevent.interfaces.IObjectModifiedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
-    />
+    /> -->
 
     <!-- Acord -->
-    <subscriber
+    <!-- <subscriber
         for="genweb6.organs.content.acord.acord.IAcord
              zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
@@ -128,10 +128,10 @@
         for="genweb6.organs.content.acord.acord.IAcord
              zope.lifecycleevent.interfaces.IObjectModifiedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
-    />
+    /> -->
 
     <!-- File -->
-    <subscriber
+    <!-- <subscriber
         for="genweb6.organs.content.file.file.IFile
              zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
@@ -140,10 +140,10 @@
         for="genweb6.organs.content.file.file.IFile
              zope.lifecycleevent.interfaces.IObjectModifiedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
-    />
+    /> -->
 
     <!-- Annex -->
-    <subscriber
+    <!-- <subscriber
         for="genweb6.organs.content.annex.annex.IAnnex
              zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
@@ -152,10 +152,10 @@
         for="genweb6.organs.content.annex.annex.IAnnex
              zope.lifecycleevent.interfaces.IObjectModifiedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
-    />
+    /> -->
 
     <!-- Document -->
-    <subscriber
+    <!-- <subscriber
         for="genweb6.organs.content.document.document.IDocument
              zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
@@ -164,10 +164,10 @@
         for="genweb6.organs.content.document.document.IDocument
              zope.lifecycleevent.interfaces.IObjectModifiedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
-    />
+    /> -->
 
     <!-- Audio -->
-    <subscriber
+    <!-- <subscriber
         for="genweb6.organs.content.audio.audio.IAudio
              zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
@@ -176,10 +176,10 @@
         for="genweb6.organs.content.audio.audio.IAudio
              zope.lifecycleevent.interfaces.IObjectModifiedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
-    />
+    /> -->
 
     <!-- VotacioAcord -->
-    <subscriber
+    <!-- <subscriber
         for="genweb6.organs.content.votacio_acord.votacio_acord.IVotacioAcord
              zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
@@ -188,7 +188,7 @@
         for="genweb6.organs.content.votacio_acord.votacio_acord.IVotacioAcord
              zope.lifecycleevent.interfaces.IObjectModifiedEvent"
         handler=".subscribers.purge_cache_varnish_organs"
-    />
+    /> -->
 
     <!-- FIN Purge Varnish cache on content creation/modification -->
 
