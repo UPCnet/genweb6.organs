@@ -402,6 +402,9 @@ class View(BrowserView):
         return value
 
     def showPresentacionButton(self):
+        if self.context.unitatDocumental:
+            return False
+
         estatSessio = utils.session_wf_state(self)
         # OPTIMIZATION: Reutilizar roles cacheados
         roles = getattr(self, '_cached_roles', None)

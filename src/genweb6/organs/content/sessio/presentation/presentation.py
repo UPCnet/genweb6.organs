@@ -455,6 +455,9 @@ class Presentation(BrowserView):
     def canView(self):
         # Permissions to view acords based on ODT definition file
         # TODO: add if is obert /restricted to ...
+        if self.context.unitatDocumental:
+            raise Unauthorized
+
         estatSessio = utils.session_wf_state(self)
         roles = utils.getUserRoles(self, self.context, api.user.get_current().id)
         if 'Manager' in roles:
