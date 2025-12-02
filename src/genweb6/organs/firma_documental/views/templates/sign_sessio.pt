@@ -262,17 +262,24 @@
 
               <tal:block tal:condition="not:hasFirma">
                 <a id="previewActaBtn" class="btn btn-outline-secondary me-3"
-                  tal:attributes="data-url string:${absolute_url}/previewActa"
-                  href="#">
+                   tal:attributes="data-url string:${absolute_url}/previewActa"
+                   href="#">
                   <i class="bi bi-eye"></i> <span i18n:translate="">Previsualitza</span>
                 </a>
 
                 <button id="signActa" class="btn btn-primary btnActa"
-                  tal:condition="checkSerieGDoc/valid_serie"
-                  tal:attributes="data-sign-url string:${acta/absolute_url}/signActa">
-                    <i class="bi bi-arrow-right"></i>&nbsp;<span i18n:translate="">Enviar acta a signar</span>
+                        tal:condition="checkSerieGDoc/valid_serie"
+                        tal:attributes="data-sign-url string:${acta/absolute_url}/signActa">
+                  <i class="bi bi-arrow-right"></i>&nbsp;<span i18n:translate="">Enviar acta a signar</span>
                 </button>
               </tal:block>
+
+              <!-- Botón Cancel·lar signatura -->
+              <button id="cancelSignatura" class="btn btn-secondary btnActa ms-3"
+                      tal:condition="actaData/canCancelSignatura"
+                      tal:attributes="data-cancel-url string:${acta/absolute_url}/cancelFirm">
+                <i class="bi bi-x-circle"></i>&nbsp;<span i18n:translate="">Cancel·lar signatura</span>
+              </button>
 
             </tal:block>
 

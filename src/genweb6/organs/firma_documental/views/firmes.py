@@ -688,3 +688,154 @@ class ResetFirm(BrowserView):
         transaction.commit()
         purge_cache_varnish(self)
         return self.request.response.redirect(self.context.absolute_url())
+
+
+class CancelFirm(BrowserView, FirmesMixin):
+    """
+    Vista para cancelar la signatura de un acta.
+    
+    Proceso:
+    1. Verifica que el acta está enviada a firmar
+    2. Verifica que la sesión está en estado "en_correccio" (En modificació)
+    3. Cancela la petición en Portafirmes
+    4. Invalida el CSV para evitar copias autenticadas
+    5. Resetea el estado del acta y documentos asociados
+    """
+    error_to_msg_map = {
+        'cancelPeticioPortafirmes': {
+            'console_log': 'ERROR. Cancel·lació de la petició de signatura al Portafirmes.',
+            'portal_msg': _(u'Portafirmes: No s\'ha pogut cancel·lar la petició de signatura: Contacta amb algun administrador de la web perquè revisi la configuració.')
+        },
+        'invalidaCopiaAutentica': {
+            'console_log': 'ERROR. Invalidació de la copia autèntica (CSV).',
+            'portal_msg': _(u'No s\'ha pogut invalidar la copia autèntica: Contacta amb algun administrador de la web perquè revisi la configuració.')
+        }
+    }
+
+    def __call__(self):
+        """
+        Ejecuta el proceso de cancelación de signatura.
+        
+        Casos manejados:
+        - Cas 1: Acta no signada encara
+        - Cas 2: Acta signada parcialment
+        - Cas 3: Acta totalment signada
+        
+        En todos los casos se:
+        - Cancela la petición en Portafirmes
+        - Invalida el CSV
+        - Resetea el estado interno
+        """
+        # Verificar que el acta está enviada a firmar
+        if not isinstance(self.context.info_firma, dict):
+            self.context.info_firma = ast.literal_eval(self.context.info_firma)
+
+        if not self.context.info_firma or not self.context.info_firma.get('enviatASignar', False):
+            self.context.plone_utils.addPortalMessage(
+                _(u'L\'acta no s\'ha enviat a signar'), 'error')
+            return self.request.response.redirect(self.context.absolute_url())
+
+        # Verificar que la sesión está en estado "en_correccio" (En modificació)
+        sessio = utils.get_session(self.context)
+        review_state = api.content.get_state(sessio)
+        if review_state != 'en_correccio':
+            self.context.plone_utils.addPortalMessage(
+                _(u'Només es pot cancel·lar la signatura quan la sessió està en estat "En modificació"'), 'error')
+            return self.request.response.redirect(self.context.absolute_url())
+
+        organ = utils.get_organ(self.context)
+        if not organ.visiblegdoc:
+            self.context.plone_utils.addPortalMessage(
+                _(u'gDOC no està configurat per aquest òrgan'), 'error')
+            return self.request.response.redirect(self.context.absolute_url())
+
+        client = ClientFirma()
+        cancel_step = ""
+
+        try:
+            # Paso 1: Cancelar la petición en Portafirmes
+            if hasattr(self.context, 'id_firma') and self.context.id_firma:
+                cancel_step = "cancelPeticioPortafirmes"
+                logger.info('1. Cancel·lació de la petició de signatura al Portafirmes (ID: %s)',
+                            self.context.id_firma)
+                client.cancelPeticioPortafirmes(self.context.id_firma)
+                logger.info('1.1. S\'ha cancel·lat correctament la petició al Portafirmes')
+            else:
+                logger.warning('No s\'ha trobat id_firma per cancel·lar al Portafirmes')
+
+            # Paso 2: Invalidar el CSV (copia auténtica)
+            # Intentamos invalidar usando el ID del documento del acta
+            if self.context.info_firma.get('acta', {}).get('id'):
+                cancel_step = "invalidaCopiaAutentica"
+                logger.info('2. Invalidació de la copia autèntica (CSV) per al document %s',
+                            self.context.info_firma['acta']['id'])
+                try:
+                    client.invalidaCopiaAutentica(id_document=self.context.info_firma['acta']['id'])
+                    logger.info('2.1. S\'ha invalidat correctament la copia autèntica')
+                except Exception as e:
+                    # Si falla, intentamos con el UUID
+                    logger.warning('Error al invalidar CSV amb ID document, intentant amb UUID: %s', str(e))
+                    if self.context.info_firma.get('acta', {}).get('uuid'):
+                        try:
+                            # Algunos servicios pueden aceptar UUID directamente
+                            client.invalidaCopiaAutentica(id_document=self.context.info_firma['acta']['uuid'])
+                            logger.info('2.1. S\'ha invalidat correctament la copia autèntica (amb UUID)')
+                        except Exception as e2:
+                            logger.warning('No s\'ha pogut invalidar el CSV: %s', str(e2))
+            else:
+                logger.warning('No s\'ha trobat ID del document per invalidar el CSV')
+
+            # Paso 3: Resetear el estado del acta y documentos asociados
+            logger.info('3. Reset del estat de l\'acta i documents associats')
+            
+            # Resetear el acta
+            self.context.info_firma['enviatASignar'] = False
+            if hasattr(self.context, 'id_firma'):
+                self.context.id_firma = ''
+            if hasattr(self.context, 'estat_firma'):
+                self.context.estat_firma = ''
+            self.context.reindexObject()
+
+            # Resetear documentos asociados (files de la sesión)
+            portal_catalog = api.portal.get_tool(name='portal_catalog')
+            folder_path = '/'.join(sessio.getPhysicalPath())
+            files_sessio = portal_catalog.unrestrictedSearchResults(
+                portal_type=['genweb.organs.file'],
+                path={'query': folder_path, 'depth': 3}
+            )
+
+            for brain in files_sessio:
+                file_obj = brain.getObject()
+                if hasattr(file_obj, 'info_firma') and file_obj.info_firma:
+                    if not isinstance(file_obj.info_firma, dict):
+                        try:
+                            file_obj.info_firma = ast.literal_eval(file_obj.info_firma)
+                        except:
+                            continue
+                    # No eliminamos completamente info_firma, solo marcamos como no enviado
+                    # para mantener la información de upload si existe
+                    file_obj.reindexObject()
+
+            logger.info('3.1. S\'ha resetejat correctament l\'estat de l\'acta i documents')
+
+            self.context.plone_utils.addPortalMessage(
+                _(u'S\'ha cancel·lat la signatura correctament. Ara pots modificar l\'acta i tornar-la a enviar a signar.'), 'success')
+            
+            utils.addEntryLog(sessio, None,
+                              _(u'Cancel·lació de signatura de l\'acta'),
+                              self.context.absolute_url())
+            
+            transaction.commit()
+            purge_cache_varnish(self)
+
+        except Exception as e:
+            error = self.printError(cancel_step, e)
+            logger.error('Error al cancel·lar la signatura en %s: %s',
+                         self.context.absolute_url(), str(e))
+            logger.error(traceback.format_exc())
+            if error == "Error":
+                self.context.plone_utils.addPortalMessage(
+                    _(u'Error al cancel·lar la signatura: Contacta amb algun administrador de la web perquè revisi la configuració.'), 'error')
+            transaction.commit()
+
+        return self.request.response.redirect(self.context.absolute_url())

@@ -117,4 +117,12 @@
     layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
     permission="genweb.organs.firmadocumental.sign" />
 
+  <browser:page
+    name="cancelFirm"
+    for="genweb6.organs.content.acta.acta.IActa"
+    class=".firmes.CancelFirm"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="genweb.organs.firmadocumental.sign" />
+
 </configure>
+
