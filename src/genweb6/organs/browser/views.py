@@ -117,7 +117,7 @@ class createElement(BrowserView):
                     safe_id=True,
                     proposalPoint=proposal_point_number
                 )
-            
+
         else:
             return
 
@@ -362,7 +362,7 @@ class ActaPrintView(BrowserView):
     def getActaContent(self):
         """ Retorna els punt en format text per mostrar a l'ordre
             del dia de les actes
-            
+
             OPTIMIZATION: Use brain metadata (portal_type, Title) when possible.
             Still need getObject() for objectIds() check, but avoid it for subpunts
             when only checking portal_type and getting agreement.
@@ -380,7 +380,7 @@ class ActaPrintView(BrowserView):
         for obj in values:
             # Need getObject() for objectIds() check
             value = obj._unrestrictedGetObject()
-            
+
             # OPTIMIZATION: Use brain.portal_type instead of value.portal_type
             if obj.portal_type == 'genweb.organs.acord':
                 if value.agreement:
@@ -390,7 +390,7 @@ class ActaPrintView(BrowserView):
                         value, 'omitAgreement', False) else ''
             else:
                 agreement = ''
-            
+
             # OPTIMIZATION: Use brain.Title (metadata) instead of value.Title
             results.append('<li>' + str(obj.Title) + ' ' + str(agreement))
 
@@ -410,7 +410,7 @@ class ActaPrintView(BrowserView):
                         agreement = ' [Acord ' + str(subpunt.agreement) + ']'
                     else:
                         agreement = ''
-                    
+
                     results.append(
                         '<li>' + str(item.Title) + ' ' + str(agreement) + '</li>')
                 results.append('</ol></li>')
@@ -1138,19 +1138,66 @@ class migracioAnnexosActes(BrowserView):
 class getAcordsOrgangovern(BrowserView):
 
     def __call__(self):
-        """ La llista d'acords i el tab el veu tothom.
-            Després s'aplica el permís per cada rol a la vista de l'acord """
-        results = []
+        """OPTIMIZATION: Paginación server-side para acords.
 
+        La llista d'acords i el tab el veu tothom.
+        Després s'aplica el permís per cada rol a la vista de l'acord
+
+        Parámetros de request:
+        - page: Número de página (default: 1)
+        - page_size: Tamaño de página (default: 50)
+        - year: Filtro por año (optional)
+        """
+        # Parámetros de paginación
+        page = int(self.request.form.get('page', 1))
+        page_size = int(self.request.form.get('page_size', 50))
+        year_filter = self.request.form.get('year', None)
+
+        results = []
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         folder_path = '/'.join(self.context.getPhysicalPath())
 
-        # Només veu els acords de les sessions que pot veure
-        sessions = portal_catalog.unrestrictedSearchResults(
-            portal_type='genweb.organs.sessio',
-            sort_on='getObjPositionInParent',
-            path={'query': folder_path,
-                  'depth': 1})
+        # Query base para sessions
+        query_params = {
+            'portal_type': 'genweb.organs.sessio',
+            'sort_on': 'start',
+            'sort_order': 'reverse',  # Más recientes primero
+            'path': {'query': folder_path, 'depth': 1}
+        }
+
+        # Filtrar por año si se especifica
+        if year_filter:
+            import DateTime
+            start_date = DateTime.DateTime(int(year_filter), 1, 1)
+            end_date = DateTime.DateTime(int(year_filter), 12, 31, 23, 59, 59)
+            query_params['start'] = {
+                'query': (start_date, end_date),
+                'range': 'min:max'}
+
+        # Obtener sessions (con filtro si hay, sin filtro si no)
+        sessions = portal_catalog.unrestrictedSearchResults(**query_params)
+
+        # OPTIMIZATION: Calcular años disponibles usando metadata del catálogo
+        # Solo cuando NO hay filtro de año (reutilizamos sessions que ya tenemos)
+        min_year = None
+        max_year = None
+        if not year_filter:
+            years = set()
+            for brain in sessions:
+                # Usar metadata 'start' del brain (sin getObject)
+                start_date = getattr(brain, 'start', None)
+                if start_date:
+                    try:
+                        if hasattr(start_date, 'year'):
+                            year = start_date.year() if callable(
+                                start_date.year) else start_date.year
+                            years.add(year)
+                    except Exception:
+                        pass
+
+            if years:
+                min_year = min(years)
+                max_year = max(years)
 
         paths = []
         if api.user.is_anonymous():
@@ -1223,7 +1270,32 @@ class getAcordsOrgangovern(BrowserView):
                                         estatsLlista=value.estatsLlista,
                                         color=utils.getColor(obj)))
 
-        return json.dumps(sorted(results, key=itemgetter('hiddenOrder'), reverse=True))
+        # Ordenar resultados
+        all_results_sorted = sorted(
+            results, key=itemgetter('hiddenOrder'),
+            reverse=True)
+
+        # Aplicar paginación
+        start = (page - 1) * page_size
+        end = start + page_size
+        paginated_results = all_results_sorted[start:end]
+
+        # Calcular total de páginas
+        total_items = len(all_results_sorted)
+        total_pages = (total_items + page_size - 1) // page_size if total_items > 0 else 1
+
+        # Devolver datos con paginación
+        response_data = {
+            'items': paginated_results,
+            'total': total_items,
+            'page': page,
+            'page_size': page_size,
+            'total_pages': total_pages,
+            'min_year': min_year,
+            'max_year': max_year
+        }
+
+        return json.dumps(response_data)
 
 
 class getActesOrgangovern(BrowserView):

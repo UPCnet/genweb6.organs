@@ -184,6 +184,21 @@
         </div>
       </div>
       <div class="tab-pane fade" id="acords-tab-panel" role="tabpanel" aria-labelledby="acords-tab" tabindex="0">
+        <!-- Filtre per any -->
+        <div class="row mb-3">
+          <div class="col-md-4 col-sm-6">
+            <label for="year-filter" class="form-label" i18n:translate="">Filtra per any</label>
+            <select id="year-filter" class="form-select">
+              <option value="" i18n:translate="">Tots els anys</option>
+            </select>
+          </div>
+          <div class="col-md-8 col-sm-6">
+            <div id="acords-stats" class="mt-4 text-muted">
+              <small><span i18n:translate="">Carregant acords</span>...</small>
+            </div>
+          </div>
+        </div>
+
         <div class="scrollit">
           <div class="table-responsive">
             <table class="table table-bordered">
@@ -211,6 +226,10 @@
             </div>
           </div>
         </div>
+
+        <!-- Paginació -->
+        <div id="acordsPagination" class="d-flex justify-content-center mt-3 mb-3"></div>
+
         <div class="btn-export-acords text-center" tal:condition="expAcords">
           <a class="btn btn-primary" tal:attributes="href string:${context/absolute_url}/exportAcordsCSV" data-toggle="" data-target=""><i class="bi bi-download" aria-hidden="true"></i>&nbsp;<span>Exportar acords</span></a>
         </div>
