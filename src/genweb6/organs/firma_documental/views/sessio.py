@@ -520,10 +520,10 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
         if not utils.checkhasRol(['Manager', 'OG1-Secretari'], roles):
             return False
         
-        # Verificar que la sesión está en estado "en_correccio" (En modificació)
+        # Verificar que la sesión está en estado "en_correccio" o "realitzada"
         session = utils.get_session(self.context)
         review_state = api.content.get_state(session)
-        if review_state != 'en_correccio':
-            return False
+        if review_state in ['en_correccio', 'realitzada']:
+            return True
         
-        return True
+        return False
