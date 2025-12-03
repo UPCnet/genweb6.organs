@@ -1420,47 +1420,141 @@ class getSessionsOrgangovern(BrowserView):
 
 
 class getActesOrgangovern(BrowserView):
+    """OPTIMIZATION: Paginación server-side para actes."""
 
     def __call__(self):
-        """ Si es Manager/Secretari/Editor/Membre show actas
-            Affectat i altres NO veuen MAI les ACTES """
-        roles = utils.getUserRoles(self, self.context, api.user.get_current().id)
-        if utils.checkhasRol(
-            ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'],
-                roles):
-            results = []
-            portal_catalog = api.portal.get_tool(name='portal_catalog')
-            folder_path = '/'.join(self.context.getPhysicalPath())
+        """Retorna les actes amb paginació i filtre per any.
 
-            sessions = portal_catalog.searchResults(
-                portal_type='genweb.organs.sessio',
-                sort_on='getObjPositionInParent',
-                path={'query': folder_path,
-                      'depth': 1})
+        Si es Manager/Secretari/Editor/Membre show actas
+        Affectat i altres NO veuen MAI les ACTES
 
-            paths = []
-            for session in sessions:
-                paths.append(session.getPath())
+        Parámetros de request:
+        - page: Número de página (default: 1)
+        - page_size: Tamaño de página (default: 50)
+        - year: Filtro por año (optional)
+        """
+        roles = utils.getUserRoles(
+            self, self.context, api.user.get_current().id)
 
-            for path in paths:
-                values = portal_catalog.searchResults(
-                    portal_type=['genweb.organs.acta'],
-                    sort_on='modified',
-                    path={'query': path,
-                          'depth': 3})
+        if not utils.checkhasRol(
+            ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
+             'OG5-Convidat'], roles):
+            return json.dumps({
+                'items': [], 'total': 0, 'page': 1,
+                'page_size': 50, 'total_pages': 1,
+                'min_year': None, 'max_year': None
+            })
 
-                for obj in values:
-                    value = obj._unrestrictedGetObject()
-                    results.append(dict(title=value.title,
-                                        absolute_url=value.absolute_url(),
-                                        data=value.horaInici.strftime('%d/%m/%Y'),
-                                        hiddenOrder=value.horaInici.strftime('%Y%m%d')))
-            return json.dumps(
-                sorted(
-                    results, key=itemgetter('hiddenOrder'),
-                    reverse=True))
+        # Parámetros de paginación
+        page = int(self.request.form.get('page', 1))
+        page_size = int(self.request.form.get('page_size', 50))
+        year_filter = self.request.form.get('year', None)
+
+        portal_catalog = api.portal.get_tool(name='portal_catalog')
+        folder_path = '/'.join(self.context.getPhysicalPath())
+
+        # OPTIMIZATION: Una sola query para sessions (reutilizar para años)
+        all_sessions = portal_catalog.searchResults(
+            portal_type='genweb.organs.sessio',
+            path={'query': folder_path, 'depth': 1})
+
+        # Calcular años disponibles (solo sin filtro)
+        min_year = None
+        max_year = None
+        if not year_filter:
+            years = set()
+            for brain in all_sessions:
+                start_date = getattr(brain, 'start', None)
+                if start_date:
+                    try:
+                        if hasattr(start_date, 'year'):
+                            year = (start_date.year() if callable(start_date.year)
+                                    else start_date.year)
+                            years.add(year)
+                    except Exception:
+                        pass
+            if years:
+                min_year = min(years)
+                max_year = max(years)
+
+        # Filtrar sessions por año si se especifica
+        if year_filter:
+            year_int = int(year_filter)
+            sessions = []
+            for s in all_sessions:
+                start_date = getattr(s, 'start', None)
+                if start_date:
+                    try:
+                        # Extraer año (compatible con DateTime y datetime)
+                        s_year = (start_date.year() if callable(start_date.year)
+                                  else start_date.year)
+                        if s_year == year_int:
+                            sessions.append(s)
+                    except Exception:
+                        pass
         else:
-            return json.dumps([])
+            sessions = all_sessions
+
+        # Obtener paths de sessions filtradas
+        paths = [session.getPath() for session in sessions]
+
+        # OPTIMIZATION: Una sola query para todas las actas del órgano
+        # en lugar de una query por session
+        results = []
+        if paths:
+            actas = portal_catalog.searchResults(
+                portal_type=['genweb.organs.acta'],
+                path={'query': folder_path, 'depth': 4})
+
+            # Filtrar actas que pertenecen a las sessions seleccionadas
+            for obj in actas:
+                try:
+                    obj_path = obj.getPath()
+                    # Verificar que la acta pertenece a una session válida
+                    if any(obj_path.startswith(p + '/') for p in paths):
+                        value = obj._unrestrictedGetObject()
+                        if value.horaInici:
+                            data = value.horaInici.strftime('%d/%m/%Y')
+                            hiddenOrder = value.horaInici.strftime('%Y%m%d')
+                        else:
+                            data = ''
+                            hiddenOrder = '00000000'
+
+                        results.append({
+                            'title': obj.Title,
+                            'absolute_url': obj.getURL(),
+                            'data': data,
+                            'hiddenOrder': hiddenOrder
+                        })
+                except Exception:
+                    pass
+
+        # Ordenar por hiddenOrder descendente
+        all_results_sorted = sorted(
+            results, key=itemgetter('hiddenOrder'), reverse=True)
+
+        # Aplicar paginación
+        start_idx = (page - 1) * page_size
+        end_idx = start_idx + page_size
+        paginated_results = all_results_sorted[start_idx:end_idx]
+
+        # Calcular totales
+        total_items = len(all_results_sorted)
+        total_pages = (
+            (total_items + page_size - 1) // page_size
+            if total_items > 0 else 1)
+
+        response_data = {
+            'items': paginated_results,
+            'total': total_items,
+            'page': page,
+            'page_size': page_size,
+            'total_pages': total_pages,
+            'min_year': min_year,
+            'max_year': max_year
+        }
+
+        return json.dumps(response_data)
 
 
 class updateIndicadors(BrowserView):
