@@ -82,7 +82,22 @@
     </div>
 
     <div class="tab-content" id="tabsContent">
-      <div class="tab-pane fade show active" id="sessions-tab-panel" tal:condition="sessions" role="tabpanel" aria-labelledby="sessions-tab" tabindex="0">
+      <div class="tab-pane fade show active" id="sessions-tab-panel" role="tabpanel" aria-labelledby="sessions-tab" tabindex="0">
+        <!-- Filtre per any -->
+        <div class="row mb-3">
+          <div class="col-md-4 col-sm-6">
+            <label for="sessions-year-filter" class="form-label" i18n:translate="">Filtra per any</label>
+            <select id="sessions-year-filter" class="form-select">
+              <option value="" i18n:translate="">Tots els anys</option>
+            </select>
+          </div>
+          <div class="col-md-8 col-sm-6">
+            <div id="sessions-stats" class="mt-4 text-muted">
+              <small><span i18n:translate="">Carregant sessions</span>...</small>
+            </div>
+          </div>
+        </div>
+
         <div class="table-responsive">
           <table class="table table-bordered">
             <thead>
@@ -101,41 +116,19 @@
                 </th>
               </tr>
             </thead>
-            <tal:objects repeat="item sessions">
-              <tr>
-                <td style="vertical-align: middle;">
-                    <i class="bi bi-list" aria-hidden="True"></i>
-                    <a tal:attributes="href item/absolute_url;" tal:content="item/title"> Item Title </a>
-                    [<span tal:content="item/sessionNumber" class="fs-s">
-                            Session Number
-                    </span>]
-                </td>
-                <td class="text-center align-middle">
-                  <span tal:content="item/dataSessio" >
-                          Data de la Sessio
-                  </span>
-                  <br/>
-                  <span tal:content="item/horaInici">
-                          Hora inici
-                  </span>
-                </td>
-                <td class="text-center align-middle">
-                  <span tal:content="item/llocConvocatoria">
-                          Lloc sessio
-                  </span>
-                </td>
-                <td class="text-center align-middle">
-                  <span tal:content="item/review_state"
-                        tal:attributes="class string:label-${item/review_state}"
-                        i18n:translate=""
-                        i18n:domain="plone">
-                         Item State
-                  </span>
-                </td>
-              </tr>
-            </tal:objects>
+            <tbody id="sessionsTbody">
+
+            </tbody>
           </table>
+          <div class="spinner-sessions-tab spinner-block position-fixed top-0 start-0 vw-100 vh-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-25 d-none">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
         </div>
+
+        <!-- Paginació -->
+        <div id="sessionsPagination" class="d-flex justify-content-center mt-3 mb-3"></div>
       </div>
       <div class="tab-pane fade" id="membres-tab-panel" role="tabpanel" aria-labelledby="membres-tab" tabindex="0">
         <tal:block tal:condition="multipleTab">

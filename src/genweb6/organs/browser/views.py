@@ -1167,7 +1167,6 @@ class getAcordsOrgangovern(BrowserView):
 
         # Filtrar por año si se especifica
         if year_filter:
-            import DateTime
             start_date = DateTime.DateTime(int(year_filter), 1, 1)
             end_date = DateTime.DateTime(int(year_filter), 12, 31, 23, 59, 59)
             query_params['start'] = {
@@ -1218,21 +1217,22 @@ class getAcordsOrgangovern(BrowserView):
 
             for obj in values:
                 value = obj.getObject()
+                # OPTIMIZATION: Cachear split para evitar múltiples llamadas
                 if value.agreement:
-                    if len(value.agreement.split('/')) > 2:
+                    parts = value.agreement.split('/')
+                    if len(parts) > 2:
                         try:
-                            num = value.agreement.split('/')[1].zfill(3) + value.agreement.split('/')[
-                                2].zfill(3) + value.agreement.split('/')[3].zfill(3)
-                        except:
-                            num = value.agreement.split(
-                                '/')[1].zfill(3) + value.agreement.split('/')[2].zfill(3)
-                        any = value.agreement.split('/')[0]
+                            num = (parts[1].zfill(3) + parts[2].zfill(3) +
+                                   parts[3].zfill(3))
+                        except Exception:
+                            num = parts[1].zfill(3) + parts[2].zfill(3)
+                        any_val = parts[0]
                     else:
-                        num = value.agreement.split('/')[0].zfill(3)
-                        any = value.agreement.split('/')[1]
+                        num = parts[0].zfill(3)
+                        any_val = parts[1]
                 else:
                     num = ''
-                    any = ''
+                    any_val = ''
                 if value.aq_parent.aq_parent.portal_type == 'genweb.organs.sessio':
                     wf_state = api.content.get_state(obj=value.aq_parent.aq_parent)
                     if username:
@@ -1266,7 +1266,7 @@ class getAcordsOrgangovern(BrowserView):
                     results.append(dict(title=value.title,
                                         absolute_url=value.absolute_url(),
                                         agreement=value.agreement,
-                                        hiddenOrder=any + num,
+                                        hiddenOrder=any_val + num,
                                         estatsLlista=value.estatsLlista,
                                         color=utils.getColor(obj)))
 
@@ -1285,6 +1285,127 @@ class getAcordsOrgangovern(BrowserView):
         total_pages = (total_items + page_size - 1) // page_size if total_items > 0 else 1
 
         # Devolver datos con paginación
+        response_data = {
+            'items': paginated_results,
+            'total': total_items,
+            'page': page,
+            'page_size': page_size,
+            'total_pages': total_pages,
+            'min_year': min_year,
+            'max_year': max_year
+        }
+
+        return json.dumps(response_data)
+
+
+class getSessionsOrgangovern(BrowserView):
+    """OPTIMIZATION: Paginación server-side para sessions."""
+
+    def __call__(self):
+        """Retorna les sessions amb paginació i filtre per any.
+
+        OPTIMIZATION:
+        - Usa metadata del catálogo (brain) para title, url, review_state
+        - Ordena por hiddenOrder (fecha + numSessio) como el original
+
+        Parámetros de request:
+        - page: Número de página (default: 1)
+        - page_size: Tamaño de página (default: 50)
+        - year: Filtro por año (optional)
+        """
+        page = int(self.request.form.get('page', 1))
+        page_size = int(self.request.form.get('page_size', 50))
+        year_filter = self.request.form.get('year', None)
+
+        portal_catalog = api.portal.get_tool(name='portal_catalog')
+        folder_path = '/'.join(self.context.getPhysicalPath())
+
+        # Query base
+        query_params = {
+            'portal_type': 'genweb.organs.sessio',
+            'path': {'query': folder_path, 'depth': 1}
+        }
+
+        # Filtrar por año si se especifica
+        if year_filter:
+            start_date = DateTime.DateTime(int(year_filter), 1, 1)
+            end_date = DateTime.DateTime(int(year_filter), 12, 31, 23, 59, 59)
+            query_params['start'] = {
+                'query': (start_date, end_date),
+                'range': 'min:max'}
+
+        # Obtener brains
+        sessions_brains = portal_catalog.searchResults(**query_params)
+
+        # Calcular años disponibles SOLO cuando no hay filtro
+        min_year = None
+        max_year = None
+        if not year_filter:
+            years = set()
+            for brain in sessions_brains:
+                start_date = getattr(brain, 'start', None)
+                if start_date:
+                    try:
+                        if hasattr(start_date, 'year'):
+                            year = (start_date.year() if callable(start_date.year)
+                                    else start_date.year)
+                            years.add(year)
+                    except Exception:
+                        pass
+            if years:
+                min_year = min(years)
+                max_year = max(years)
+
+        # Construir resultados con hiddenOrder para ordenar
+        acronim = self.context.acronim
+        results = []
+        for brain in sessions_brains:
+            try:
+                # Obtener objeto para numSessio y llocConvocatoria
+                obj = brain._unrestrictedGetObject()
+
+                if brain.start:
+                    dataSessio = brain.start.strftime('%d/%m/%Y')
+                    horaInici = brain.start.strftime('%H:%M')
+                    any_str = brain.start.strftime('%Y%m%d')
+                    year_str = brain.start.strftime('%Y')
+                    num = (obj.numSessio or '0').zfill(3)
+                    sessionNumber = f"{acronim}/{year_str}/{obj.numSessio or '00'}"
+                    hiddenOrder = int(any_str + num)
+                else:
+                    dataSessio = ''
+                    horaInici = ''
+                    hiddenOrder = 0
+                    sessionNumber = ''
+
+                results.append({
+                    'title': brain.Title,
+                    'absolute_url': brain.getURL(),
+                    'dataSessio': dataSessio,
+                    'llocConvocatoria': obj.llocConvocatoria or '',
+                    'horaInici': horaInici,
+                    'hiddenOrder': hiddenOrder,
+                    'sessionNumber': sessionNumber,
+                    'review_state': brain.review_state
+                })
+            except Exception:
+                pass
+
+        # Ordenar por hiddenOrder (fecha + numSessio) descendente
+        all_results_sorted = sorted(
+            results, key=itemgetter('hiddenOrder'), reverse=True)
+
+        # Aplicar paginación
+        start_idx = (page - 1) * page_size
+        end_idx = start_idx + page_size
+        paginated_results = all_results_sorted[start_idx:end_idx]
+
+        # Calcular totales
+        total_items = len(all_results_sorted)
+        total_pages = (
+            (total_items + page_size - 1) // page_size
+            if total_items > 0 else 1)
+
         response_data = {
             'items': paginated_results,
             'total': total_items,

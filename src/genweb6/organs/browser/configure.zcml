@@ -182,6 +182,14 @@
 
   <browser:page
     for="genweb6.organs.content.organgovern.organgovern.IOrgangovern"
+    name="getSessionsOrgangovern"
+    class=".views.getSessionsOrgangovern"
+    layer="..interfaces.IGenweb6OrgansLayer"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    for="genweb6.organs.content.organgovern.organgovern.IOrgangovern"
     name="getActesOrgangovern"
     class=".views.getActesOrgangovern"
     layer="..interfaces.IGenweb6OrgansLayer"
@@ -319,5 +327,5 @@
     class=".views.CleanPDFsOrgansView"
     layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
     />
-    
+
 </configure>
