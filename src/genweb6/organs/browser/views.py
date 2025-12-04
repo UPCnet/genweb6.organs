@@ -378,36 +378,49 @@ class ActaPrintView(BrowserView):
         results = []
         results.append('<div class="num_acta"> <ol>')
         for obj in values:
-            # Need getObject() for objectIds() check
-            value = obj._unrestrictedGetObject()
+            # OPTIMIZATION: Evitar getObject() - Usamos metadatos del brain
 
-            # OPTIMIZATION: Use brain.portal_type instead of value.portal_type
             if obj.portal_type == 'genweb.organs.acord':
-                if value.agreement:
-                    agreement = ' [Acord ' + str(value.agreement) + ']'
+                # Usamos la columna de metadatos index_agreement
+                agreement_val = getattr(obj, 'index_agreement', '')
+                if agreement_val:
+                    agreement = ' [Acord ' + str(agreement_val) + ']'
                 else:
-                    agreement = _(u"[Acord sense numerar]") if not getattr(
-                        value, 'omitAgreement', False) else ''
+                    # Solo hacemos getObject si es estrictamente necesario (fallback)
+                    value = obj._unrestrictedGetObject()
+                    if value.agreement:
+                        agreement = ' [Acord ' + str(value.agreement) + ']'
+                    else:
+                        agreement = _(u"[Acord sense numerar]") if not getattr(
+                            value, 'omitAgreement', False) else ''
             else:
                 agreement = ''
 
-            # OPTIMIZATION: Use brain.Title (metadata) instead of value.Title
             results.append('<li>' + str(obj.Title) + ' ' + str(agreement))
 
-            if len(value.objectIds()) > 0:
-                valuesInside = portal_catalog.searchResults(
-                    portal_type=['genweb.organs.subpunt', 'genweb.organs.acord'],
-                    sort_on='getObjPositionInParent',
-                    path={'query': obj.getPath(),
-                          'depth': 1})
+            # OPTIMIZATION: Usar búsqueda en catálogo en lugar de value.objectIds()
+            # Esto evita despertar el objeto padre innecesariamente
+            valuesInside = portal_catalog.searchResults(
+                portal_type=['genweb.organs.subpunt', 'genweb.organs.acord'],
+                sort_on='getObjPositionInParent',
+                path={'query': obj.getPath(),
+                      'depth': 1})
 
+            if valuesInside:
                 results.append('<ol>')
                 for item in valuesInside:
-                    # OPTIMIZATION: Use brain.portal_type and brain.Title (metadata)
-                    # Only getObject() if it's an acord (need agreement field)
                     if item.portal_type == 'genweb.organs.acord':
-                        subpunt = item._unrestrictedGetObject()
-                        agreement = ' [Acord ' + str(subpunt.agreement) + ']'
+                        # Usamos la columna de metadatos index_agreement
+                        subpunt_agreement_val = getattr(item, 'index_agreement', '')
+                        if subpunt_agreement_val:
+                            agreement = ' [Acord ' + str(subpunt_agreement_val) + ']'
+                        else:
+                            # Fallback a getObject solo si no hay metadato
+                            subpunt = item._unrestrictedGetObject()
+                            if getattr(subpunt, 'agreement', None):
+                                agreement = ' [Acord ' + str(subpunt.agreement) + ']'
+                            else:
+                                agreement = ''
                     else:
                         agreement = ''
 
