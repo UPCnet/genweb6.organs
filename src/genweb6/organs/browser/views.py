@@ -1591,8 +1591,21 @@ class allOrgansEstatsLlista(BrowserView):
 
         results = []
         for brain in all_brains:
-            results.append({'id': brain.id, 'title': brain.Title, 'url': brain.getURL(), 'estats': getattr(brain.getObject(
-            ).estatsLlista, 'raw', '').replace('<p>', '').replace('</p>', '').split('\r\n') if brain.getObject().estatsLlista else []})
+            # OPTIMIZATION: Cachear getObject() para evitar doble llamada
+            obj = brain.getObject()
+            estats_field = getattr(obj, 'estatsLlista', None)
+            if estats_field:
+                raw_value = getattr(estats_field, 'raw', '')
+                estats = raw_value.replace('<p>', '').replace('</p>', '').split('\r\n')
+            else:
+                estats = []
+
+            results.append({
+                'id': brain.id,
+                'title': brain.Title,
+                'url': brain.getURL(),
+                'estats': estats
+            })
 
         return results
 
