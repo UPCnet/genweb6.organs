@@ -686,7 +686,6 @@ class ResetFirm(BrowserView):
                          self.context.absolute_url(), str(e))
 
         transaction.commit()
-        purge_cache_varnish(self)
         return self.request.response.redirect(self.context.absolute_url())
 
 
@@ -735,12 +734,12 @@ class CancelFirm(BrowserView, FirmesMixin):
                 _(u'L\'acta no s\'ha enviat a signar'), 'error')
             return self.request.response.redirect(self.context.absolute_url())
 
-        # Verificar que la sesión está en estado "en_correccio" (En modificació)
+        # Verificar que la sesión está en estado "en_correccio", o "realitzada"
         sessio = utils.get_session(self.context)
         review_state = api.content.get_state(sessio)
-        if review_state != 'en_correccio':
+        if review_state not in ['en_correccio', 'realitzada']:
             self.context.plone_utils.addPortalMessage(
-                _(u'Només es pot cancel·lar la signatura quan la sessió està en estat "En modificació"'), 'error')
+                _(u'Només es pot cancel·lar la signatura quan la sessió està en estat "En modificació" o "Realitzada"'), 'error')
             return self.request.response.redirect(self.context.absolute_url())
 
         organ = utils.get_organ(self.context)
@@ -763,58 +762,49 @@ class CancelFirm(BrowserView, FirmesMixin):
             else:
                 logger.warning('No s\'ha trobat id_firma per cancel·lar al Portafirmes')
 
-            # Paso 2: Invalidar el CSV (copia auténtica)
-            # Intentamos invalidar usando el ID del documento del acta
-            if self.context.info_firma.get('acta', {}).get('id'):
+            # Paso 2: Invalidar el CSV (copia auténtica) - solo si el acta estaba firmada
+            # El CSV solo existe si el acta llegó a estar firmada
+            estat_firma = getattr(self.context, 'estat_firma', '') or ''
+            acta_estava_signada = estat_firma.lower() == 'signada'
+            
+            if acta_estava_signada and self.context.info_firma.get('acta', {}).get('uuid'):
                 cancel_step = "invalidaCopiaAutentica"
                 logger.info('2. Invalidació de la copia autèntica (CSV) per al document %s',
-                            self.context.info_firma['acta']['id'])
+                            self.context.info_firma['acta']['uuid'])
                 try:
-                    client.invalidaCopiaAutentica(id_document=self.context.info_firma['acta']['id'])
+                    client.invalidaCopiaAutentica(id_document=self.context.info_firma['acta']['uuid'])
                     logger.info('2.1. S\'ha invalidat correctament la copia autèntica')
                 except Exception as e:
-                    # Si falla, intentamos con el UUID
-                    logger.warning('Error al invalidar CSV amb ID document, intentant amb UUID: %s', str(e))
-                    if self.context.info_firma.get('acta', {}).get('uuid'):
-                        try:
-                            # Algunos servicios pueden aceptar UUID directamente
-                            client.invalidaCopiaAutentica(id_document=self.context.info_firma['acta']['uuid'])
-                            logger.info('2.1. S\'ha invalidat correctament la copia autèntica (amb UUID)')
-                        except Exception as e2:
-                            logger.warning('No s\'ha pogut invalidar el CSV: %s', str(e2))
+                    logger.warning('No s\'ha pogut invalidar el CSV: %s', str(e))
+            elif not acta_estava_signada:
+                logger.info('2. No cal invalidar el CSV perquè l\'acta no estava signada (estat: %s)', estat_firma)
             else:
-                logger.warning('No s\'ha trobat ID del document per invalidar el CSV')
+                logger.warning('No s\'ha trobat uuid del document per invalidar el CSV')
 
             # Paso 3: Resetear el estado del acta y documentos asociados
             logger.info('3. Reset del estat de l\'acta i documents associats')
             
             # Resetear el acta
             self.context.info_firma['enviatASignar'] = False
-            if hasattr(self.context, 'id_firma'):
-                self.context.id_firma = ''
-            if hasattr(self.context, 'estat_firma'):
-                self.context.estat_firma = ''
-            self.context.reindexObject()
 
-            # Resetear documentos asociados (files de la sesión)
+            # Resetear documentos asociados
             portal_catalog = api.portal.get_tool(name='portal_catalog')
-            folder_path = '/'.join(sessio.getPhysicalPath())
-            files_sessio = portal_catalog.unrestrictedSearchResults(
-                portal_type=['genweb.organs.file'],
-                path={'query': folder_path, 'depth': 3}
-            )
+            folder_path = '/'.join(self.context.aq_parent.getPhysicalPath())
+            values = portal_catalog.unrestrictedSearchResults(
+                portal_type=['genweb.organs.acord',
+                             'genweb.organs.acta',
+                             'genweb.organs.punt',
+                             'genweb.organs.subpunt',
+                             'genweb.organs.file',],
+                path={'query': folder_path,
+                      'depth': 3})
 
-            for brain in files_sessio:
-                file_obj = brain.getObject()
-                if hasattr(file_obj, 'info_firma') and file_obj.info_firma:
-                    if not isinstance(file_obj.info_firma, dict):
-                        try:
-                            file_obj.info_firma = ast.literal_eval(file_obj.info_firma)
-                        except:
-                            continue
-                    # No eliminamos completamente info_firma, solo marcamos como no enviado
-                    # para mantener la información de upload si existe
-                    file_obj.reindexObject()
+            for brain in values:
+                obj = brain.getObject()
+                obj.info_firma = {}
+                obj.id_firma = ''
+                obj.estat_firma = ''
+                obj.reindexObject()
 
             logger.info('3.1. S\'ha resetejat correctament l\'estat de l\'acta i documents')
 
@@ -826,7 +816,6 @@ class CancelFirm(BrowserView, FirmesMixin):
                               self.context.absolute_url())
             
             transaction.commit()
-            purge_cache_varnish(self)
 
         except Exception as e:
             error = self.printError(cancel_step, e)

@@ -154,13 +154,11 @@ class ClientFirma(object):
         Returns:
             dict: Respuesta del servicio Portafirmes
         """
-        url = self.settings.portafirmes_url + '/service/peticio/' + str(id_peticio)
+        url = self.settings.portafirmes_url + '/' + str(id_peticio)
         headers = {'X-Api-Key': self.settings.portafirmes_apikey}
-        return json.loads(
-            self._request('DELETE', url, headers=headers, timeout=self.timeout).content
-        )
+        return self._request('DELETE', url, headers=headers, timeout=self.timeout)
 
-    def invalidaCopiaAutentica(self, id_document=None, csv_id=None):
+    def invalidaCopiaAutentica(self, id_document=None):
         """
         Invalida una copia auténtica (CSV) para evitar copias firmadas.
         
@@ -171,13 +169,11 @@ class ClientFirma(object):
         Returns:
             dict: Respuesta del servicio de copias auténticas
         """
-        url = self.settings.copiesautentiques_url + '/copiesautentiquesv2/invalidaCopiaAutentica'
+        url = self.settings.copiesautentiques_url + '/api/invalida'
         headers = {'X-Api-Key': self.settings.copiesautentiques_apikey}
         data = {}
         if id_document:
             data['idDocument'] = id_document
-        if csv_id:
-            data['csvId'] = csv_id
         return json.loads(
             self._request('POST', url, json_data=data, headers=headers, timeout=self.timeout).content
         )
