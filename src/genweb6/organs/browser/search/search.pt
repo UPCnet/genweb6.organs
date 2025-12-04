@@ -21,7 +21,7 @@
 
       <div class="col-md-4 mb-3" tal:condition="organ_govern">
         <a tal:attributes="href organ_govern/url" class="card card-organ text-bg-light text-decoration-none h-100">
-          <img src="++theme++genweb6.organs/img/foto_consell_govern.jpg" class="card-img-top" alt="Consell de Govern" loading="lazy" decoding="async" />
+          <img src="/++theme++genweb6.organs/img/foto_consell_govern.jpg" class="card-img-top" alt="Consell de Govern" loading="lazy" decoding="async" />
           <div class="card-body d-flex justify-content-between align-items-center">
             <div class="card-txt">
               <h3 class="card-title h5" i18n:translate="">Consell de Govern</h3>
@@ -36,7 +36,7 @@
 
       <div class="col-md-4 mb-3" tal:condition="consell_social">
         <a tal:attributes="href consell_social/url" class="card card-organ text-bg-light text-decoration-none h-100">
-          <img src="++theme++genweb6.organs/img/foto_consell_social.jpg" class="card-img-top" alt="Consell Social" loading="lazy" decoding="async" />
+          <img src="/++theme++genweb6.organs/img/foto_consell_social.jpg" class="card-img-top" alt="Consell Social" loading="lazy" decoding="async" />
           <div class="card-body d-flex justify-content-between align-items-center">
             <div class="card-txt">
               <h3 class="card-title h5" i18n:translate="">Consell Social</h3>
@@ -51,7 +51,7 @@
 
       <div class="col-md-4 mb-3" tal:condition="claustre">
         <a tal:attributes="href claustre/url" class="card card-organ text-bg-light text-decoration-none h-100">
-          <img src="++theme++genweb6.organs/img/foto_claustre.jpg" class="card-img-top" alt="Claustre Universitari" loading="lazy" decoding="async" />
+          <img src="/++theme++genweb6.organs/img/foto_claustre.jpg" class="card-img-top" alt="Claustre Universitari" loading="lazy" decoding="async" />
           <div class="card-body d-flex justify-content-between align-items-center">
             <div class="card-txt">
               <h3 class="card-title h5" i18n:translate="">Claustre Universitari</h3>
@@ -224,7 +224,7 @@
       </form>
     </section>
 
-    <script defer src="++theme++genweb6.organs/js/views/search.min.js"></script>
+    <script defer src="/++theme++genweb6.organs/js/views/search.min.js"></script>
 
     <tal:banners>
       <div class="row">
