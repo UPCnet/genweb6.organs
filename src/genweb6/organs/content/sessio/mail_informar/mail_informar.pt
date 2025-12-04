@@ -51,7 +51,7 @@
     </div>
   </div>
   <script defer
-          src="++theme++genweb6.organs/js/content/mail_informar.min.js"></script>
+          src="/++theme++genweb6.organs/js/content/mail_informar.min.js"></script>
 </div>
 </body>
 </html>

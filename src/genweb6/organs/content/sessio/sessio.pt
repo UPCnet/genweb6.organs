@@ -1566,29 +1566,29 @@ P Conclusions</code>
     </div>
 
     <script defer
-            src="++theme++genweb6.organs/js/jquery-ui.min.js"></script>
+            src="/++theme++genweb6.organs/js/jquery-ui.min.js"></script>
 
     <script defer
-            src="++theme++genweb6.organs/js/content/sessio.min.js"></script>
+            src="/++theme++genweb6.organs/js/content/sessio.min.js"></script>
 
     <script defer
-            src="++theme++genweb6.organs/js/content/sessio_modify.min.js"
+            src="/++theme++genweb6.organs/js/content/sessio_modify.min.js"
             tal:condition="canModify"></script>
 
     <script defer
-            src="++theme++genweb6.organs/js/content/sessio_quorum_manage.min.js"
+            src="/++theme++genweb6.organs/js/content/sessio_quorum_manage.min.js"
             tal:condition="canViewManageQuorumButtons"></script>
 
     <script defer
-            src="++theme++genweb6.organs/js/content/sessio_quorum_add.min.js"
+            src="/++theme++genweb6.organs/js/content/sessio_quorum_add.min.js"
             tal:condition="canViewAddQuorumButtons"></script>
 
     <script defer
-            src="++theme++genweb6.organs/js/content/sessio_vote_manage.min.js"
+            src="/++theme++genweb6.organs/js/content/sessio_vote_manage.min.js"
             tal:condition="canViewManageVote"></script>
 
     <script defer
-            src="++theme++genweb6.organs/js/content/sessio_vote_view.min.js"
+            src="/++theme++genweb6.organs/js/content/sessio_vote_view.min.js"
             tal:condition="canViewVoteButtons"></script>
 
   </metal:main>

@@ -350,13 +350,13 @@
   </div>
 
   <script defer
-          src="++theme++genweb6.organs/js/content/sessio.min.js"></script>
+          src="/++theme++genweb6.organs/js/content/sessio.min.js"></script>
 
   <script defer
-          src="++theme++genweb6.organs/js/content/presentation.min.js"></script>
+          src="/++theme++genweb6.organs/js/content/presentation.min.js"></script>
 
   <script defer
-          src="++theme++genweb6.organs/js/content/presentation_modify.min.js"
+          src="/++theme++genweb6.organs/js/content/presentation_modify.min.js"
           tal:condition="changeEstat"></script>
 
 </tal:block>

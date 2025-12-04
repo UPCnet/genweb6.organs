@@ -88,6 +88,6 @@
     </div>
   </div>
 
-  <script defer src="++theme++genweb6.organs/js/widgets/text_input_select_users.min.js"></script>
+  <script defer src="/++theme++genweb6.organs/js/widgets/text_input_select_users.min.js"></script>
 
 </html>

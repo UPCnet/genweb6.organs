@@ -279,7 +279,7 @@
     </div>
   </div>
 
-  <script defer src="++theme++genweb6.organs/js/content/organgovern.min.js" ></script>
+  <script defer src="/++theme++genweb6.organs/js/content/organgovern.min.js" ></script>
 
 </metal:content-core>
 
