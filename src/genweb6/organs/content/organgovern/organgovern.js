@@ -3,13 +3,13 @@
  *
  * Features:
  * - Paginación server-side (50 items por página)
- * - Filtro por año (2016 - año actual, hardcodeado)
- * - Primera carga directa con año actual (sin carga previa de todos)
- * - Estadísticas de resultados
+ * - Filtro por año (2016 - año actual, hardcodeado para performance)
+ * - Primera carga directa con año actual
+ * - Solo procesa items de la página actual
  */
 
 // Constantes
-const START_YEAR = 2016;  // Año inicial hardcodeado
+const START_YEAR = 2016;  // Año inicial hardcodeado para performance
 const CURRENT_YEAR = new Date().getFullYear();
 const PAGE_SIZE = 50;
 
@@ -125,7 +125,7 @@ function loadSessions(page, year = null) {
           html += '<span>' + value.llocConvocatoria + '</span>';
           html += '</td>';
           html += '<td class="text-center align-middle">';
-          html += '<span class="label-' + value.review_state + '">' + value.review_state + '</span>';
+          html += '<span class="label-' + value.review_state + '">' + value.review_state_title + '</span>';
           html += '</td></tr>';
           $("#sessionsTbody").append(html);
         });

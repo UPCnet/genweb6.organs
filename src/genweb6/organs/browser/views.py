@@ -1211,6 +1211,7 @@ class getAcordsOrgangovern(BrowserView):
                 min_year = min(years)
                 max_year = max(years)
 
+        # OPTIMIZATION: Obtener todos los brains primero (sin getObject)
         paths = []
         if api.user.is_anonymous():
             username = None
@@ -1221,80 +1222,101 @@ class getAcordsOrgangovern(BrowserView):
         for session in sessions:
             paths.append(session.getPath())
 
+        # Recopilar todos los brains de acords (sin getObject todavía)
+        acord_brains = []
         for path in paths:
-            values = portal_catalog.unrestrictedSearchResults(
+            brains = portal_catalog.unrestrictedSearchResults(
                 portal_type=['genweb.organs.acord'],
                 sort_on='modified',
-                path={'query': path,
-                      'depth': 3})
+                path={'query': path, 'depth': 3})
+            acord_brains.extend(brains)
 
-            for obj in values:
-                value = obj.getObject()
-                # OPTIMIZATION: Cachear split para evitar múltiples llamadas
-                if value.agreement:
-                    parts = value.agreement.split('/')
-                    if len(parts) > 2:
-                        try:
-                            num = (parts[1].zfill(3) + parts[2].zfill(3) +
-                                   parts[3].zfill(3))
-                        except Exception:
-                            num = parts[1].zfill(3) + parts[2].zfill(3)
-                        any_val = parts[0]
-                    else:
-                        num = parts[0].zfill(3)
-                        any_val = parts[1]
+        # Construir lista con datos mínimos para ordenar (sin getObject completo aún)
+        acords_to_process = []
+        for brain in acord_brains:
+            # Obtener objeto para verificar permisos y agreement
+            obj = brain._unrestrictedGetObject()
+
+            # Calcular hiddenOrder para ordenar
+            if obj.agreement:
+                parts = obj.agreement.split('/')
+                if len(parts) > 2:
+                    try:
+                        num = (parts[1].zfill(3) + parts[2].zfill(3) +
+                               parts[3].zfill(3))
+                    except Exception:
+                        num = parts[1].zfill(3) + parts[2].zfill(3)
+                    any_val = parts[0]
                 else:
-                    num = ''
-                    any_val = ''
-                if value.aq_parent.aq_parent.portal_type == 'genweb.organs.sessio':
-                    wf_state = api.content.get_state(obj=value.aq_parent.aq_parent)
-                    if username:
-                        roles = api.user.get_roles(
-                            username=username, obj=value.aq_parent.aq_parent)
-                    else:
-                        roles = []
+                    num = parts[0].zfill(3)
+                    any_val = parts[1]
+            else:
+                num = ''
+                any_val = ''
+
+            # Verificar permisos
+            if obj.aq_parent.aq_parent.portal_type == 'genweb.organs.sessio':
+                wf_state = api.content.get_state(obj=obj.aq_parent.aq_parent)
+                if username:
+                    roles = api.user.get_roles(
+                        username=username, obj=obj.aq_parent.aq_parent)
                 else:
-                    wf_state = api.content.get_state(obj=value.aq_parent)
-                    if username:
-                        roles = api.user.get_roles(
-                            username=username, obj=value.aq_parent)
-                    else:
-                        roles = []
-                # Oculta acords from table depending on role and state
-                add_acord = False
-                if 'Manager' in roles or 'OG1-Secretari' in roles or 'OG2-Editor' in roles:
+                    roles = []
+            else:
+                wf_state = api.content.get_state(obj=obj.aq_parent)
+                if username:
+                    roles = api.user.get_roles(
+                        username=username, obj=obj.aq_parent)
+                else:
+                    roles = []
+
+            # Verificar si se debe mostrar el acord
+            add_acord = False
+            if 'Manager' in roles or 'OG1-Secretari' in roles or 'OG2-Editor' in roles:
+                add_acord = True
+            elif 'OG3-Membre' in roles:
+                if 'planificada' not in wf_state:
                     add_acord = True
-                elif 'OG3-Membre' in roles:
-                    if 'planificada' not in wf_state:
+            elif 'OG4-Afectat' in roles:
+                if organ_type == 'open_organ' or organ_type == 'restricted_to_affected_organ':
+                    if 'realitzada' in wf_state or 'tancada' in wf_state or 'en_correccio' in wf_state:
                         add_acord = True
-                elif 'OG4-Afectat' in roles:
-                    if organ_type == 'open_organ' or organ_type == 'restricted_to_affected_organ':
-                        if 'realitzada' in wf_state or 'tancada' in wf_state or 'en_correccio' in wf_state:
-                            add_acord = True
-                else:
-                    if 'tancada' in wf_state or 'en_correccio' in wf_state:
-                        add_acord = True
+            else:
+                if 'tancada' in wf_state or 'en_correccio' in wf_state:
+                    add_acord = True
 
-                if add_acord:
-                    results.append(dict(title=value.title,
-                                        absolute_url=value.absolute_url(),
-                                        agreement=value.agreement,
-                                        hiddenOrder=any_val + num,
-                                        estatsLlista=value.estatsLlista,
-                                        color=utils.getColor(obj)))
+            if add_acord:
+                acords_to_process.append({
+                    'obj': obj,
+                    'brain': brain,
+                    'hiddenOrder': any_val + num
+                })
 
-        # Ordenar resultados
-        all_results_sorted = sorted(
-            results, key=itemgetter('hiddenOrder'),
+        # Ordenar por hiddenOrder
+        acords_to_process_sorted = sorted(
+            acords_to_process, key=itemgetter('hiddenOrder'),
             reverse=True)
 
-        # Aplicar paginación
+        # OPTIMIZATION: Aplicar paginación ANTES de construir resultados completos
+        total_items = len(acords_to_process_sorted)
         start = (page - 1) * page_size
         end = start + page_size
-        paginated_results = all_results_sorted[start:end]
+        paginated_acords = acords_to_process_sorted[start:end]
+
+        # Construir resultados solo para la página actual
+        paginated_results = []
+        for item in paginated_acords:
+            obj = item['obj']
+            brain = item['brain']
+            paginated_results.append(dict(
+                title=obj.title,
+                absolute_url=obj.absolute_url(),
+                agreement=obj.agreement,
+                hiddenOrder=item['hiddenOrder'],
+                estatsLlista=obj.estatsLlista,
+                color=utils.getColor(brain)))
 
         # Calcular total de páginas
-        total_items = len(all_results_sorted)
         total_pages = (total_items + page_size - 1) // page_size if total_items > 0 else 1
 
         # Devolver datos con paginación
@@ -1331,6 +1353,7 @@ class getSessionsOrgangovern(BrowserView):
         year_filter = self.request.form.get('year', None)
 
         portal_catalog = api.portal.get_tool(name='portal_catalog')
+        wf_tool = api.portal.get_tool(name='portal_workflow')
         folder_path = '/'.join(self.context.getPhysicalPath())
 
         # Query base
@@ -1369,52 +1392,76 @@ class getSessionsOrgangovern(BrowserView):
                 min_year = min(years)
                 max_year = max(years)
 
-        # Construir resultados con hiddenOrder para ordenar
+        # OPTIMIZATION: Pre-procesar para ordenar sin getObject completo
         acronim = self.context.acronim
-        results = []
+        sessions_to_process = []
+
         for brain in sessions_brains:
             try:
-                # Obtener objeto para numSessio y llocConvocatoria
-                obj = brain._unrestrictedGetObject()
-
+                # Calcular hiddenOrder usando metadata del brain (sin getObject)
                 if brain.start:
-                    dataSessio = brain.start.strftime('%d/%m/%Y')
-                    horaInici = brain.start.strftime('%H:%M')
                     any_str = brain.start.strftime('%Y%m%d')
-                    year_str = brain.start.strftime('%Y')
+                    # Necesitamos numSessio del objeto (no está en metadata)
+                    obj = brain._unrestrictedGetObject()
                     num = (obj.numSessio or '0').zfill(3)
-                    sessionNumber = f"{acronim}/{year_str}/{obj.numSessio or '00'}"
                     hiddenOrder = int(any_str + num)
                 else:
-                    dataSessio = ''
-                    horaInici = ''
                     hiddenOrder = 0
-                    sessionNumber = ''
+                    obj = brain._unrestrictedGetObject()
 
-                results.append({
-                    'title': brain.Title,
-                    'absolute_url': brain.getURL(),
-                    'dataSessio': dataSessio,
-                    'llocConvocatoria': obj.llocConvocatoria or '',
-                    'horaInici': horaInici,
-                    'hiddenOrder': hiddenOrder,
-                    'sessionNumber': sessionNumber,
-                    'review_state': brain.review_state
+                sessions_to_process.append({
+                    'brain': brain,
+                    'obj': obj,
+                    'hiddenOrder': hiddenOrder
                 })
             except Exception:
                 pass
 
         # Ordenar por hiddenOrder (fecha + numSessio) descendente
-        all_results_sorted = sorted(
-            results, key=itemgetter('hiddenOrder'), reverse=True)
+        sessions_sorted = sorted(
+            sessions_to_process, key=itemgetter('hiddenOrder'), reverse=True)
 
-        # Aplicar paginación
+        # OPTIMIZATION: Aplicar paginación ANTES de construir resultados completos
+        total_items = len(sessions_sorted)
         start_idx = (page - 1) * page_size
         end_idx = start_idx + page_size
-        paginated_results = all_results_sorted[start_idx:end_idx]
+        paginated_sessions = sessions_sorted[start_idx:end_idx]
+
+        # Construir resultados solo para la página actual
+        paginated_results = []
+        for item in paginated_sessions:
+            brain = item['brain']
+            obj = item['obj']
+
+            if brain.start:
+                dataSessio = brain.start.strftime('%d/%m/%Y')
+                horaInici = brain.start.strftime('%H:%M')
+                year_str = brain.start.strftime('%Y')
+                sessionNumber = f"{acronim}/{year_str}/{obj.numSessio or '00'}"
+            else:
+                dataSessio = ''
+                horaInici = ''
+                sessionNumber = ''
+
+            # OPTIMIZATION: Traducir estado usando review_state directamente
+            # Las traducciones están en genweb6.organs.po con msgid = review_state
+            # Ej: msgid "planificada" msgstr "En planificació"
+            state_title = self.context.translate(
+                brain.review_state, domain='genweb6.organs')
+
+            paginated_results.append({
+                'title': brain.Title,
+                'absolute_url': brain.getURL(),
+                'dataSessio': dataSessio,
+                'llocConvocatoria': obj.llocConvocatoria or '',
+                'horaInici': horaInici,
+                'hiddenOrder': item['hiddenOrder'],
+                'sessionNumber': sessionNumber,
+                'review_state': brain.review_state,
+                'review_state_title': state_title
+            })
 
         # Calcular totales
-        total_items = len(all_results_sorted)
         total_pages = (
             (total_items + page_size - 1) // page_size
             if total_items > 0 else 1)
@@ -1512,47 +1559,65 @@ class getActesOrgangovern(BrowserView):
         paths = [session.getPath() for session in sessions]
 
         # OPTIMIZATION: Una sola query para todas las actas del órgano
-        # en lugar de una query por session
-        results = []
+        # y solo construir resultados completos para la página actual
+        actas_to_process = []
         if paths:
-            actas = portal_catalog.searchResults(
+            actas_brains = portal_catalog.searchResults(
                 portal_type=['genweb.organs.acta'],
                 path={'query': folder_path, 'depth': 4})
 
             # Filtrar actas que pertenecen a las sessions seleccionadas
-            for obj in actas:
+            # y calcular hiddenOrder para ordenar
+            for brain in actas_brains:
                 try:
-                    obj_path = obj.getPath()
+                    obj_path = brain.getPath()
                     # Verificar que la acta pertenece a una session válida
                     if any(obj_path.startswith(p + '/') for p in paths):
-                        value = obj._unrestrictedGetObject()
-                        if value.horaInici:
-                            data = value.horaInici.strftime('%d/%m/%Y')
-                            hiddenOrder = value.horaInici.strftime('%Y%m%d')
+                        # Obtener objeto para horaInici
+                        obj = brain._unrestrictedGetObject()
+
+                        if obj.horaInici:
+                            hiddenOrder = obj.horaInici.strftime('%Y%m%d')
                         else:
-                            data = ''
                             hiddenOrder = '00000000'
 
-                        results.append({
-                            'title': obj.Title,
-                            'absolute_url': obj.getURL(),
-                            'data': data,
+                        actas_to_process.append({
+                            'brain': brain,
+                            'obj': obj,
                             'hiddenOrder': hiddenOrder
                         })
                 except Exception:
                     pass
 
         # Ordenar por hiddenOrder descendente
-        all_results_sorted = sorted(
-            results, key=itemgetter('hiddenOrder'), reverse=True)
+        actas_sorted = sorted(
+            actas_to_process, key=itemgetter('hiddenOrder'), reverse=True)
 
-        # Aplicar paginación
+        # OPTIMIZATION: Aplicar paginación ANTES de construir resultados completos
+        total_items = len(actas_sorted)
         start_idx = (page - 1) * page_size
         end_idx = start_idx + page_size
-        paginated_results = all_results_sorted[start_idx:end_idx]
+        paginated_actas = actas_sorted[start_idx:end_idx]
+
+        # Construir resultados solo para la página actual
+        paginated_results = []
+        for item in paginated_actas:
+            brain = item['brain']
+            obj = item['obj']
+
+            if obj.horaInici:
+                data = obj.horaInici.strftime('%d/%m/%Y')
+            else:
+                data = ''
+
+            paginated_results.append({
+                'title': brain.Title,
+                'absolute_url': brain.getURL(),
+                'data': data,
+                'hiddenOrder': item['hiddenOrder']
+            })
 
         # Calcular totales
-        total_items = len(all_results_sorted)
         total_pages = (
             (total_items + page_size - 1) // page_size
             if total_items > 0 else 1)
