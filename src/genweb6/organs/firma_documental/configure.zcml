@@ -25,4 +25,16 @@
     class=".controlpanel.FirmaDocumentalSettingsControlPanel"
     permission="cmf.ManagePortal" />
 
+  <subscriber
+    for="plone.dexterity.interfaces.IDexterityContent
+         zope.container.interfaces.IObjectAddedEvent"
+    handler="genweb6.organs.firma_documental.hooks.warningContentIsSigned"
+    />
+
+  <subscriber
+    for="plone.dexterity.interfaces.IDexterityContent
+         zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+    handler="genweb6.organs.firma_documental.hooks.warningContentIsSigned"
+    />
+
 </configure>
