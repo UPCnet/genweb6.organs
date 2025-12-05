@@ -769,11 +769,14 @@ class CancelFirm(BrowserView, FirmesMixin):
             
             if acta_estava_signada and self.context.info_firma.get('acta', {}).get('uuid'):
                 cancel_step = "invalidaCopiaAutentica"
-                logger.info('2. Invalidació de la copia autèntica (CSV) per al document %s',
-                            self.context.info_firma['acta']['uuid'])
+                acta_uuid = self.context.info_firma['acta']['uuid']
+                logger.info('2. Invalidació de la copia autèntica (CSV) per al document %s', acta_uuid)
                 try:
-                    client.invalidaCopiaAutentica(id_document=self.context.info_firma['acta']['uuid'])
-                    logger.info('2.1. S\'ha invalidat correctament la copia autèntica')
+                    result = client.invalidaCopiaAutentica(id_document=acta_uuid)
+                    if result.get('success', False):
+                        logger.info('2.1. S\'ha invalidat correctament la copia autèntica (CSV: %s)', result.get('csv'))
+                    else:
+                        logger.warning('No s\'ha pogut invalidar el CSV: %s', result.get('message'))
                 except Exception as e:
                     logger.warning('No s\'ha pogut invalidar el CSV: %s', str(e))
             elif not acta_estava_signada:
@@ -784,9 +787,6 @@ class CancelFirm(BrowserView, FirmesMixin):
             # Paso 3: Resetear el estado del acta y documentos asociados
             logger.info('3. Reset del estat de l\'acta i documents associats')
             
-            # Resetear el acta
-            self.context.info_firma['enviatASignar'] = False
-
             # Resetear documentos asociados
             portal_catalog = api.portal.get_tool(name='portal_catalog')
             folder_path = '/'.join(self.context.aq_parent.getPhysicalPath())
@@ -822,9 +822,6 @@ class CancelFirm(BrowserView, FirmesMixin):
             logger.error('Error al cancel·lar la signatura en %s: %s',
                          self.context.absolute_url(), str(e))
             logger.error(traceback.format_exc())
-            if error == "Error":
-                self.context.plone_utils.addPortalMessage(
-                    _(u'Error al cancel·lar la signatura: Contacta amb algun administrador de la web perquè revisi la configuració.'), 'error')
             transaction.commit()
 
         return self.request.response.redirect(self.context.absolute_url())

@@ -163,19 +163,20 @@ class ClientFirma(object):
         Invalida una copia auténtica (CSV) para evitar copias firmadas.
         
         Args:
-            id_document: ID del documento en gDOC (opcional)
-            csv_id: ID del CSV a invalidar (opcional)
+            id_document: UUID del documento en gDOC
             
         Returns:
             dict: Respuesta del servicio de copias auténticas
         """
         url = self.settings.copiesautentiques_url + '/api/invalida'
-        headers = {'X-Api-Key': self.settings.copiesautentiques_apikey}
-        data = {}
         if id_document:
-            data['idDocument'] = id_document
+            url += '?idDocument=' + str(id_document)
+        headers = {
+            'X-Api-Key': self.settings.copiesautentiques_apikey,
+            'Accept': 'application/json'
+        }
         return json.loads(
-            self._request('POST', url, json_data=data, headers=headers, timeout=self.timeout).content
+            self._request('POST', url, headers=headers, timeout=self.timeout).content
         )
 
     def _request(self, method, url, data=None, json_data=None, headers=None, files=None, timeout=None):
