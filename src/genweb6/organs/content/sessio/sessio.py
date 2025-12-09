@@ -947,7 +947,7 @@ class View(BrowserView):
             roles = utils.getUserRoles(self, self.context, username)
 
         if organ_tipus == 'restricted_to_members_organ':
-            if is_anon or 'OG4-Afectat' in roles:
+            if is_anon or not utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
                 return []
 
         elif organ_tipus == 'restricted_to_affected_organ':
@@ -972,7 +972,7 @@ class View(BrowserView):
                     continue
 
                 if organ_tipus == 'restricted_to_affected_organ':
-                    if 'OG4-Afectat' in roles and not value.visiblefile:
+                    if not utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles) and not value.visiblefile:
                         continue
 
             elif obj.portal_type == 'genweb.organs.document':
@@ -980,7 +980,7 @@ class View(BrowserView):
                     continue
 
                 if organ_tipus == 'restricted_to_affected_organ':
-                    if 'OG4-Afectat' in roles and not value.defaultContent:
+                    if not utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles) and not value.defaultContent:
                         continue
 
             show_only_public = False
@@ -988,7 +988,7 @@ class View(BrowserView):
                 if is_anon:
                     show_only_public = True
             elif organ_tipus == 'restricted_to_affected_organ':
-                if 'OG4-Afectat' in roles:
+                if not utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
                     show_only_public = True
 
             has_double_content = False

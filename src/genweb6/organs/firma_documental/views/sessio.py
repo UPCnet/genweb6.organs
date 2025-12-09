@@ -481,6 +481,7 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
             'estatFirma': self.estatFirma(acta) if self.hasFirma(acta) else None,
             'actaPDF': self.getPDFActa(acta) if self.isSigned(acta) else None,
             'hasMultipleAnnexes': len(self.AnnexInsideActa(acta) or []) > 1,
+            'canCancelSignatura': self.canCancelSignatura(acta),
         }
 
     def getActaData(self):
@@ -500,3 +501,29 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
     def getAddActaURL(self):
         """OPTIMIZATION: Pre-calcula la URL per afegir acta"""
         return self.context.absolute_url() + '/++add++genweb.organs.acta/'
+
+    def canCancelSignatura(self, acta):
+        """
+        Verifica si se puede cancelar la signatura del acta.
+        
+        Condiciones:
+        - El acta debe estar enviada a firmar (hasFirma)
+        - La sesión debe estar en estado "en_correccio" (En modificació)
+        - El usuario debe tener permisos para firmar (mismos que canFirm)
+        """       
+        # Verificar que el acta está enviada a firmar
+        if not self.hasFirma(acta):
+            return False
+
+        # Verificar permisos (mismos que para firmar)
+        roles = utils.getUserRoles(self, self.context, api.user.get_current().id)
+        if not utils.checkhasRol(['Manager', 'OG1-Secretari'], roles):
+            return False
+        
+        # Verificar que la sesión está en estado "en_correccio" o "realitzada"
+        session = utils.get_session(self.context)
+        review_state = api.content.get_state(session)
+        if review_state in ['en_correccio', 'realitzada']:
+            return True
+        
+        return False

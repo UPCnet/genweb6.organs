@@ -1,14 +1,14 @@
 #-*- coding: utf-8 -*-
 
-import requests
+import datetime
 import json
 import logging
-import datetime
-
+import requests
 import unicodedata
 
 from plone import api
 from requests.exceptions import ConnectTimeout, ConnectionError, HTTPError, ReadTimeout
+
 from genweb6.organs.firma_documental.utils import get_settings_firma_documental
 from genweb6.organs import utils
 
@@ -142,6 +142,41 @@ class ClientFirma(object):
         }
         return json.loads(
             self._request('POST', url, json_data=data, headers={'X-Api-Key': self.settings.signaturacsv_apikey}, timeout=self.timeout).content
+        )
+
+    def cancelPeticioPortafirmes(self, id_peticio):
+        """
+        Cancela una petición de firma en Portafirmes.
+        
+        Args:
+            id_peticio: ID de la petición de firma a cancelar
+            
+        Returns:
+            dict: Respuesta del servicio Portafirmes
+        """
+        url = self.settings.portafirmes_url + '/' + str(id_peticio)
+        headers = {'X-Api-Key': self.settings.portafirmes_apikey}
+        return self._request('DELETE', url, headers=headers, timeout=self.timeout)
+
+    def invalidaCopiaAutentica(self, id_document=None):
+        """
+        Invalida una copia auténtica (CSV) para evitar copias firmadas.
+        
+        Args:
+            id_document: UUID del documento en gDOC
+            
+        Returns:
+            dict: Respuesta del servicio de copias auténticas
+        """
+        url = self.settings.copiesautentiques_url + '/api/invalida'
+        if id_document:
+            url += '?idDocument=' + str(id_document)
+        headers = {
+            'X-Api-Key': self.settings.copiesautentiques_apikey,
+            'Accept': 'application/json'
+        }
+        return json.loads(
+            self._request('POST', url, headers=headers, timeout=self.timeout).content
         )
 
     def _request(self, method, url, data=None, json_data=None, headers=None, files=None, timeout=None):
