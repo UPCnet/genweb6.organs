@@ -14,12 +14,15 @@ const CURRENT_YEAR = new Date().getFullYear();
 const PAGE_SIZE = 50;
 
 /**
- * Generar HTML del selector de años (2016 - año actual)
+ * Generar HTML del selector de años (2016 - año actual i posteriors)
  */
 function generateYearFilterHTML() {
   let html = '<option value="">Tots els anys</option>';
-  for (let year = CURRENT_YEAR; year >= START_YEAR; year--) {
-    html += `<option value="${year}" ${year === CURRENT_YEAR ? 'selected' : ''}>${year}</option>`;
+  // Año actual con texto especial "i posteriors"
+  html += `<option value="${CURRENT_YEAR}" selected>${CURRENT_YEAR} i posteriors</option>`;
+  // Años pasados
+  for (let year = CURRENT_YEAR - 1; year >= START_YEAR; year--) {
+    html += `<option value="${year}">${year}</option>`;
   }
   return html;
 }

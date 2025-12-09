@@ -1175,11 +1175,21 @@ class getAcordsOrgangovern(BrowserView):
 
         # Filtrar por año si se especifica
         if year_filter:
-            start_date = DateTime.DateTime(int(year_filter), 1, 1)
-            end_date = DateTime.DateTime(int(year_filter), 12, 31, 23, 59, 59)
-            query_params['start'] = {
-                'query': (start_date, end_date),
-                'range': 'min:max'}
+            year_int = int(year_filter)
+            current_year = datetime.datetime.now().year
+            start_date = DateTime.DateTime(year_int, 1, 1)
+
+            # Si es año actual, incluir años futuros (solo 'min')
+            if year_int == current_year:
+                query_params['start'] = {
+                    'query': start_date,
+                    'range': 'min'}
+            else:
+                # Años pasados: filtrar solo ese año
+                end_date = DateTime.DateTime(year_int, 12, 31, 23, 59, 59)
+                query_params['start'] = {
+                    'query': (start_date, end_date),
+                    'range': 'min:max'}
 
         # Obtener sessions (con filtro si hay, sin filtro si no)
         sessions = portal_catalog.unrestrictedSearchResults(**query_params)
@@ -1359,11 +1369,21 @@ class getSessionsOrgangovern(BrowserView):
 
         # Filtrar por año si se especifica
         if year_filter:
-            start_date = DateTime.DateTime(int(year_filter), 1, 1)
-            end_date = DateTime.DateTime(int(year_filter), 12, 31, 23, 59, 59)
-            query_params['start'] = {
-                'query': (start_date, end_date),
-                'range': 'min:max'}
+            year_int = int(year_filter)
+            current_year = datetime.datetime.now().year
+            start_date = DateTime.DateTime(year_int, 1, 1)
+
+            # Si es año actual, incluir años futuros (solo 'min')
+            if year_int == current_year:
+                query_params['start'] = {
+                    'query': start_date,
+                    'range': 'min'}
+            else:
+                # Años pasados: filtrar solo ese año
+                end_date = DateTime.DateTime(year_int, 12, 31, 23, 59, 59)
+                query_params['start'] = {
+                    'query': (start_date, end_date),
+                    'range': 'min:max'}
 
         # Obtener brains
         sessions_brains = portal_catalog.searchResults(**query_params)
@@ -1535,6 +1555,7 @@ class getActesOrgangovern(BrowserView):
         # Filtrar sessions por año si se especifica
         if year_filter:
             year_int = int(year_filter)
+            current_year = datetime.datetime.now().year
             sessions = []
             for s in all_sessions:
                 start_date = getattr(s, 'start', None)
@@ -1543,8 +1564,14 @@ class getActesOrgangovern(BrowserView):
                         # Extraer año (compatible con DateTime y datetime)
                         s_year = (start_date.year() if callable(start_date.year)
                                   else start_date.year)
-                        if s_year == year_int:
-                            sessions.append(s)
+                        # Si es año actual, incluir años futuros
+                        if year_int == current_year:
+                            if s_year >= year_int:
+                                sessions.append(s)
+                        else:
+                            # Años pasados: solo ese año
+                            if s_year == year_int:
+                                sessions.append(s)
                     except Exception:
                         pass
         else:
