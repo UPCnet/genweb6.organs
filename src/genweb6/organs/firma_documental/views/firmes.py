@@ -23,6 +23,7 @@ import json
 import logging
 import os
 import pdfkit
+import time
 import transaction
 import traceback
 
@@ -648,9 +649,9 @@ class ResetFirm(BrowserView):
 
     def __call__(self):
         estat_firma = self.estatFirma()
-        if estat_firma and estat_firma['class'] != 'rebutjada':
+        if estat_firma and estat_firma['class'] not in ['rebutjada', 'cancelada']:
             self.context.plone_utils.addPortalMessage(
-                _(u'No es pot reiniciar la firma d\'una sessió que no està rebutjada'), 'error')
+                _(u'No es pot reiniciar la firma d\'una sessió que no està rebutjada o cancel·lada'), 'error')
             return self.request.response.redirect(self.context.absolute_url())
 
         try:
@@ -766,12 +767,13 @@ class CancelFirm(BrowserView, FirmesMixin):
             # El CSV solo existe si el acta llegó a estar firmada
             estat_firma = getattr(self.context, 'estat_firma', '') or ''
             acta_estava_signada = estat_firma.lower() == 'signada'
-            
+
             if acta_estava_signada and self.context.info_firma.get('acta', {}).get('uuid'):
                 cancel_step = "invalidaCopiaAutentica"
                 acta_uuid = self.context.info_firma['acta']['uuid']
                 logger.info('2. Invalidació de la copia autèntica (CSV) per al document %s', acta_uuid)
                 try:
+                    time.sleep(2)
                     result = client.invalidaCopiaAutentica(id_document=acta_uuid)
                     if result.get('success', False):
                         logger.info('2.1. S\'ha invalidat correctament la copia autèntica (CSV: %s)', result.get('csv'))
@@ -786,7 +788,7 @@ class CancelFirm(BrowserView, FirmesMixin):
 
             # Paso 3: Resetear el estado del acta y documentos asociados
             logger.info('3. Reset del estat de l\'acta i documents associats')
-            
+
             # Resetear documentos asociados
             portal_catalog = api.portal.get_tool(name='portal_catalog')
             folder_path = '/'.join(self.context.aq_parent.getPhysicalPath())
@@ -810,11 +812,11 @@ class CancelFirm(BrowserView, FirmesMixin):
 
             self.context.plone_utils.addPortalMessage(
                 _(u'S\'ha cancel·lat la signatura correctament. Ara pots modificar l\'acta i tornar-la a enviar a signar.'), 'success')
-            
+
             utils.addEntryLog(sessio, None,
                               _(u'Cancel·lació de signatura de l\'acta'),
                               self.context.absolute_url())
-            
+
             transaction.commit()
 
         except Exception as e:
