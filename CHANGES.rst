@@ -2,11 +2,33 @@ Changelog
 =========
 
 
-1.6 (unreleased)
+1.6 (2025-12-09)
 ----------------
 
-- Nothing changed yet.
-
+* [FIX] Disable viewGDoc [Pilar Marinas]
+* [ADD] Añadir los futuros en el filtro del año actual [Pilar Marinas]
+* [DEL] Quitar purge_cache_varnish [Iago López]
+* [FIX] Descargar gdoc [Iago López]
+* Merge remote-tracking branch 'origin/develop' into rendimiento [Iago López]
+* Merge remote-tracking branch 'origin/develop' into cancelar_firma [Iago López]
+* [UPD] Limpieza [Iago López]
+* [UDP] Avances cancelacion firma [Iago López]
+* [UPD] Avances cancelacion [Iago López]
+* [RENDIMIENTO] En las vistas filtradas solo calcular los elementos a mostrar por pagina y arreglar literal estado en sessiones [Pilar Marinas]
+* [ADD] Aviso cuando se modifica o añade contenido en una session ya enviada a firmar o firmada [Iago López]
+* [RENDIMIENTO] allOrgansEstatsLlista eliminar un getObject() 2 veces en la misma linea [Pilar Marinas]
+* [UPD] Avances cancelacion firma [Iago López]
+* [RENDIMIENTO] Optimizar ActaPrintView (Evitar getObject en bucles) [Pilar Marinas]
+* [FIX] Para que los js cargen en la raiz y no den error [Pilar Marinas]
+* [FIX] Para que los js cargen en la raiz y no den error [Pilar Marinas]
+* [TESTING] test_filesinsidepunt_visibility [Pilar Marinas]
+* [FIX] Controlar la prioridad de roles [Iago López]
+* [RENDIMIENTO] Hacer hasdcode el filtro por años empieza 2016 [Pilar Marinas]
+* [RENDIMIENTO] Filtrar vista actas por años [Pilar Marinas]
+* [UPD] Añadir boton de cancelacion en estado realizada tambien [Iago López]
+* [RENDIMIENTO] Filtrar vista sessiones por años [Pilar Marinas]
+* [RENDIMIENTO] Filtrar vista acords por años [Pilar Marinas]
+* [ADD] Cancelar firma [Iago López]
 
 1.5 (2025-12-01)
 ----------------
