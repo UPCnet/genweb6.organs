@@ -3,6 +3,7 @@ from AccessControl.unauthorized import Unauthorized
 from Products.Five.browser import BrowserView
 
 from plone import api
+from plone.protect.interfaces import IDisableCSRFProtection
 
 # from plone.uuid.interfaces import IUUID
 from plone.app.uuid.utils import uuidToObject
@@ -16,6 +17,7 @@ from genweb6.organs.firma_documental.views.general import viewGDoc
 from genweb6.organs.firma_documental.utils import hasFirmaActa, estatFirmaActa
 from genweb6.organs.firma_documental.webservices import ClientFirma, ClientFirmaException, uploadFileGdoc
 from genweb6.organs.utils import purge_cache_varnish
+from zope.interface import alsoProvides
 
 import ast
 import datetime
@@ -285,7 +287,7 @@ class SignActa(BrowserView, FirmesMixin):
         pdfkit.from_url(
             self.context.absolute_url() + '/printActa', TMP_FOLDER + '/' + self.context.id +
             '.pdf', options=options, verbose=True)
-        return open(TMP_FOLDER + '/' +self.context.id + '.pdf', 'rb')
+        return open(TMP_FOLDER + '/' + self.context.id + '.pdf', 'rb')
 
     def removeActaPDF(self):
         try:
@@ -444,9 +446,9 @@ class SignActa(BrowserView, FirmesMixin):
                 {'fitxer': [self.context.id + '.pdf', actaPDF.read(), 'application/pdf']},
                 is_acta=True
             )
-            self.context.info_firma['acta'].update({
-                'sizeKB': os.path.getsize(TMP_FOLDER + '/' + self.context.id + '.pdf') / 1024
-            })
+            self.context.info_firma['acta'].update(
+                {'sizeKB': os.path.getsize(
+                    TMP_FOLDER + '/' + self.context.id + '.pdf') / 1024})
 
             logger.info('5. Puja dels fitxers adjunts al gDOC')
             sign_step = "uploadAdjuntGDoc"
@@ -557,6 +559,9 @@ class ViewFile(BrowserView):
     _obtain_file_method_ = viewGDoc
 
     def __call__(self):
+        # Deshabilitar protección CSRF para vistas de solo lectura
+        alsoProvides(self.request, IDisableCSRFProtection)
+
         if 'pos' in self.request or 'visibility' in self.request:
             if not isinstance(self.context.info_firma, dict):
                 self.context.info_firma = ast.literal_eval(self.context.info_firma)
@@ -693,7 +698,7 @@ class ResetFirm(BrowserView):
 class CancelFirm(BrowserView, FirmesMixin):
     """
     Vista para cancelar la signatura de un acta.
-    
+
     Proceso:
     1. Verifica que el acta está enviada a firmar
     2. Verifica que la sesión está en estado "en_correccio" (En modificació)
@@ -715,12 +720,12 @@ class CancelFirm(BrowserView, FirmesMixin):
     def __call__(self):
         """
         Ejecuta el proceso de cancelación de signatura.
-        
+
         Casos manejados:
         - Cas 1: Acta no signada encara
         - Cas 2: Acta signada parcialment
         - Cas 3: Acta totalment signada
-        
+
         En todos los casos se:
         - Cancela la petición en Portafirmes
         - Invalida el CSV
@@ -730,7 +735,9 @@ class CancelFirm(BrowserView, FirmesMixin):
         if not isinstance(self.context.info_firma, dict):
             self.context.info_firma = ast.literal_eval(self.context.info_firma)
 
-        if not self.context.info_firma or not self.context.info_firma.get('enviatASignar', False):
+        if not self.context.info_firma or not self.context.info_firma.get(
+            'enviatASignar',
+                False):
             self.context.plone_utils.addPortalMessage(
                 _(u'L\'acta no s\'ha enviat a signar'), 'error')
             return self.request.response.redirect(self.context.absolute_url())
@@ -756,10 +763,12 @@ class CancelFirm(BrowserView, FirmesMixin):
             # Paso 1: Cancelar la petición en Portafirmes
             if hasattr(self.context, 'id_firma') and self.context.id_firma:
                 cancel_step = "cancelPeticioPortafirmes"
-                logger.info('1. Cancel·lació de la petició de signatura al Portafirmes (ID: %s)',
-                            self.context.id_firma)
+                logger.info(
+                    '1. Cancel·lació de la petició de signatura al Portafirmes (ID: %s)',
+                    self.context.id_firma)
                 client.cancelPeticioPortafirmes(self.context.id_firma)
-                logger.info('1.1. S\'ha cancel·lat correctament la petició al Portafirmes')
+                logger.info(
+                    '1.1. S\'ha cancel·lat correctament la petició al Portafirmes')
             else:
                 logger.warning('No s\'ha trobat id_firma per cancel·lar al Portafirmes')
 
@@ -768,21 +777,30 @@ class CancelFirm(BrowserView, FirmesMixin):
             estat_firma = getattr(self.context, 'estat_firma', '') or ''
             acta_estava_signada = estat_firma.lower() == 'signada'
 
-            if acta_estava_signada and self.context.info_firma.get('acta', {}).get('uuid'):
+            if acta_estava_signada and self.context.info_firma.get(
+                    'acta', {}).get('uuid'):
                 cancel_step = "invalidaCopiaAutentica"
                 acta_uuid = self.context.info_firma['acta']['uuid']
-                logger.info('2. Invalidació de la copia autèntica (CSV) per al document %s', acta_uuid)
+                logger.info(
+                    '2. Invalidació de la copia autèntica (CSV) per al document %s',
+                    acta_uuid)
                 try:
                     time.sleep(2)
                     result = client.invalidaCopiaAutentica(id_document=acta_uuid)
                     if result.get('success', False):
-                        logger.info('2.1. S\'ha invalidat correctament la copia autèntica (CSV: %s)', result.get('csv'))
+                        logger.info(
+                            '2.1. S\'ha invalidat correctament la copia autèntica (CSV: %s)',
+                            result.get('csv'))
                     else:
-                        logger.warning('No s\'ha pogut invalidar el CSV: %s', result.get('message'))
+                        logger.warning(
+                            'No s\'ha pogut invalidar el CSV: %s',
+                            result.get('message'))
                 except Exception as e:
                     logger.warning('No s\'ha pogut invalidar el CSV: %s', str(e))
             elif not acta_estava_signada:
-                logger.info('2. No cal invalidar el CSV perquè l\'acta no estava signada (estat: %s)', estat_firma)
+                logger.info(
+                    '2. No cal invalidar el CSV perquè l\'acta no estava signada (estat: %s)',
+                    estat_firma)
             else:
                 logger.warning('No s\'ha trobat uuid del document per invalidar el CSV')
 
@@ -808,7 +826,8 @@ class CancelFirm(BrowserView, FirmesMixin):
                 obj.estat_firma = ''
                 obj.reindexObject()
 
-            logger.info('3.1. S\'ha resetejat correctament l\'estat de l\'acta i documents')
+            logger.info(
+                '3.1. S\'ha resetejat correctament l\'estat de l\'acta i documents')
 
             self.context.plone_utils.addPortalMessage(
                 _(u'S\'ha cancel·lat la signatura correctament. Ara pots modificar l\'acta i tornar-la a enviar a signar.'), 'success')
