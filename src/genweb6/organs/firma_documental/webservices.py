@@ -1,14 +1,14 @@
 #-*- coding: utf-8 -*-
 
-import requests
+import datetime
 import json
 import logging
-import datetime
-
+import requests
 import unicodedata
 
 from plone import api
 from requests.exceptions import ConnectTimeout, ConnectionError, HTTPError, ReadTimeout
+
 from genweb6.organs.firma_documental.utils import get_settings_firma_documental
 from genweb6.organs import utils
 
