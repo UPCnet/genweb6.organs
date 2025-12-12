@@ -98,6 +98,7 @@
                     <a tal:attributes="data-id item/id;
                                       href item/absolute_url"
                       data-url="changeTitle"
+                      target="_blank"
                       class="editTitle titleSize text-dark">
                       <tal:omit-tag tal:content="item/title">Item Title</tal:omit-tag>
                     </a>
@@ -143,7 +144,8 @@
                           <div class="titleSpan d-flex">
                             <i tal:attributes="class string:${file_item/classCSS} me-1 flex-shrink-0"></i>
                             <a tal:attributes="href file_item/absolute_url;"
-                               class="text-dark">
+                               class="text-dark"
+                               target="_blank">
                               <tal:omit-tag tal:content="file_item/title"> Doc title</tal:omit-tag>
                             </a>
                             <div class="ms-auto flex-shrink-0" tal:condition="file_item/isGODocument">
@@ -212,7 +214,8 @@
                             <a tal:attributes="data-id itemSubpunt_id;
                                                href itemSubpunt/absolute_url"
                               data-type="text" data-url="changeTitle"
-                              class="editTitle subtitleSize text-dark">
+                              class="editTitle subtitleSize text-dark"
+                              target="_blank">
                               <tal:omit-tag tal:content="itemSubpunt/title">Item Title</tal:omit-tag>
                             </a>
                             <span tal:condition="agreement" class="text-muted fs-5"
@@ -251,7 +254,8 @@
                               <li class="filesinTable w-100 d-flex mt-2">
                                 <i tal:attributes="class string:${item/classCSS} me-1 flex-shrink-0"></i>
                                 <a tal:attributes="href item/absolute_url;"
-                                    class="text-dark">
+                                    class="text-dark"
+                                    target="_blank">
                                   <tal:omit-tag tal:content="item/title"> Doc title</tal:omit-tag>
                                 </a>
                                 <div class="ms-auto flex-shrink-0" tal:condition="item/isGODocument">
