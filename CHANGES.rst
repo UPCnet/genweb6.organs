@@ -2,11 +2,12 @@ Changelog
 =========
 
 
-1.7 (unreleased)
+1.7 (2025-12-15)
 ----------------
 
-- Nothing changed yet.
-
+* [DOC] Memoize [Pilar Marinas]
+* [FIX] Mode presetació obrir enllaç en finestra nova [Pilar Marinas]
+* feat(tinymce): habilitar paste de imágenes desde clipboard [Pilar Marinas]
 
 1.6 (2025-12-09)
 ----------------
