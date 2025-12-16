@@ -2,11 +2,10 @@ Changelog
 =========
 
 
-1.8 (unreleased)
+1.8 (2025-12-16)
 ----------------
 
-- Nothing changed yet.
-
+* [FIX] En mode presentació pdf en ventana nueva [Pilar Marinas]
 
 1.7 (2025-12-15)
 ----------------
