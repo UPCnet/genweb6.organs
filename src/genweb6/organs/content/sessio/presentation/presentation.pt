@@ -143,11 +143,10 @@
                         <li class="filesinTable w-100 mt-2">
                           <div class="titleSpan d-flex">
                             <i tal:attributes="class string:${file_item/classCSS} me-1 flex-shrink-0"></i>
-                            <a tal:attributes="href file_item/absolute_url;"
+                            <a tal:attributes="href file_item/absolute_url"
                                class="text-dark"
-                               target="_blank">
-                              <tal:omit-tag tal:content="file_item/title"> Doc title</tal:omit-tag>
-                            </a>
+                               target="_blank"
+                               tal:content="file_item/title"> Doc title</a>
                             <div class="ms-auto flex-shrink-0" tal:condition="file_item/isGODocument">
                               <a class="btn btn-outline-primary btn-sm ms-2"
                                  tal:condition="file_item/publicRaw"
@@ -173,21 +172,15 @@
                             <div class="ms-auto flex-shrink-0" tal:condition="file_item/isGOFile">
                               <a class="btn btn-outline-primary btn-sm ms-2"
                                  tal:condition="file_item/publicURL"
-                                 href="#"
-                                 data-bs-toggle="modal"
-                                 data-bs-target="#fileContentModal"
-                                 tal:attributes="data-url file_item/publicURL;
-                                                 data-title string:Fitxer públic"
+                                 target="_blank"
+                                 tal:attributes="href file_item/publicURL"
                                  i18n:translate="">
                                 Fitxer públic
                               </a>
                               <a class="btn btn-outline-primary btn-sm ms-2"
                                  tal:condition="file_item/reservedURL"
-                                 href="#"
-                                 data-bs-toggle="modal"
-                                 data-bs-target="#fileContentModal"
-                                 tal:attributes="data-url file_item/reservedURL;
-                                                 data-title string:Fitxer restringit"
+                                 target="_blank"
+                                 tal:attributes="href file_item/reservedURL"
                                  i18n:translate="">
                                 Fitxer restringit
                               </a>
@@ -253,11 +246,10 @@
                             <tal:documents repeat="item files">
                               <li class="filesinTable w-100 d-flex mt-2">
                                 <i tal:attributes="class string:${item/classCSS} me-1 flex-shrink-0"></i>
-                                <a tal:attributes="href item/absolute_url;"
-                                    class="text-dark"
-                                    target="_blank">
-                                  <tal:omit-tag tal:content="item/title"> Doc title</tal:omit-tag>
-                                </a>
+                                <a tal:attributes="href item/absolute_url"
+                                   class="text-dark"
+                                   target="_blank"
+                                   tal:content="item/title"> Doc title</a>
                                 <div class="ms-auto flex-shrink-0" tal:condition="item/isGODocument">
                                   <a class="btn btn-outline-primary btn-sm ms-2"
                                      tal:condition="item/publicRaw"
@@ -283,21 +275,15 @@
                                 <div class="ms-auto flex-shrink-0" tal:condition="item/isGOFile">
                                   <a class="btn btn-outline-primary btn-sm ms-2"
                                      tal:condition="item/publicURL"
-                                     data-bs-toggle="modal"
-                                     data-bs-target="#fileContentModal"
-                                     tal:attributes="data-url item/publicURL;
-                                                     data-title string:Fitxer públic"
-                                     href="#"
+                                     target="_blank"
+                                     tal:attributes="href item/publicURL"
                                      i18n:translate="">
                                     Fitxer públic
                                   </a>
                                   <a class="btn btn-outline-primary btn-sm ms-2"
                                      tal:condition="item/reservedURL"
-                                     data-bs-toggle="modal"
-                                     data-bs-target="#fileContentModal"
-                                     tal:attributes="data-url item/reservedURL;
-                                                     data-title string:Fitxer restringit"
-                                     href="#"
+                                     target="_blank"
+                                     tal:attributes="href item/reservedURL"
                                      i18n:translate="">
                                     Fitxer restringit
                                   </a>
