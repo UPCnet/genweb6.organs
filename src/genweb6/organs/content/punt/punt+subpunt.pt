@@ -7,7 +7,7 @@
       i18n:domain="genweb6.organs">
 <body>
 
-<div metal:fill-slot="main">
+<div metal:fill-slot="main" tal:condition="view/canView">
   <div class="content-core"
        tal:define="filesinside view/FilesandDocumentsInside;
                    subpuntinside view/SubPuntsInside;">
