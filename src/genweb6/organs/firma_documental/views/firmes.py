@@ -281,9 +281,63 @@ class SignActa(BrowserView, FirmesMixin):
             return signants.split(', ')
         return None
 
+    def _getSystemFontsCSS(self):
+        """Crea un archivo CSS temporal que fuerza el uso de fuentes del sistema."""
+        css_file = os.path.join(TMP_FOLDER, 'system_fonts_pdf.css')
+        # CSS que fuerza fuentes del sistema estándar y maximiza el ancho del contenido
+        css_content = """
+/* Fuerza el uso de fuentes del sistema estándar */
+* {
+    font-family: Arial, Helvetica, "Liberation Sans", "DejaVu Sans", sans-serif !important;
+}
+/* Maximiza el ancho del contenido para reducir márgenes blancos */
+body, html {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.container, .container-fluid, #content, #main, .main-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+/* Asegura que las columnas usen todo el ancho disponible */
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+}
+
+.col-12, .col-6 {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+"""
+        with open(css_file, 'w') as f:
+            f.write(css_content)
+        return css_file
+
     def generateActaPDF(self):
-        options = {'cookie': [('__ac', self.request.cookies['__ac']),
-                              ('I18N_LANGUAGE', self.request.cookies.get('I18N_LANGUAGE', 'ca'))]}
+        # CSS para forzar fuentes del sistema
+        css_file = self._getSystemFontsCSS()
+        options = {
+            'cookie': [
+                ('__ac', self.request.cookies['__ac']),
+                ('I18N_LANGUAGE', self.request.cookies.get('I18N_LANGUAGE', 'ca'))
+            ],
+            'user-style-sheet': css_file,     # CSS para forzar fuentes del sistema
+            'page-size': 'A4',                # Tamaño de página A4
+            'margin-top': '10mm',             # Margen superior
+            'margin-bottom': '10mm',          # Margen inferior
+            'margin-left': '10mm',            # Margen izquierdo
+            'margin-right': '10mm',            # Margen derecho reducido
+        }
         pdfkit.from_url(
             self.context.absolute_url() + '/printActa', TMP_FOLDER + '/' + self.context.id +
             '.pdf', options=options, verbose=True)
@@ -296,8 +350,20 @@ class SignActa(BrowserView, FirmesMixin):
             pass
 
     def generateDocumentPDF(self, document, filename, visibility='public'):
-        options = {'cookie': [('__ac', self.request.cookies['__ac']),
-                              ('I18N_LANGUAGE', self.request.cookies.get('I18N_LANGUAGE', 'ca'))]}
+        # CSS para forzar fuentes del sistema
+        css_file = self._getSystemFontsCSS()
+        options = {
+            'cookie': [
+                ('__ac', self.request.cookies['__ac']),
+                ('I18N_LANGUAGE', self.request.cookies.get('I18N_LANGUAGE', 'ca'))
+            ],
+            'user-style-sheet': css_file,     # CSS para forzar fuentes del sistema
+            'page-size': 'A4',                # Tamaño de página A4
+            'margin-top': '10mm',             # Margen superior
+            'margin-bottom': '10mm',           # Margen inferior
+            'margin-left': '10mm',            # Margen izquierdo
+            'margin-right': '10mm',            # Margen derecho reducido
+        }
         _filename = filename.replace('/', ' ')
         pdfkit.from_url(
             document.absolute_url() + '/printDocument?visibility=' + visibility,
