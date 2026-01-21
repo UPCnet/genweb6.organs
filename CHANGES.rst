@@ -2,11 +2,12 @@ Changelog
 =========
 
 
-1.9 (unreleased)
+1.9 (2026-01-21)
 ----------------
 
-- Nothing changed yet.
-
+* [FIX] Disable CSRF reorderSessions [Pilar Marinas]
+* [FIX] Peso al generar pdf [Iago López]
+* [FIX] Comprobar permisos punt i subpunt [pilar.marinas]
 
 1.8 (2025-12-16)
 ----------------
