@@ -1019,6 +1019,10 @@ class ReorderSessions(BrowserView):
     def __call__(self):
         """ This call reassign the correct sessions for an organ
         """
+        # Disable CSRF
+        if CSRF:
+            alsoProvides(self.request, IDisableCSRFProtection)
+
         portal_catalog = api.portal.get_tool(name='portal_catalog')
         brains = portal_catalog.searchResults(portal_type="genweb.organs.sessio")
         sessions_to_reorder = []
