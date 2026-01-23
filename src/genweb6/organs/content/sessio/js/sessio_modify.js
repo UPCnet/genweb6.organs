@@ -121,7 +121,7 @@ $(document).ready(function(){
     $('.spinner-block').removeClass('d-none');
     $.ajax({
       type: 'POST',
-      url: window.location.href.split('?')[0].replace(/\/$/, "") + '/@@createElement',
+      url: $('body').attr('data-base-url').split('?')[0].replace(/\/$/, "") + '/@@createElement',
       data: { action: 'createPunt', name: value },
       success: function(){
         if ($modalPunt.length) $modalPunt.modal('hide');
@@ -146,7 +146,7 @@ $(document).ready(function(){
     $('.spinner-block').removeClass('d-none');
     $.ajax({
       type: 'POST',
-      url: window.location.href.split('?')[0].replace(/\/$/, "") + '/@@createElement',
+      url: $('body').attr('data-base-url').split('?')[0].replace(/\/$/, "") + '/@@createElement',
       data: { action: 'createAcord', name: value },
       success: function(){
         if ($modalAcord.length) $modalAcord.modal('hide');
@@ -267,7 +267,7 @@ $(document).ready(function(){
     // Crear un formulario temporal para enviar los datos
     const $form = $('<form>', {
       'method': 'POST',
-      'action': window.location.href.split('?')[0].replace(/\/$/, "") + '/manualStructureCreation'
+      'action': $('body').attr('data-base-url').split('?')[0].replace(/\/$/, "") + '/manualStructureCreation'
     });
 
     $form.append($('<input>', {
