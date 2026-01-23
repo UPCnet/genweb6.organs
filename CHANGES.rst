@@ -2,11 +2,10 @@ Changelog
 =========
 
 
-1.10 (unreleased)
+1.10 (2026-01-23)
 -----------------
 
-- Nothing changed yet.
-
+* [FIX] Url js modify session [Iago López]
 
 1.9 (2026-01-21)
 ----------------
