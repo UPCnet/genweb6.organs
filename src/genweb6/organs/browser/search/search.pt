@@ -243,7 +243,7 @@
           <a href="https://www.upc.edu/slt/ca/recursos-redaccio/models-documents/governupc" target="_blank"
             class="card card-organ text-bg-light h-100 text-decoration-none d-flex flex-row justify-content-between align-items-center wrapper-img-link">
             <div class="card-body">
-              <h2 class="card-title h5 mb-0" i18n:translate="">Pautes per a l'elaboració de documents</h2>
+              <h2 class="card-title h5 mb-0" i18n:translate="">Pautes i models per a l'elaboració de documents</h2>
             </div>
             <div class="card-ic-circle flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle border border-2 border-primary me-3">
               <i class="bi bi-box-arrow-up-right text-primary" aria-hidden="true"></i>
