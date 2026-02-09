@@ -2,11 +2,10 @@ Changelog
 =========
 
 
-1.12 (unreleased)
+1.12 (2026-02-09)
 -----------------
 
-- Nothing changed yet.
-
+* [UPD] Cambiar enlace Pautes i models per a l'elaboració de documents [Iago López]
 
 1.11 (2026-02-09)
 -----------------
