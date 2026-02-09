@@ -241,6 +241,24 @@ class Edit(edit.DefaultEditForm):
 
     def updateWidgets(self):
         super(Edit, self).updateWidgets()
+        apply_gdoc_widget_restrictions(self, self.context)
+
+
+def apply_gdoc_widget_restrictions(self, context):
+    """Aplica restriccions de lectura/edició als camps gDOC segons el rol (Add i Edit)."""
+    roles = api.user.get_roles(obj=context)
+    if 'Manager' in roles:
+        return
+
+    gdoc_group = next((g for g in self.groups if getattr(g, '__name__', None) == 'gdoc'), None)
+    if gdoc_group:
+        if utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
+            gdoc_group.fields['serie'].mode = 'display'
+            gdoc_group.fields['author'].mode = 'display'
+
+        if 'OG2-Editor' in roles:
+            gdoc_group.fields['visiblegdoc'].mode = 'display'
+            gdoc_group.fields['signants'].mode = 'display'
 
 
 class View(BrowserView):
