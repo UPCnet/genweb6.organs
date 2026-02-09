@@ -2,11 +2,11 @@ Changelog
 =========
 
 
-1.11 (unreleased)
+1.11 (2026-02-09)
 -----------------
 
-- Nothing changed yet.
-
+* [ADD] Limitar quien puede rellenar los campos de gdoc dentro del organ [Iago López]
+* [UPD] Cambiar literal [Iago López]
 
 1.10 (2026-01-23)
 -----------------
