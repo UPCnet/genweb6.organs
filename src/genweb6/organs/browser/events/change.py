@@ -2,6 +2,7 @@
 from Products.statusmessages.interfaces import IStatusMessage
 
 from plone import api
+from plone.event.interfaces import IEventAccessor
 from zExceptions import Redirect
 from zope.globalrequest import getRequest
 
@@ -12,6 +13,7 @@ from genweb6.organs.firma_documental.utils import hasFirmaActa
 from genweb6.organs.utils import addEntryLog
 from genweb6.organs.utils import get_organ
 
+import datetime
 import transaction
 
 
@@ -44,14 +46,20 @@ def sessio_changed(session, event):
         if event.transition.id == 'tancar':
             organ = get_organ(session)
             if organ.visiblegdoc:
-                estat_firma = estatFirma(session)
-                if event.status['review_state'] == 'realitzada' and (
-                        not estat_firma or estat_firma['class'] != 'signada'):
-                    IStatusMessage(
-                        getRequest()).addStatusMessage(
-                        _(u'No es pot tancar la sessió si no està signada l\'acta.'),
-                        'alert')
-                    raise Redirect(session.absolute_url())
+                # Sessions anteriors a 01/09/2025 no poden firmar; es permet tancar sense firma
+                acc = IEventAccessor(session)
+                fecha_limite = None
+                if acc.end is not None:
+                    fecha_limite = datetime.datetime(2025, 9, 1, tzinfo=acc.end.tzinfo)
+                if fecha_limite is None or acc.end >= fecha_limite:
+                    estat_firma = estatFirma(session)
+                    if event.status['review_state'] == 'realitzada' and (
+                            not estat_firma or estat_firma['class'] != 'signada'):
+                        IStatusMessage(
+                            getRequest()).addStatusMessage(
+                            _(u'No es pot tancar la sessió si no està signada l\'acta.'),
+                            'alert')
+                        raise Redirect(session.absolute_url())
             member = api.user.get(username='admin')
             user = member.getUser()
             session.changeOwnership(user, recursive=False)
