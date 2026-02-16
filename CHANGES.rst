@@ -2,11 +2,11 @@ Changelog
 =========
 
 
-1.13 (unreleased)
+1.13 (2026-02-16)
 -----------------
 
-- Nothing changed yet.
-
+* [UPD] Poder cerrar sessiones antiguas si tienen el check de firma activado y no se enviaron a firmar (no pueden porque son antiguas y esta deshabilitado) [Iago López]
+* [FIX] npm audit [Iago López]
 
 1.12 (2026-02-09)
 -----------------
