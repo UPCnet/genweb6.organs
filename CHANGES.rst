@@ -2,11 +2,10 @@ Changelog
 =========
 
 
-1.14 (unreleased)
+1.14 (2026-02-16)
 -----------------
 
-- Nothing changed yet.
-
+* [UPD] Añadir paginacion en el search principal [Iago López]
 
 1.13 (2026-02-16)
 -----------------

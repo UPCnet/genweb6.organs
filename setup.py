@@ -12,7 +12,7 @@ long_description = '\n\n'.join([
 ])
 setup(
     name='genweb6.organs',
-    version='1.14.dev0',
+    version='1.14',
     description="Paquet Organs de Govern amb jQuery i que s'integra a Genweb 6.",
     long_description=long_description,
     classifiers=[
