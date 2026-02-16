@@ -84,7 +84,7 @@
     <div class="tab-content" id="tabsContent">
       <div class="tab-pane fade show active" id="sessions-tab-panel" role="tabpanel" aria-labelledby="sessions-tab" tabindex="0">
         <!-- Filtre per any -->
-        <div class="row mb-3">
+        <div class="row mb-3 align-items-end">
           <div class="col-md-4 col-sm-6">
             <label for="sessions-year-filter" class="form-label" i18n:translate="">Filtra per any</label>
             <select id="sessions-year-filter" class="form-select">
@@ -178,7 +178,7 @@
       </div>
       <div class="tab-pane fade" id="acords-tab-panel" role="tabpanel" aria-labelledby="acords-tab" tabindex="0">
         <!-- Filtre per any -->
-        <div class="row mb-3">
+        <div class="row mb-3 align-items-end">
           <div class="col-md-4 col-sm-6">
             <label for="year-filter" class="form-label" i18n:translate="">Filtra per any</label>
             <select id="year-filter" class="form-select">
@@ -229,7 +229,7 @@
       </div>
       <div class="tab-pane fade" id="actas-tab-panel" tal:condition="viewActes" role="tabpanel" aria-labelledby="actas-tab" tabindex="0">
         <!-- Filtre per any -->
-        <div class="row mb-3">
+        <div class="row mb-3 align-items-end">
           <div class="col-md-4 col-sm-6">
             <label for="actes-year-filter" class="form-label" i18n:translate="">Filtra per any</label>
             <select id="actes-year-filter" class="form-select">

@@ -95,6 +95,7 @@
       <form id="search-form" name="searchform" action="@@search" role="search" class="border rounded-3 text-bg-light p-3">
         <input type="hidden" name="advanced_search" value="False" />
         <input type="hidden" name="created.range:record" value="min" />
+        <input type="hidden" name="b_start" id="search-b-start" value="0" />
         <div class="row mb-3 g-2 align-items-end">
           <div class="col-md-10 col-sm-12">
             <input type="text" class="form-control" id="searchText" name="SearchableText" placeholder="Cercar..."
@@ -176,11 +177,18 @@
               </div>
             </div>
             <div id="search-results">
-              <tal:block tal:define="results view/results;
+              <tal:block tal:define="batch view/get_search_batch;
                                      toLocalizedTime nocall:context/@@plone/toLocalizedTime">
-                <tal:block tal:condition="results">
+                <tal:block tal:condition="batch/results">
+                  <p class="text-muted small mb-2" id="search-result-count">
+                    <span i18n:translate="">Mostrant</span>
+                    <span tal:content="batch/first_item">1</span>–<span tal:content="batch/last_item">15</span>
+                    <span i18n:translate="">de</span>
+                    <span tal:content="batch/total">0</span>
+                    <span i18n:translate="">resultats</span>.
+                  </p>
                   <div class="searchResults">
-                    <tal:items repeat="item results">
+                    <tal:items repeat="item batch/results">
                       <div class="mb-3">
                         <i class="bi bi-file-earmark-text me-2 text-secondary"></i>
                         <a tal:attributes="href item/getURL" tal:content="item/Title" class="fw-bold text-decoration-none"></a>
@@ -213,8 +221,45 @@
                       </div>
                     </tal:items>
                   </div>
+                  <!-- Paginació (mateix estil que organgovern.pt) -->
+                  <div id="searchPagination" class="d-flex justify-content-center mt-3 mb-3" tal:condition="python: batch.total_pages > 1">
+                    <nav aria-label="Paginació">
+                      <ul class="pagination mb-0">
+                        <li class="page-item" tal:condition="batch/has_previous">
+                          <a class="page-link" tal:attributes="href python:view.page_url(batch.previous_start)" aria-label="Anterior">
+                            <span aria-hidden="true">&laquo;</span>
+                          </a>
+                        </li>
+                        <li class="page-item disabled" tal:condition="not:batch/has_previous">
+                          <span class="page-link" aria-label="Anterior">
+                            <span aria-hidden="true">&laquo;</span>
+                          </span>
+                        </li>
+                        <tal:pages repeat="page_item batch/get_page_numbers">
+                          <li class="page-item" tal:condition="python: page_item.get('type') == 'ellipsis'">
+                            <span class="page-link">...</span>
+                          </li>
+                          <li class="page-item" tal:condition="python: page_item.get('type') == 'page'"
+                              tal:attributes="class python: 'page-item active' if page_item.get('page') == batch.current_page else 'page-item'">
+                            <a class="page-link" tal:attributes="href python:view.page_url(page_item.get('b_start', 0))"
+                               tal:content="python: page_item.get('page', 1)">1</a>
+                          </li>
+                        </tal:pages>
+                        <li class="page-item" tal:condition="batch/has_next">
+                          <a class="page-link" tal:attributes="href python:view.page_url(batch.next_start)" aria-label="Següent">
+                            <span aria-hidden="true">&raquo;</span>
+                          </a>
+                        </li>
+                        <li class="page-item disabled" tal:condition="not:batch/has_next">
+                          <span class="page-link" aria-label="Següent">
+                            <span aria-hidden="true">&raquo;</span>
+                          </span>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
                 </tal:block>
-                <tal:block tal:condition="not:results">
+                <tal:block tal:condition="not:batch/results">
                   <p class="text-muted" i18n:translate="">No s'han trobat resultats.</p>
                 </tal:block>
               </tal:block>

@@ -31,6 +31,9 @@ import pkg_resources
 PLMF = MessageFactory('plonelocales')
 _ = MessageFactory('plone')
 
+# Tamaño de página para la búsqueda (paginación)
+SEARCH_PAGE_SIZE = 15
+
 # We should accept both a simple space, unicode '\u0020' but also a
 # multi-space, so called 'waji-kankaku', unicode '\u3000'
 MULTISPACE = '\u3000'
@@ -46,6 +49,68 @@ def quote_chars(s):
     if MULTISPACE in s:
         s = s.replace(MULTISPACE, ' ')
     return s
+
+
+class _SearchBatch(object):
+    """Objeto tipo batch para la paginación del buscador (15 por página)."""
+
+    max_visible_pages = 5  # como organgovern renderPagination
+
+    def __init__(self, results, total, b_start, b_size):
+        self.results = results
+        self.total = total
+        self.b_start = b_start
+        self.b_size = b_size
+        self.total_pages = max(1, (total + b_size - 1) // b_size) if total else 1
+        self.current_page = (b_start // b_size) + 1 if b_size else 1
+        self.first_item = b_start + 1 if results else 0
+        self.last_item = min(b_start + len(results), total) if results else 0
+        self.previous_start = b_start - b_size if b_start > 0 else None
+        self.next_start = b_start + b_size if (b_start + b_size) < total else None
+        self.has_previous = self.previous_start is not None
+        self.has_next = self.next_start is not None
+
+    def __iter__(self):
+        return iter(self.results)
+
+    def __len__(self):
+        return len(self.results)
+
+    def get_page_numbers(self):
+        """Lista de ítems para la barra de paginación (como organgovern).
+
+        Cada ítem es {'type': 'page', 'page': n, 'b_start': start} o
+        {'type': 'ellipsis'}.
+        """
+        total_pages = self.total_pages
+        current = self.current_page
+        if total_pages <= 0:
+            return []
+        max_visible = self.max_visible_pages
+        start_page = max(1, current - max_visible // 2)
+        end_page = min(total_pages, start_page + max_visible - 1)
+        if end_page - start_page < max_visible - 1:
+            start_page = max(1, end_page - max_visible + 1)
+        items = []
+        if start_page > 1:
+            items.append({'type': 'page', 'page': 1, 'b_start': 0})
+            if start_page > 2:
+                items.append({'type': 'ellipsis'})
+        for i in range(start_page, end_page + 1):
+            items.append({
+                'type': 'page',
+                'page': i,
+                'b_start': (i - 1) * self.b_size,
+            })
+        if end_page < total_pages:
+            if end_page < total_pages - 1:
+                items.append({'type': 'ellipsis'})
+            items.append({
+                'type': 'page',
+                'page': total_pages,
+                'b_start': (total_pages - 1) * self.b_size,
+            })
+        return items
 
 
 class Search(BrowserView):
@@ -138,16 +203,20 @@ class Search(BrowserView):
 
         return None
 
-    def results(self, query=None, batch=True, b_size=100, b_start=0, old=False):
+    def results(self, query=None, batch=True, b_size=None, b_start=None, old=False):
         if query is None:
             query = {}
         # Si no hay parámetros de búsqueda no devolvemos nada
         if not self.request.form and not query:
             return []
 
-        # Paginación
+        # Paginación: 15 por página, b_start desde la request
+        if b_size is None:
+            b_size = SEARCH_PAGE_SIZE
+        if b_start is None:
+            b_start = int(self.request.get('b_start', 0))
         if batch:
-            query['b_start'] = int(b_start)
+            query['b_start'] = b_start
             query['b_size'] = b_size
 
         # Construcción del query final
@@ -160,6 +229,45 @@ class Search(BrowserView):
 
         catalog = api.portal.get_tool(name='portal_catalog')
         return catalog(**query)
+
+    def get_search_batch(self):
+        """Devuelve un objeto tipo batch con la página actual y datos de paginación.
+
+        Así la búsqueda solo carga 15 resultados por página y podemos mostrar
+        controles anterior/siguiente y total.
+        """
+        b_start = int(self.request.get('b_start', 0))
+        b_size = SEARCH_PAGE_SIZE
+
+        base_query = self.filter_query({})
+        if not base_query or base_query.get('path') == '/empty_path/':
+            return _SearchBatch([], 0, 0, b_size)
+
+        base_query.setdefault('sort_order', 'reverse')
+        catalog = api.portal.get_tool(name='portal_catalog')
+
+        # Total de resultados (solo cuenta, sin cargar todos los brains)
+        count_query = dict(base_query)
+        count_query.pop('b_start', None)
+        count_query.pop('b_size', None)
+        total = len(catalog(**count_query))
+
+        # Solo la página actual
+        page_query = dict(base_query)
+        page_query['b_start'] = b_start
+        page_query['b_size'] = b_size
+        page_results = list(catalog(**page_query))
+
+        return _SearchBatch(page_results, total, b_start, b_size)
+
+    def page_url(self, b_start):
+        """URL para un número de página manteniendo el resto de parámetros del formulario."""
+        form = dict(self.request.form)
+        form['b_start'] = b_start
+        absolute_url = api.portal.get().absolute_url()
+        lang = api.portal.get_tool('portal_languages').getDefaultLanguage()
+        base = f'{absolute_url}/{lang}/@@search'
+        return f'{base}?{make_query(form)}'
 
     def filter_query(self, query):
         # Solo filtra si hay texto o algún filtro

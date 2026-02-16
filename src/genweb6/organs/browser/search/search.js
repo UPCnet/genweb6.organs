@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function () {
   form.addEventListener('input', function (e) {
     if (e.target === searchInput) return; // Ignora el input de texto
     if (["INPUT", "SELECT", "TEXTAREA"].includes(e.target.tagName)) {
+      // Al cambiar filtros, volver a la primera página
+      const bStartInput = form.querySelector('input[name="b_start"]');
+      if (bStartInput) bStartInput.value = '0';
       fetchResults();
     }
   });
@@ -20,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // Solo busca al hacer submit (Intro o botón)
   form.addEventListener('submit', function (e) {
     e.preventDefault();
+    // Nueva búsqueda: siempre primera página
+    const bStartInput = form.querySelector('input[name="b_start"]');
+    if (bStartInput) bStartInput.value = '0';
     fetchResults();
   });
 
