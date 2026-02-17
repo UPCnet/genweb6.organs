@@ -92,7 +92,8 @@
     <h2 i18n:translate="">Eines</h2>
 
     <section class="mb-4">
-      <form id="search-form" name="searchform" action="@@search" role="search" class="border rounded-3 text-bg-light p-3">
+      <form id="search-form" name="searchform" role="search" class="border rounded-3 text-bg-light p-3"
+            tal:attributes="action view/base_search_url">
         <input type="hidden" name="advanced_search" value="False" />
         <input type="hidden" name="created.range:record" value="min" />
         <input type="hidden" name="b_start" id="search-b-start" value="0" />

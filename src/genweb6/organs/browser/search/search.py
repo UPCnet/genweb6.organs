@@ -260,13 +260,16 @@ class Search(BrowserView):
 
         return _SearchBatch(page_results, total, b_start, b_size)
 
+    def base_search_url(self):
+        absolute_url = api.portal.get().absolute_url()
+        lang = api.portal.get_tool('portal_languages').getDefaultLanguage()
+        return f'{absolute_url}/{lang}/@@search'
+
     def page_url(self, b_start):
         """URL para un número de página manteniendo el resto de parámetros del formulario."""
         form = dict(self.request.form)
         form['b_start'] = b_start
-        absolute_url = api.portal.get().absolute_url()
-        lang = api.portal.get_tool('portal_languages').getDefaultLanguage()
-        base = f'{absolute_url}/{lang}/@@search'
+        base = self.base_search_url()
         return f'{base}?{make_query(form)}'
 
     def filter_query(self, query):
