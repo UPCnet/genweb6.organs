@@ -5,7 +5,8 @@ from Products.CMFPlone.interfaces import INonInstallable
 from zope.interface import implementer
 
 NEW_INDEXES = [('estatAprovacio', 'FieldIndex'),
-               ('dataSessio', 'DateIndex')]
+               ('dataSessio', 'DateIndex'),
+               ('serie', 'FieldIndex')]
 
 
 @implementer(INonInstallable)

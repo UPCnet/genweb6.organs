@@ -222,6 +222,14 @@ def organType(obj):
     return str(value)
 
 
+@indexer(IOrgangovern)
+def serie(obj):
+    value = getattr(obj, 'serie', None)
+    if value is None:
+        return None
+    return str(value)
+
+
 class Edit(edit.DefaultEditForm):
     """ Organ de govern EDIT form
     """

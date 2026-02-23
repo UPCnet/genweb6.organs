@@ -41,4 +41,9 @@
   </index>
   <column value="estatFirma"/>
 
+  <index name="serie" meta_type="FieldIndex">
+    <indexed_attr value="serie"/>
+  </index>
+  <column value="serie"/>
+
 </object>

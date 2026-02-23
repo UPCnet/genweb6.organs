@@ -1721,6 +1721,28 @@ class getUsers(BrowserView):
             return None
 
 
+class OrgansBySerieView(BrowserView):
+    """Vista solo para admins que muestra las URLs de los órganos con una serie dada."""
+
+    def __call__(self):
+        serie = (self.request.form.get('serie') or '').strip()
+
+        if not serie:
+            return "Error: falta el parámetro serie (?serie=MI_SERIE)"
+
+        catalog = api.portal.get_tool('portal_catalog')
+        brains = catalog.unrestrictedSearchResults(
+            portal_type='genweb.organs.organgovern',
+            serie=serie
+        )
+
+        if not brains:
+            return "No se encontraron resultados"
+
+        urls = [brain.getURL() for brain in brains]
+        return '\n'.join(urls)
+
+
 class CleanPDFsOrgansView(BrowserView):
     """Vista que recorre tots els arxius PDF dels organs públics i elimina els metadades usant l'API."""
 
