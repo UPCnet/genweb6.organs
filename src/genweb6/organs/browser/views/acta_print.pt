@@ -14,7 +14,6 @@
 <tal:print tal:define="portal_state context/@@plone_portal_state; 
                        portal_url portal_state/portal_url;">
 
-
   <tal:block i18n:domain="genweb6.organs" tal:condition="view/canView"
            tal:define="getActaLogo view/getActaLogo;
                       signatura view/signatura;
@@ -31,78 +30,77 @@
                       ordenDelDia context/ordenDelDia;
                       acta view/getActaContent">
 
-    <div class="row mb-4 mt-3">
-      <div class="col-6" tal:condition="getActaLogo">
-        <img style="height:67px;" tal:attributes="src getActaLogo" />
-      </div>
-      <div class="col-6">
-        <h1 class="text-end">
+    <div class="row mb-4">
+      <tal:condition tal:condition="getActaLogo">
+        <div class="col-6">
+          <img style="height:67px;" tal:attributes="src getActaLogo" />
+        </div>
+        <div class="col-6" class="text-end">
           <img width="207px" height="46px" tal:attributes="src string:${portal_url}/++theme++genweb6.organs/img/logoUPC.png"/>
-        </h1>
-      </div>
+        </div>
+      </tal:condition>
+      <tal:condition tal:condition="not:getActaLogo">
+        <div class="col-12">
+          <img width="207px" height="46px" tal:attributes="src string:${portal_url}/++theme++genweb6.organs/img/logoUPC.png"/>
+        </div>
+      </tal:condition>
     </div>
 
     <div class="clearfix"></div>
-    <h1 class="h1Print"><tal:omit-tag tal:content="view/unitatTitle">UNITAT</tal:omit-tag> -
-    <tal:omit-tag tal:content="view/organGovernTitle">CONSELL DE GOVERN</tal:omit-tag></h1>
-    <h2> ACTA <tal:omit-tag tal:content="view/sessionTitle">CONSELL DE GOVERN</tal:omit-tag></h2>
+    <h1 class="h6"><tal:omit-tag tal:content="view/unitatTitle">UNITAT</tal:omit-tag> — <tal:omit-tag tal:content="view/organGovernTitle">CONSELL DE GOVERN</tal:omit-tag></h1>
+    <h2 class="h6">ACTA <tal:omit-tag tal:content="view/sessionTitle">CONSELL DE GOVERN</tal:omit-tag></h2>
     <span i18n:translate=""> Amb la signatura d'aquesta acta es dóna validesa i integritat als documents que l'acompanyen. </span>
     <hr/>
-    <div class="col-12">
-      <tal:omit-tag tal:condition="modalitat">
-        <th><strong i18n:translate="">Modality of meet</strong><b>:</b></th>
+    <div class="col-12 pt-2 pb-1">
+      <p tal:condition="modalitat">
+        <strong i18n:translate="">Modality of meet</strong><b>:</b>
         <span i18n:translate="" tal:content="modalitat"></span>
-        <br/>
-      </tal:omit-tag>
-      <tal:omit-tag tal:condition="llocConvocatoria">
-        <th><strong i18n:translate="">Session location</strong><b>:</b></th>
+      </p>
+      <p tal:condition="llocConvocatoria">
+        <strong i18n:translate="">Session location</strong><b>:</b>
         <span tal:content="llocConvocatoria"></span>
-        <br/>
-      </tal:omit-tag>
-      <tal:omit-tag tal:condition="horaInici">
-        <th><strong i18n:translate="">Dia/Hora inici</strong><b>:</b></th>
+      </p>
+      <p tal:condition="horaInici">
+        <strong i18n:translate="">Dia/Hora inici</strong><b>:</b>
         <span tal:content="python:context.horaInici.strftime('%d/%m/%Y %H:%M')"></span>
-        <br/>
-      </tal:omit-tag>
-      <tal:omit-tag tal:condition="horaFi">
-        <th><strong i18n:translate="">Dia/Hora fi</strong><b>:</b></th>
+      </p>
+      <p tal:condition="horaFi">
+        <strong i18n:translate="">Dia/Hora fi</strong><b>:</b>
         <span tal:content="python:context.horaFi.strftime('%d/%m/%Y %H:%M')"></span>
-      </tal:omit-tag>
+      </p>
     </div>
     <div class="clearfix"></div>
     <hr/>
     <div class="col-12">
       <div class="caixa col-12" tal:condition="membresConvocats">
-        <h4 i18n:translate=""> Assistants </h4>
+        <h3 class="h6" i18n:translate="">Assistants</h3>
         <div tal:replace="structure membresConvocats/output"></div>
       </div>
       <div class="caixa col-12">
-        <tal:block tal:condition="membresConvidats">
-          <h4 i18n:translate=""> Invited members </h4>
+        <p tal:condition="membresConvidats">
+          <h3 class="h6" i18n:translate="">Invited members</h3>
           <span tal:replace="structure membresConvidats/output"></span>
-          <br/>
-        </tal:block>
-        <tal:block tal:condition="llistaExcusats">
-          <h4 i18n:translate=""> Excused members </h4>
+        </p>
+        <p tal:condition="llistaExcusats">
+          <h3 class="h6" i18n:translate="">Excused members</h3>
           <span tal:replace="structure llistaExcusats/output"></span>
-          <br/>
-        </tal:block>
-        <tal:block tal:condition="llistaNoAssistens">
-          <h4 i18n:translate=""> Missing members </h4>
+        </p>
+        <p tal:condition="llistaNoAssistens">
+          <h3 class="h6" i18n:translate="">Missing members</h3>
           <span tal:replace="structure llistaNoAssistens/output"></span>
-        </tal:block>
+        </p>
       </div>
     </div>
     <div class="clearfix"></div>
     <hr/>
     <div tal:condition="acta">
-       <h3 i18n:translate=""> Ordre del dia </h3>
+      <h3 class="h6" i18n:translate="">Ordre del dia</h3>
       <span tal:replace="structure acta"></span>
     </div>
     <div class="clearfix"></div>
     <hr/>
     <div tal:condition="ordenDelDia">
-       <h3 i18n:translate=""> Desenvolupament de la sessio </h3>
+      <h3 class="h6" i18n:translate="">Desenvolupament de la sessio</h3>
       <span tal:replace="structure ordenDelDia/output"></span>
     </div>
     <tal:block tal:condition="signatura">

@@ -335,7 +335,7 @@ body, html {
             'page-size': 'A4',                # Tamaño de página A4
             'margin-top': '10mm',             # Margen superior
             'margin-bottom': '10mm',          # Margen inferior
-            'margin-left': '10mm',            # Margen izquierdo
+            'margin-left': '0mm',            # Margen izquierdo
             'margin-right': '10mm',            # Margen derecho reducido
         }
         pdfkit.from_url(
@@ -361,7 +361,7 @@ body, html {
             'page-size': 'A4',                # Tamaño de página A4
             'margin-top': '10mm',             # Margen superior
             'margin-bottom': '10mm',           # Margen inferior
-            'margin-left': '10mm',            # Margen izquierdo
+            'margin-left': '0mm',            # Margen izquierdo
             'margin-right': '10mm',            # Margen derecho reducido
         }
         _filename = filename.replace('/', ' ')
