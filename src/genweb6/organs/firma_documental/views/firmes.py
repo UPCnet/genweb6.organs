@@ -42,7 +42,7 @@ class FirmesMixin(object):
             logger.error('ERROR. ' + sign_step + ' Exception: %s', str(exc))
             logger.error(traceback.format_exc())
             self.context.plone_utils.addPortalMessage(_(
-                u'Error desconegut: Contacta amb algun administrador de la web perquè revisi la configuració'
+                u'Error amb la firma documental: Contacta amb l\'ATIC demanant la revisió de la configuració de la connexió al gDOC: ' + str(exc)
             ), 'error')
             return "Error"
 
@@ -140,7 +140,7 @@ class UploadFiles(BrowserView, FirmesMixin):
             logger.error(traceback.format_exc())
             info_file = {
                 'uploaded': False,
-                'error': "Hi ha hagut un error intern a l'hora de pujar el fitxer. Contacta amb algún administrador de la web perquè revisi la configuració."
+                'error': "Hi ha hagut un error intern a l'hora de pujar el fitxer. Contacta amb l\'ATIC demanant la revisió de la configuració de la connexió al gDOC."
             }
             return False
 
@@ -156,6 +156,21 @@ class UploadFiles(BrowserView, FirmesMixin):
 
         if not organ.visiblegdoc:
             return "gDOC not set up"
+
+        if not organ.author:
+            self.context.plone_utils.addPortalMessage(
+                _(u'No s\'ha pogut obtenir l\'autor per la firma documental. Contacta amb l\'ATIC demanant la revisió de la configuració de la connexió al gDOC.'), 'error')
+            return "Error"
+
+        if not organ.serie:
+            self.context.plone_utils.addPortalMessage(
+                _(u'No s\'ha pogut obtenir la serie per la firma documental. Contacta amb l\'ATIC demanant la revisió de la configuració de la connexió al gDOC.'), 'error')
+            return "Error"
+
+        if not organ.signants:
+            self.context.plone_utils.addPortalMessage(
+                _(u'No s\'ha pogut obtenir els signants per la firma documental.'), 'error')
+            return "Error"
 
         sign_step = ""
         files = self.request.form.get('check', None)
@@ -203,8 +218,7 @@ class UploadFiles(BrowserView, FirmesMixin):
                         organ.author, file_obj, visibility) and success
                     if not isinstance(file_obj.info_firma, dict):
                         file_obj.info_firma = ast.literal_eval(file_obj.info_firma)
-                    res = client.timbrarDocumentGdoc(
-                        file_obj.info_firma[visibility]['id'])
+                    res = client.timbrarDocumentGdoc(file_obj.info_firma[visibility]['id'])
                     file_obj.info_firma[visibility]['id'] = res['idDocument']
                     file_obj.reindexObject()
                     logger.info(
@@ -680,19 +694,38 @@ class ViewFile(BrowserView):
         return True
 
     def canViewFile(self, visibility):
-        organ_tipus = self.context.organType
         roles = utils.getUserRoles(self, self.context, api.user.get_current().id)
         if 'Manager' in roles:
             return True
+
+        organ_tipus = getattr(self.context, 'organType', None)
+        if organ_tipus is None:
+            organ = utils.get_organ(self.context)
+            organ_tipus = getattr(organ, 'organType', None)
+
+        estat_sessio = utils.session_wf_state(self)
+
+        # Planificada: només OG1, OG2 (qualsevol tipus d'òrgan)
+        if estat_sessio == 'planificada':
+            if not utils.checkhasRol(['OG1-Secretari', 'OG2-Editor'], roles):
+                raise Unauthorized
+            return True
+
+        # Des de convocada en endavant
         roles_to_check = ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat']
+
         if organ_tipus == 'open_organ':
             roles_to_check.append('OG4-Afectat')
-        elif not utils.checkhasRol(roles_to_check, roles):
-            raise Unauthorized
+        elif organ_tipus == 'restricted_to_members_organ':
+            # OG4 mai en òrgan restringit a membres
+            pass
+        elif organ_tipus == 'restricted_to_affected_organ':
+            # OG4 només pot veure visiblefile (public) en realitzada, tancada, en_correccio
+            if estat_sessio in ('realitzada', 'tancada', 'en_correccio') and visibility == 'public':
+                roles_to_check.append('OG4-Afectat')
 
-        if visibility != 'public' and not utils.checkhasRol(roles_to_check, roles):
+        if not utils.checkhasRol(roles_to_check, roles):
             raise Unauthorized
-
         return True
 
 
