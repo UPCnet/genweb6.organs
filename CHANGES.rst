@@ -2,11 +2,14 @@ Changelog
 =========
 
 
-1.15 (unreleased)
+1.15 (2026-03-11)
 -----------------
 
-- Nothing changed yet.
-
+* [FIX] Permisos visualizacion y descarga de ficheros subidos a gdoc + [UPD] Literales errores gdoc [Iago López]
+* [UPD] Estilos print_acta [Iago López]
+* [UPD] indexar serie del organ y hacer vista organs_by_serie para obtener url [Iago López]
+* [UPD] Si eres editor y secretario se deberia poder editar campos de activar firma y editar firmantes [Iago López]
+* [UPD] Busqueda en el idioma [Iago López]
 
 1.14 (2026-02-16)
 -----------------
