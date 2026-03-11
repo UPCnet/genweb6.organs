@@ -23,6 +23,25 @@
     layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
     />
 
+  <configure package="genweb6.organs.content.sessio">
+    <browser:page
+      for="genweb6.organs.content.punt.punt.IPunt"
+      name="manageFiles"
+      class=".manage_files.ManageFilesView"
+      template="manage_files.pt"
+      permission="cmf.ModifyPortalContent"
+      layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+      />
+    <browser:page
+      for="genweb6.organs.content.punt.subpunt.ISubpunt"
+      name="manageFiles"
+      class=".manage_files.ManageFilesView"
+      template="manage_files.pt"
+      permission="cmf.ModifyPortalContent"
+      layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+      />
+  </configure>
+
   <adapter
     factory=".punt.index_proposalPoint"
     name="index_proposalPoint"

@@ -440,10 +440,19 @@ class View(BrowserView):
         return ""
 
 
+def _is_ajax_request(request):
+    """Detecta si la petició és AJAX (X-Requested-With: XMLHttpRequest)."""
+    return request.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+
 class VisibleToHidden(BrowserView):
     def __call__(self):
         if utils.session_wf_state(self) == 'tancada':
+            if _is_ajax_request(self.request):
+                self.request.response.setHeader('Content-Type', 'application/json')
+                return '{"success": false, "message": "Sessió tancada."}'
             self.request.response.redirect(self.context.absolute_url())
+            return
 
         if self.context.visiblefile:
             self.context.hiddenfile = self.context.visiblefile
@@ -475,13 +484,20 @@ class VisibleToHidden(BrowserView):
         self.context.reindexObject()
         transaction.commit()
 
+        if _is_ajax_request(self.request):
+            self.request.response.setHeader('Content-Type', 'application/json')
+            return '{"success": true, "message": "Visibilitat del fitxer modificada correctament."}'
         self.request.response.redirect(self.context.absolute_url())
 
 
 class HiddenToVisible(BrowserView):
     def __call__(self):
         if utils.session_wf_state(self) == 'tancada':
+            if _is_ajax_request(self.request):
+                self.request.response.setHeader('Content-Type', 'application/json')
+                return '{"success": false, "message": "Sessió tancada."}'
             self.request.response.redirect(self.context.absolute_url())
+            return
 
         if self.context.hiddenfile:
             self.context.visiblefile = self.context.hiddenfile
@@ -513,4 +529,7 @@ class HiddenToVisible(BrowserView):
         self.context.reindexObject()
         transaction.commit()
 
+        if _is_ajax_request(self.request):
+            self.request.response.setHeader('Content-Type', 'application/json')
+            return '{"success": true, "message": "Visibilitat del fitxer modificada correctament."}'
         self.request.response.redirect(self.context.absolute_url())

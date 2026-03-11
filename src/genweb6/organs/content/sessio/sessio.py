@@ -1442,6 +1442,27 @@ class View(BrowserView):
             and utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor'], roles)
         )
 
+    def canViewManageFilesButton(self):
+        """Mostrar botó Visibilitat fitxers a totes les seccions (Consell de Govern, Consell Social, etc.).
+        Condicions: sessió no tancada, roles Manager/OG1-Secretari/OG2-Editor i almenys un fitxer a la sessió.
+        No es filtra per tipus d'òrgan."""
+        estat_sessio = utils.session_wf_state(self)
+        if estat_sessio == 'tancada':
+            return False
+        roles = getattr(self, '_cached_roles', None)
+        if roles is None:
+            username = api.user.get_current().id
+            roles = utils.getUserRoles(self, self.context, username)
+        if not utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor'], roles):
+            return False
+        portal_catalog = api.portal.get_tool(name='portal_catalog')
+        folder_path = '/'.join(self.context.getPhysicalPath())
+        values = portal_catalog.unrestrictedSearchResults(
+            portal_type=['genweb.organs.file'],
+            path={'query': folder_path, 'depth': 3},
+            sort_limit=1)
+        return len(values) > 0
+
 
 class OpenQuorum(BrowserView):
 

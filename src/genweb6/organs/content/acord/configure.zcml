@@ -13,6 +13,17 @@
     permission="zope2.View"
     />
 
+  <configure package="genweb6.organs.content.sessio">
+    <browser:page
+      name="manageFiles"
+      for="genweb6.organs.content.acord.acord.IAcord"
+      class=".manage_files.ManageFilesView"
+      template="manage_files.pt"
+      permission="cmf.ModifyPortalContent"
+      layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+      />
+  </configure>
+
   <subscriber
     for=".acord.IAcord
           zope.container.interfaces.IObjectAddedEvent"

@@ -1,0 +1,198 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="ca"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="genweb6.organs">
+<body>
+<metal:main fill-slot="main" tal:condition="view/canView">
+  <tal:main-macro tal:define="items view/PuntsInside;
+                              absolute_url context/absolute_url">
+
+    <div tal:replace="structure provider:plone.abovecontenttitle"></div>
+    <h1 class="documentFirstHeading" i18n:translate="">Visibilitat fitxers</h1>
+    <div tal:replace="structure provider:plone.abovecontentbody"></div>
+    <div tal:replace="structure provider:plone.belowcontentbody"></div>
+
+    <div class="mb-3">
+      <a class="btn btn-outline-primary" tal:attributes="href absolute_url">
+        <i class="bi bi-chevron-left me-1" aria-hidden="true"></i>
+        <span i18n:translate="">Tornar</span>
+      </a>
+    </div>
+
+    <div id="contentManageFiles">
+      <div tal:condition="items" class="dades overflow-hidden">
+        <h2 class="h5 mb-3" i18n:translate="">Ordre del dia</h2>
+
+        <ul class="list-unstyled">
+          <tal:documents repeat="item items">
+            <li tal:attributes="id item/id">
+              <div class="row px-3 py-2 justify-content-end">
+                <tal:block-contenidos tal:define="files item/files;
+                                                  subpunts item/subpunts;
+                                                  contenidos item/hasContent">
+
+                  <div class="puntTitle col-12 d-flex flex-nowrap align-items-baseline">
+                    <div class="fletxaSpan me-2 w-3">
+                      <button type="button" class="btn px-0 py-0 btn-expand-collapse"
+                              tal:condition="contenidos"
+                              data-bs-toggle="collapse"
+                              tal:attributes="data-bs-target string:#collapse-mf-${item/id}"
+                              aria-expanded="false">
+                        <i class="bi bi-chevron-down"></i>
+                        <i class="bi bi-chevron-up d-none"></i>
+                      </button>
+                    </div>
+                    <div class="numberSpan me-2 w-5 text-end">
+                      <span class="text-primary fs-xxxl fw-bold" tal:content="item/proposalPoint"></span>
+                    </div>
+                    <div class="titleSpan me-2 w-92">
+                      <a tal:attributes="href item/absolute_url" class="text-dark">
+                        <tal:omit-tag tal:content="item/title">Item Title</tal:omit-tag>
+                      </a>
+                      <span tal:condition="item/agreement" class="text-muted fs-s"
+                            tal:content="string: [${item/agreement}]"></span>
+                    </div>
+                  </div>
+
+                  <div class="collapse multi-collapse-points show"
+                       tal:attributes="id string:collapse-mf-${item/id}"
+                       tal:condition="contenidos">
+                    <tal:files tal:condition="files">
+                      <ul class="listFiles list-unstyled mt-2">
+                        <tal:file repeat="file_item files">
+                          <li class="filesinTable w-100 mt-2 d-flex align-items-center" tal:attributes="id file_item/id">
+                            <div class="titleSpan d-flex align-items-center flex-grow-1">
+                              <i tal:attributes="class string:${file_item/classCSS} me-1"></i>
+                              <a tal:attributes="href file_item/absolute_url"
+                                 class="text-dark me-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                                <tal:omit-tag tal:content="file_item/title">Doc title</tal:omit-tag>
+                              </a>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                              <tal:row repeat="row file_item/visibility_rows">
+                                <div class="visibility-row d-flex align-items-center"
+                                     tal:attributes="data-file-url row/file_url;
+                                                     data-action row/action;
+                                                     data-other-action row/other_action;
+                                                     data-has-both row/has_both;
+                                                     data-row-id row/row_id;
+                                                     data-other-row-id row/other_row_id;
+                                                     id row/row_id">
+                                  <label class="visibility-switch-pill mb-0 visibility-switch-wrapper"
+                                         tal:attributes="class string:visibility-switch-pill mb-0 visibility-switch-wrapper ${row/switch_pill_class};
+                                                        for row/row_id">
+                                    <input class="form-check-input visibility-switch" type="checkbox"
+                                           role="switch"
+                                           tal:attributes="checked row/is_active;
+                                                          id row/row_id" />
+                                    <span class="visibility-switch-track">
+                                      <span class="visibility-switch-label" tal:content="row/label">Restringit / Públic</span>
+                                      <span class="visibility-switch-thumb"></span>
+                                    </span>
+                                  </label>
+                                </div>
+                              </tal:row>
+                            </div>
+                          </li>
+                        </tal:file>
+                      </ul>
+                    </tal:files>
+                    <div tal:condition="subpunts">
+                      <tal:subpunts repeat="itemSubpunt subpunts">
+                        <div class="li_subgrups row mt-2 justify-content-end"
+                             tal:attributes="id itemSubpunt/id">
+                          <div class="subpuntTitle col-12 d-flex flex-nowrap align-items-baseline">
+                            <div class="numberSpan me-2 w-5">
+                              <span class="text-primary fw-bold" tal:content="itemSubpunt/proposalPoint"></span>
+                            </div>
+                            <div class="titleSpan me-2 w-95">
+                              <a tal:attributes="href itemSubpunt/absolute_url" class="text-dark">
+                                <tal:omit-tag tal:content="itemSubpunt/title">Item Title</tal:omit-tag>
+                              </a>
+                              <span tal:condition="itemSubpunt/agreement" class="text-muted fs-s"
+                                    tal:content="string: [${itemSubpunt/agreement}]"></span>
+                            </div>
+                          </div>
+                          <tal:files tal:define="files itemSubpunt/files">
+                            <ul class="listFiles list-unstyled mt-2" tal:condition="files">
+                              <tal:file repeat="file_item files">
+                                <li class="filesinTable w-100 mt-2 d-flex align-items-center" tal:attributes="id file_item/id">
+                                  <div class="titleSpan d-flex align-items-center flex-grow-1">
+                                    <i tal:attributes="class string:${file_item/classCSS} me-1"></i>
+                                    <a tal:attributes="href file_item/absolute_url"
+                                       class="text-dark me-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                                      <tal:omit-tag tal:content="file_item/title">Doc title</tal:omit-tag>
+                                    </a>
+                                  </div>
+                                  <div class="d-flex align-items-center gap-2">
+                                    <tal:row repeat="row file_item/visibility_rows">
+                                      <div class="visibility-row d-flex align-items-center"
+                                           tal:attributes="data-file-url row/file_url;
+                                                           data-action row/action;
+                                                           data-other-action row/other_action;
+                                                           data-has-both row/has_both;
+                                                           data-row-id row/row_id;
+                                                           data-other-row-id row/other_row_id;
+                                                           id row/row_id">
+                                        <label class="visibility-switch-pill mb-0 visibility-switch-wrapper"
+                                               tal:attributes="class string:visibility-switch-pill mb-0 visibility-switch-wrapper ${row/switch_pill_class};
+                                                              for row/row_id">
+                                          <input class="form-check-input visibility-switch" type="checkbox"
+                                                 role="switch"
+                                                 tal:attributes="checked row/is_active;
+                                                                id row/row_id" />
+                                          <span class="visibility-switch-track">
+                                            <span class="visibility-switch-label" tal:content="row/label">Restringit / Públic</span>
+                                            <span class="visibility-switch-thumb"></span>
+                                          </span>
+                                        </label>
+                                      </div>
+                                    </tal:row>
+                                  </div>
+                                </li>
+                              </tal:file>
+                            </ul>
+                          </tal:files>
+                        </div>
+                      </tal:subpunts>
+                    </div>
+                  </div>
+                </tal:block-contenidos>
+              </div>
+            </li>
+          </tal:documents>
+        </ul>
+      </div>
+      <div tal:condition="not:items" class="alert alert-info" i18n:translate="">
+        No hi ha punts amb fitxers a aquesta sessió.
+      </div>
+    </div>
+
+    <div id="manageFilesToast" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100"></div>
+
+    <style>
+      #contentManageFiles .listFiles .titleSpan a { text-decoration: none; }
+      #contentManageFiles .listFiles .titleSpan a:hover { text-decoration: underline; }
+      .visibility-switch-pill { cursor: pointer; display: inline-block; position: relative; }
+      .visibility-switch-pill .visibility-switch { position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 2; }
+      .visibility-switch-track { display: inline-flex; align-items: center; border-radius: 9999px; min-width: 8rem; height: 2rem; position: relative; transition: background-color 0.2s ease, box-shadow 0.2s ease; }
+      .visibility-switch-label { color: #fff; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; padding-left: 0.65rem; padding-right: 0.65rem; z-index: 1; user-select: none; }
+      .visibility-switch-thumb { position: absolute; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: #fff; top: 50%; transform: translateY(-50%); transition: left 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+      .visibility-switch-public .visibility-switch-track { background-color: #adb5bd; justify-content: center; }
+      .visibility-switch-public .visibility-switch-thumb { left: calc(100% - 1.85rem); }
+      .visibility-switch-public .visibility-switch:checked ~ .visibility-switch-track { background-color: #198754; justify-content: center; }
+      .visibility-switch-public .visibility-switch:checked ~ .visibility-switch-track .visibility-switch-thumb { left: 0.2rem; }
+      .visibility-switch-restringit .visibility-switch-track { background-color: #adb5bd; }
+      .visibility-switch-restringit .visibility-switch-thumb { left: 0.2rem; }
+      .visibility-switch-restringit .visibility-switch:checked ~ .visibility-switch-track { background-color: #dc3545; }
+      .visibility-switch-restringit .visibility-switch:checked ~ .visibility-switch-track .visibility-switch-thumb { left: calc(100% - 1.85rem); }
+    </style>
+    <script defer
+            src="/++theme++genweb6.organs/js/content/manage_files.min.js"></script>
+  </tal:main-macro>
+</metal:main>
+</body>
+</html>

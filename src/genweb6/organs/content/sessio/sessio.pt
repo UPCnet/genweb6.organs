@@ -170,6 +170,18 @@
           </a>
         </div>
       </tal:block>
+
+      <!-- Visibilitat fitxers: totes les seccions (Consell de Govern, Consell Social, etc.) -->
+      <tal:block tal:condition="view/canViewManageFilesButton">
+        <div>
+          <a tal:attributes="href string:${absolute_url}/manageFiles"
+             class="btn btn-outline-primary border-0 d-flex flex-column"
+             title="Visibilitat fitxers" alt="Visibilitat fitxers">
+            <i class="bi bi-shuffle"></i>
+            <span i18n:translate="">Visibilitat fitxers</span>
+          </a>
+        </div>
+      </tal:block>
     </div>
 
     <div id="contentSessio" class="mb-4">
