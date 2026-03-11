@@ -711,7 +711,13 @@ class ViewFile(BrowserView):
                 raise Unauthorized
             return True
 
-        # Des de convocada en endavant
+        # Open organ des de convocada: visiblefile (public) accessible per tothom, incl. anònims
+        if (organ_tipus == 'open_organ'
+                and estat_sessio in ('convocada', 'realitzada', 'tancada', 'en_correccio')
+                and visibility == 'public'):
+            return True
+
+        # Des de convocada en endavant (resta de casos)
         roles_to_check = ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat']
 
         if organ_tipus == 'open_organ':
