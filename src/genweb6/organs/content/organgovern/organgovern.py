@@ -557,7 +557,7 @@ class exportAcords(BrowserView):
         output_file.write(u'\ufeff')
         self.write_data(output_file)
 
-        header_content_type = 'text/csv'
+        header_content_type = 'text/csv; charset=utf-8'
         header_filename = 'llista_acords_' + self.context.id + '.csv'
         self.request.response.setHeader('Content-Type', header_content_type)
         self.request.response.setHeader(
@@ -625,23 +625,29 @@ class exportAcords(BrowserView):
 
         return sorted(results, key=itemgetter('hiddenOrder'), reverse=True)
 
+    def _cell_str(self, value):
+        """Converteix un valor a str per a una cel·la CSV (sense bytes)."""
+        if value is None:
+            return ''
+        if isinstance(value, bytes):
+            return value.decode('utf-8', errors='replace')
+        return str(value)
+
     def write_data(self, output_file):
         writer = csv.writer(output_file, dialect='excel', delimiter=',')
         writer.writerow(self.data_header_columns)
 
         for acord in self.listAcords():
+            contingut = acord['contingut']
+            if contingut and getattr(contingut, 'raw', None):
+                contingut = str(contingut.raw)
+            else:
+                contingut = self._cell_str(contingut)
 
-            try:
-                title = acord['title'].encode('utf-8')
-            except:
-                title = acord['title']
-
-            if acord['contingut']:
-                acord['contingut'] = unicode(acord['contingut']).encode('utf-8')
-
-            writer.writerow([title,
-                             acord['agreement'],
-                             acord['estatsLlista'].encode('utf-8'),
-                             acord['contingut'],
-                             acord['sons']
+            writer.writerow([
+                self._cell_str(acord['title']),
+                self._cell_str(acord['agreement']),
+                self._cell_str(acord['estatsLlista']),
+                contingut,
+                self._cell_str(acord['sons']),
             ])
