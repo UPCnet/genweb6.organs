@@ -2,11 +2,10 @@ Changelog
 =========
 
 
-1.16 (unreleased)
+1.16 (2026-03-11)
 -----------------
 
-- Nothing changed yet.
-
+* [FIX] Permisos visibleFileGdoc [Iago López]
 
 1.15 (2026-03-11)
 -----------------
