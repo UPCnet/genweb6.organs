@@ -77,7 +77,7 @@
                                      tal:attributes="data-file-url row/file_url;
                                                      data-action row/action;
                                                      data-other-action row/other_action;
-                                                     data-has-both row/has_both;
+                                                     data-has-both python:'true' if row.get('has_both') else 'false';
                                                      data-row-id row/row_id;
                                                      data-other-row-id row/other_row_id;
                                                      id row/row_id">
@@ -133,7 +133,7 @@
                                            tal:attributes="data-file-url row/file_url;
                                                            data-action row/action;
                                                            data-other-action row/other_action;
-                                                           data-has-both row/has_both;
+                                                           data-has-both python:'true' if row.get('has_both') else 'false';
                                                            data-row-id row/row_id;
                                                            data-other-row-id row/other_row_id;
                                                            id row/row_id">
@@ -174,6 +174,17 @@
     <div id="manageFilesToast" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100"></div>
 
     <style>
+      #contentManageFiles { position: relative; }
+      #contentManageFiles .manage-files-loading {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(255, 255, 255, 0.75);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: auto;
+      }
       #contentManageFiles .listFiles .titleSpan a { text-decoration: none; }
       #contentManageFiles .listFiles .titleSpan a:hover { text-decoration: underline; }
       .visibility-switch-pill { cursor: pointer; display: inline-block; position: relative; }

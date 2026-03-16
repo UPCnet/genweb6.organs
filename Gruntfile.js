@@ -72,6 +72,8 @@ module.exports = function (grunt) {
                         '../../../../../genweb6.organs/src/genweb6/organs/widgets/text_input_select_users.js',
                     'js/content/mail_informar.min.js':
                         '../../../../../genweb6.organs/src/genweb6/organs/content/sessio/mail_informar/mail_informar.js',
+                    'js/content/manage_files.min.js':
+                        '../../../../../genweb6.organs/src/genweb6/organs/content/sessio/manage_files/manage_files.js',
                 }
             }
         },

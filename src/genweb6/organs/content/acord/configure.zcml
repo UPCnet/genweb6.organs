@@ -17,8 +17,8 @@
     <browser:page
       name="manageFiles"
       for="genweb6.organs.content.acord.acord.IAcord"
-      class=".manage_files.ManageFilesView"
-      template="manage_files.pt"
+      class=".manage_files.view.ManageFilesView"
+      template="manage_files/visibilitat_fitxers.pt"
       permission="cmf.ModifyPortalContent"
       layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
       />

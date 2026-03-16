@@ -5,7 +5,8 @@
 (function ($) {
     'use strict';
 
-    var CONFIRM_MSG_BOTH = 'S\'esborrarà el document del switch que desactiveu. Només es guardarà el document que es quedi actiu; el switch que quedi es comportarà com la resta (podreu canviar-lo de Públic a Restringit). Voleu continuar?';
+    var CONFIRM_MSG_SINGLE = 'Voleu canviar la visibilitat d\'aquest fitxer?';
+    var CONFIRM_MSG_BOTH = 'S\'esborrarà el fitxer del switch que desactiveu. Es mantindrà l\'altre fitxer. Voleu continuar?';
 
     function showToast(message, isError) {
         var $toast = $('#manageFilesToast');
@@ -29,7 +30,8 @@
             var fileUrl = $row.data('file-url');
             var action = $row.data('action');
             var otherAction = $row.data('other-action');
-            var hasBoth = $row.data('has-both') === true || $row.data('has-both') === 'true';
+            var hasBothVal = $row.data('has-both');
+            var hasBoth = hasBothVal === true || hasBothVal === 'true' || hasBothVal === 'True' || String(hasBothVal) === '1';
             var otherRowId = $row.data('other-row-id');
 
             var url;
@@ -41,10 +43,20 @@
                 url = fileUrl + '/' + (otherAction || (action === 'hiddenToVisible' ? 'visibleToHidden' : 'hiddenToVisible'));
             }
 
-            if (hasBoth && !window.confirm(CONFIRM_MSG_BOTH)) {
+            var confirmMsg = hasBoth ? CONFIRM_MSG_BOTH : CONFIRM_MSG_SINGLE;
+            if (!window.confirm(confirmMsg)) {
                 $input.prop('checked', wasChecked);
                 return;
             }
+
+            function unlock() {
+                $('input.visibility-switch').prop('disabled', false);
+                $('#contentManageFiles .manage-files-loading').remove();
+            }
+
+            $('input.visibility-switch').prop('disabled', true);
+            var $overlay = $('<div class="manage-files-loading" aria-hidden="true"><span class="spinner-border spinner-border-sm me-2" role="status"></span><span>Canviant visibilitat...</span></div>');
+            $('#contentManageFiles').append($overlay);
 
             $.ajax({
                 url: url,
@@ -54,16 +66,16 @@
             }).done(function (data) {
                 if (data && data.success) {
                     showToast(data.message || 'Visibilitat del fitxer modificada correctament.', false);
-                    if (otherRowId && otherRowId !== 'None') {
-                        $('#' + otherRowId).closest('.visibility-row').fadeOut(300, function () { $(this).remove(); });
-                    }
-                    if (switchingAway && otherRowId && otherRowId !== 'None') {
-                        $row.fadeOut(300, function () { $(this).remove(); });
-                    } else if (switchingAway) {
+                        if (otherRowId && otherRowId !== 'None') {
+                            var $other = $('#contentManageFiles').find('.visibility-row').filter(function () { return $(this).attr('id') === otherRowId; });
+                            if ($other.length) { $other.fadeOut(300, function () { $(this).remove(); }); }
+                        }
+                    var isNowPublic;
+                    if (switchingAway) {
                         var $pill = $row.find('.visibility-switch-pill');
                         var $label = $row.find('.visibility-switch-label');
                         var newAction = otherAction || (action === 'hiddenToVisible' ? 'visibleToHidden' : 'hiddenToVisible');
-                        var isNowPublic = newAction === 'hiddenToVisible';
+                        isNowPublic = newAction === 'hiddenToVisible';
                         $row.data('action', newAction);
                         $row.data('other-action', action);
                         $row.data('has-both', false);
@@ -71,6 +83,13 @@
                         $pill.removeClass('visibility-switch-public visibility-switch-restringit').addClass(isNowPublic ? 'visibility-switch-public' : 'visibility-switch-restringit');
                         $label.text(isNowPublic ? 'Públic' : 'Restringit');
                         $input.prop('checked', true);
+                    } else {
+                        isNowPublic = action === 'hiddenToVisible';
+                    }
+                    var $li = $row.closest('li');
+                    var $icon = $li.find('.titleSpan i');
+                    if ($icon.length) {
+                        $icon.removeClass('text-success text-danger').addClass(isNowPublic ? 'text-success' : 'text-danger');
                     }
                 } else {
                     showToast((data && data.message) || 'Error en canviar la visibilitat.', true);
@@ -84,6 +103,8 @@
                 } catch (err) {}
                 showToast(msg, true);
                 $input.prop('checked', wasChecked);
+            }).always(function () {
+                unlock();
             });
         });
     });
