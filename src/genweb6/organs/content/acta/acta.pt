@@ -155,7 +155,7 @@
         <ul class="nav nav-tabs mb-2" id="assistSubTabs" role="tablist">
           <li class="nav-item" tal:condition="membresConvocats" role="presentation">
             <button class="nav-link active" id="tab-assistents" data-bs-toggle="pill" data-bs-target="#pane-assistents" type="button" role="tab">
-              <span i18n:translate="">Assistants</span>
+              <span i18n:translate="">Membres Assistents</span>
             </button>
           </li>
           <li class="nav-item" tal:condition="membresConvidats" role="presentation">

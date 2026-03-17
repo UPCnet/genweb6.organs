@@ -73,7 +73,7 @@
     <hr/>
     <div class="col-12">
       <div class="caixa col-12" tal:condition="membresConvocats">
-        <h3 class="h6" i18n:translate="">Assistants</h3>
+        <h3 class="h6" i18n:translate="">Membres Assistents</h3>
         <div tal:replace="structure membresConvocats/output"></div>
       </div>
       <div class="caixa col-12">
