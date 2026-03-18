@@ -11,7 +11,7 @@
     function showToast(message, isError) {
         var $toast = $('#manageFilesToast');
         if (!$toast.length) {
-            $toast = $('<div id="manageFilesToast" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100"></div>').appendTo('body');
+            $toast = $('<div id="manageFilesToast" class="position-fixed bottom-0 end-0 p-3 manage-files-toast"></div>').appendTo('body');
         }
         var cls = isError ? 'alert-danger' : 'alert-success';
         var $alert = $('<div class="alert ' + cls + ' alert-dismissible fade show" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
