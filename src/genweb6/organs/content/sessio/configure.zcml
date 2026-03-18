@@ -127,9 +127,9 @@
   <browser:page
     for=".sessio.ISessio"
     name="manageFiles"
-    class=".manage_files.view.ManageFilesView"
-    template="manage_files/visibilitat_fitxers.pt"
-    permission="cmf.ModifyPortalContent"
+    class=".manage_files.manage_files.ManageFilesView"
+    template="manage_files/manage_files.pt"
+    permission="genweb.organs.manage.files"
     layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
     />
 

@@ -51,6 +51,11 @@
       title="Genweb Organs: Remove Quorum"
     />
 
+    <permission
+      id="genweb.organs.manage.files"
+      title="Genweb Organs: Manage Files"
+    />
+
     <!-- Include configuration for dependencies listed in setup.py -->
     <!-- <includeDependencies package="." /> -->
 

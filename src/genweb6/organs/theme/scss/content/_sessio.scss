@@ -14,30 +14,15 @@ body.portaltype-genweb-organs-sessio {
   }
 
   .sessionActions {
-    justify-content: flex-end;
-    column-gap: 0.35rem;
-    row-gap: 0.35rem;
-    flex-wrap: nowrap;
-
-    @media (max-width: 1199.98px) {
-      flex-wrap: wrap;
-    }
-
-    > div {
-      flex-shrink: 0;
-    }
 
     span,
     a {
       font-weight: normal !important;
-      font-size: 1.3rem;
+      font-size: var(--bs-body-font-size);
       max-width: 100px;
-      padding: 0.45rem 0.55rem !important;
-      align-items: center;
-      text-align: center;
 
       i::before {
-        font-size: 1.75rem;
+        font-size: 2rem;
       }
 
       &.btn-success {
@@ -131,11 +116,7 @@ body.portaltype-genweb-organs-sessio {
     padding-left: calc(8% + 1rem);
 
     .listFiles {
-      padding-left: calc(2% + 0.5rem);
-
-      .filesinTable .titleSpan {
-        margin-left: 0.75rem;
-      }
+      padding-left: calc(5% + 1rem);
     }
   }
 
@@ -149,11 +130,7 @@ body.portaltype-genweb-organs-sessio {
       padding-left: calc(5% + 1rem);
 
       .listFiles {
-        padding-left: calc(2% + 0.5rem);
-
-        .filesinTable .titleSpan {
-          margin-left: 0.75rem;
-        }
+        padding-left: calc(5% + 1rem);
       }
     }
   }

@@ -35,7 +35,8 @@ b.form-label {
   color: var(--bs-info-text-emphasis) !important;
 }
 
-/* line 42, ../scss/_edicio.scss */
+/* line 43, ../scss/_edicio.scss */
+body.template-managefiles #social_tags,
 body.template-mail_informar #social_tags,
 body.template-mail_convocar #social_tags,
 body.template-mail_message #social_tags,
@@ -46,11 +47,11 @@ body.template-excusar_assist_sessio #social_tags {
   display: none !important;
 }
 
-/* line 49, ../scss/_edicio.scss */
+/* line 50, ../scss/_edicio.scss */
 div.widget-mode-display b {
   margin-bottom: 0;
 }
-/* line 53, ../scss/_edicio.scss */
+/* line 54, ../scss/_edicio.scss */
 div.widget-mode-display span.form-control {
   padding: 0;
   border: 0;
@@ -640,30 +641,7 @@ body.template-signsessio #resultsVotesTab .btn-outline-info,
 body.portaltype-genweb-organs-sessio #resultsVotesTab .btn-outline-info {
   cursor: help !important;
 }
-/* line 16, ../scss/content/_sessio.scss */
-body.template-presentation .sessionActions,
-body.template-signsessio .sessionActions,
-body.portaltype-genweb-organs-sessio .sessionActions {
-  justify-content: flex-end;
-  column-gap: 0.35rem;
-  row-gap: 0.35rem;
-  flex-wrap: nowrap;
-}
-@media (max-width: 1199.98px) {
-  /* line 16, ../scss/content/_sessio.scss */
-  body.template-presentation .sessionActions,
-  body.template-signsessio .sessionActions,
-  body.portaltype-genweb-organs-sessio .sessionActions {
-    flex-wrap: wrap;
-  }
-}
-/* line 26, ../scss/content/_sessio.scss */
-body.template-presentation .sessionActions > div,
-body.template-signsessio .sessionActions > div,
-body.portaltype-genweb-organs-sessio .sessionActions > div {
-  flex-shrink: 0;
-}
-/* line 30, ../scss/content/_sessio.scss */
+/* line 18, ../scss/content/_sessio.scss */
 body.template-presentation .sessionActions span,
 body.template-presentation .sessionActions a,
 body.template-signsessio .sessionActions span,
@@ -671,22 +649,19 @@ body.template-signsessio .sessionActions a,
 body.portaltype-genweb-organs-sessio .sessionActions span,
 body.portaltype-genweb-organs-sessio .sessionActions a {
   font-weight: normal !important;
-  font-size: 1.3rem;
+  font-size: var(--bs-body-font-size);
   max-width: 100px;
-  padding: 0.45rem 0.55rem !important;
-  align-items: center;
-  text-align: center;
 }
-/* line 39, ../scss/content/_sessio.scss */
+/* line 24, ../scss/content/_sessio.scss */
 body.template-presentation .sessionActions span i::before,
 body.template-presentation .sessionActions a i::before,
 body.template-signsessio .sessionActions span i::before,
 body.template-signsessio .sessionActions a i::before,
 body.portaltype-genweb-organs-sessio .sessionActions span i::before,
 body.portaltype-genweb-organs-sessio .sessionActions a i::before {
-  font-size: 1.75rem;
+  font-size: 2rem;
 }
-/* line 43, ../scss/content/_sessio.scss */
+/* line 28, ../scss/content/_sessio.scss */
 body.template-presentation .sessionActions span.btn-success,
 body.template-presentation .sessionActions a.btn-success,
 body.template-signsessio .sessionActions span.btn-success,
@@ -695,7 +670,7 @@ body.portaltype-genweb-organs-sessio .sessionActions span.btn-success,
 body.portaltype-genweb-organs-sessio .sessionActions a.btn-success {
   cursor: default;
 }
-/* line 46, ../scss/content/_sessio.scss */
+/* line 31, ../scss/content/_sessio.scss */
 body.template-presentation .sessionActions span.btn-success:hover,
 body.template-presentation .sessionActions a.btn-success:hover,
 body.template-signsessio .sessionActions span.btn-success:hover,
@@ -705,7 +680,7 @@ body.portaltype-genweb-organs-sessio .sessionActions a.btn-success:hover {
   background-color: var(--bs-btn-bg) !important;
   border-color: var(--bs-btn-border-color) !important;
 }
-/* line 54, ../scss/content/_sessio.scss */
+/* line 39, ../scss/content/_sessio.scss */
 body.template-presentation #sortable,
 body.template-signsessio #sortable,
 body.portaltype-genweb-organs-sessio #sortable {
@@ -714,7 +689,7 @@ body.portaltype-genweb-organs-sessio #sortable {
   padding: 0;
   width: auto;
 }
-/* line 60, ../scss/content/_sessio.scss */
+/* line 45, ../scss/content/_sessio.scss */
 body.template-presentation #sortable .ui-state-grey,
 body.template-presentation #sortable .ui-state-grey-not_move,
 body.template-presentation #sortable .ui-state-grey-impersonate,
@@ -729,7 +704,7 @@ body.portaltype-genweb-organs-sessio #sortable .ui-state-grey-impersonate {
   font-weight: normal;
   color: black;
 }
-/* line 71, ../scss/content/_sessio.scss */
+/* line 56, ../scss/content/_sessio.scss */
 body.template-presentation #sortable .ui-state-grey:hover,
 body.template-signsessio #sortable .ui-state-grey:hover,
 body.portaltype-genweb-organs-sessio #sortable .ui-state-grey:hover {
@@ -737,7 +712,7 @@ body.portaltype-genweb-organs-sessio #sortable .ui-state-grey:hover {
   cursor: move;
   position: relative;
 }
-/* line 76, ../scss/content/_sessio.scss */
+/* line 61, ../scss/content/_sessio.scss */
 body.template-presentation #sortable .ui-state-grey:hover:before,
 body.template-signsessio #sortable .ui-state-grey:hover:before,
 body.portaltype-genweb-organs-sessio #sortable .ui-state-grey:hover:before {
@@ -748,20 +723,20 @@ body.portaltype-genweb-organs-sessio #sortable .ui-state-grey:hover:before {
   bottom: 10px;
   left: 10px;
 }
-/* line 86, ../scss/content/_sessio.scss */
+/* line 71, ../scss/content/_sessio.scss */
 body.template-presentation #sortable .ui-state-grey.picked,
 body.template-signsessio #sortable .ui-state-grey.picked,
 body.portaltype-genweb-organs-sessio #sortable .ui-state-grey.picked {
   background: #e5f7ff !important;
 }
-/* line 91, ../scss/content/_sessio.scss */
+/* line 76, ../scss/content/_sessio.scss */
 body.template-presentation #sortable .ui-state-grey-file:hover,
 body.template-signsessio #sortable .ui-state-grey-file:hover,
 body.portaltype-genweb-organs-sessio #sortable .ui-state-grey-file:hover {
   background: #f9f9f9 none repeat scroll 0 0 !important;
   position: relative;
 }
-/* line 96, ../scss/content/_sessio.scss */
+/* line 81, ../scss/content/_sessio.scss */
 body.template-presentation #sortable .einesSpan,
 body.template-signsessio #sortable .einesSpan,
 body.portaltype-genweb-organs-sessio #sortable .einesSpan {
@@ -769,86 +744,68 @@ body.portaltype-genweb-organs-sessio #sortable .einesSpan {
   background: linear-gradient(to right, rgba(229, 247, 255, 0) 0%, #e5f7ff 30%, #e5f7ff 100%);
 }
 @media (max-width: 767.98px) {
-  /* line 96, ../scss/content/_sessio.scss */
+  /* line 81, ../scss/content/_sessio.scss */
   body.template-presentation #sortable .einesSpan,
   body.template-signsessio #sortable .einesSpan,
   body.portaltype-genweb-organs-sessio #sortable .einesSpan {
     position: relative;
   }
 }
-/* line 104, ../scss/content/_sessio.scss */
-body.template-presentation #sortable .einesSpan .btn-group[aria-label="Add element"],
-body.template-signsessio #sortable .einesSpan .btn-group[aria-label="Add element"],
-body.portaltype-genweb-organs-sessio #sortable .einesSpan .btn-group[aria-label="Add element"] {
-  float: right;
-}
-/* line 113, ../scss/content/_sessio.scss */
+/* line 94, ../scss/content/_sessio.scss */
 body.template-presentation #sortable .titleSpan a:hover,
 body.template-signsessio #sortable .titleSpan a:hover,
 body.portaltype-genweb-organs-sessio #sortable .titleSpan a:hover {
   text-decoration: underline;
 }
-/* line 121, ../scss/content/_sessio.scss */
+/* line 102, ../scss/content/_sessio.scss */
 body.template-presentation #sortable .puntVoteButtons .btn.disabled,
 body.template-signsessio #sortable .puntVoteButtons .btn.disabled,
 body.portaltype-genweb-organs-sessio #sortable .puntVoteButtons .btn.disabled {
   cursor: not-allowed;
 }
-/* line 129, ../scss/content/_sessio.scss */
+/* line 110, ../scss/content/_sessio.scss */
 body.template-presentation .filesinTable .titleSpan,
 body.template-signsessio .filesinTable .titleSpan,
 body.portaltype-genweb-organs-sessio .filesinTable .titleSpan {
   margin-left: calc(8% + 1rem);
 }
-/* line 134, ../scss/content/_sessio.scss */
+/* line 115, ../scss/content/_sessio.scss */
 body.template-presentation .li_subgrups,
 body.template-signsessio .li_subgrups,
 body.portaltype-genweb-organs-sessio .li_subgrups {
   padding-left: calc(8% + 1rem);
 }
-/* line 137, ../scss/content/_sessio.scss */
+/* line 118, ../scss/content/_sessio.scss */
 body.template-presentation .li_subgrups .listFiles,
 body.template-signsessio .li_subgrups .listFiles,
 body.portaltype-genweb-organs-sessio .li_subgrups .listFiles {
-  padding-left: calc(2% + 1rem);
+  padding-left: calc(5% + 1rem);
 }
-/* line 140, ../scss/content/_sessio.scss */
-body.template-presentation .li_subgrups .listFiles .filesinTable .titleSpan,
-body.template-signsessio .li_subgrups .listFiles .filesinTable .titleSpan,
-body.portaltype-genweb-organs-sessio .li_subgrups .listFiles .filesinTable .titleSpan {
-  margin-left: 0.75rem;
-}
-/* line 148, ../scss/content/_sessio.scss */
+/* line 125, ../scss/content/_sessio.scss */
 body.template-presentation #previewDocModal .filesinTable .titleSpan,
 body.template-signsessio #previewDocModal .filesinTable .titleSpan,
 body.portaltype-genweb-organs-sessio #previewDocModal .filesinTable .titleSpan {
   margin-left: calc(5% + 1rem);
 }
-/* line 152, ../scss/content/_sessio.scss */
+/* line 129, ../scss/content/_sessio.scss */
 body.template-presentation #previewDocModal .li_subgrups,
 body.template-signsessio #previewDocModal .li_subgrups,
 body.portaltype-genweb-organs-sessio #previewDocModal .li_subgrups {
   padding-left: calc(5% + 1rem);
 }
-/* line 155, ../scss/content/_sessio.scss */
+/* line 132, ../scss/content/_sessio.scss */
 body.template-presentation #previewDocModal .li_subgrups .listFiles,
 body.template-signsessio #previewDocModal .li_subgrups .listFiles,
 body.portaltype-genweb-organs-sessio #previewDocModal .li_subgrups .listFiles {
-  padding-left: calc(2% + 0.5rem);
-}
-/* line 158, ../scss/content/_sessio.scss */
-body.template-presentation #previewDocModal .li_subgrups .listFiles .filesinTable .titleSpan,
-body.template-signsessio #previewDocModal .li_subgrups .listFiles .filesinTable .titleSpan,
-body.portaltype-genweb-organs-sessio #previewDocModal .li_subgrups .listFiles .filesinTable .titleSpan {
-  margin-left: 0.75rem;
+  padding-left: calc(5% + 1rem);
 }
 
-/* line 2, ../scss/content/_manage_files.scss */
-#contentManageFiles {
+/* line 5, ../scss/content/_manage_files.scss */
+body.template-managefiles #contentManageFiles {
   position: relative;
 }
-/* line 5, ../scss/content/_manage_files.scss */
-#contentManageFiles .manage-files-loading {
+/* line 8, ../scss/content/_manage_files.scss */
+body.template-managefiles #contentManageFiles .manage-files-loading {
   position: absolute;
   top: 0;
   left: 0;
@@ -861,28 +818,26 @@ body.portaltype-genweb-organs-sessio #previewDocModal .li_subgrups .listFiles .f
   justify-content: center;
   pointer-events: auto;
 }
-/* line 19, ../scss/content/_manage_files.scss */
-#contentManageFiles .listFiles .titleSpan a {
+/* line 22, ../scss/content/_manage_files.scss */
+body.template-managefiles #contentManageFiles .listFiles .titleSpan a {
   text-decoration: none;
 }
-/* line 22, ../scss/content/_manage_files.scss */
-#contentManageFiles .listFiles .titleSpan a:hover {
+/* line 25, ../scss/content/_manage_files.scss */
+body.template-managefiles #contentManageFiles .listFiles .titleSpan a:hover {
   text-decoration: underline;
 }
-
-/* line 28, ../scss/content/_manage_files.scss */
-#manageFilesToast {
+/* line 31, ../scss/content/_manage_files.scss */
+body.template-managefiles #manageFilesToast {
   z-index: 1100;
 }
-
-/* line 32, ../scss/content/_manage_files.scss */
-.visibility-switch-pill {
+/* line 35, ../scss/content/_manage_files.scss */
+body.template-managefiles .visibility-switch-pill {
   cursor: pointer;
   display: inline-block;
   position: relative;
 }
-/* line 37, ../scss/content/_manage_files.scss */
-.visibility-switch-pill .visibility-switch {
+/* line 40, ../scss/content/_manage_files.scss */
+body.template-managefiles .visibility-switch-pill .visibility-switch {
   position: absolute;
   top: 0;
   left: 0;
@@ -895,8 +850,8 @@ body.portaltype-genweb-organs-sessio #previewDocModal .li_subgrups .listFiles .f
   cursor: pointer;
   z-index: 2;
 }
-/* line 51, ../scss/content/_manage_files.scss */
-.visibility-switch-pill .visibility-switch-track {
+/* line 54, ../scss/content/_manage_files.scss */
+body.template-managefiles .visibility-switch-pill .visibility-switch-track {
   display: inline-flex;
   align-items: center;
   border-radius: 9999px;
@@ -905,8 +860,8 @@ body.portaltype-genweb-organs-sessio #previewDocModal .li_subgrups .listFiles .f
   position: relative;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
-/* line 61, ../scss/content/_manage_files.scss */
-.visibility-switch-pill .visibility-switch-label {
+/* line 64, ../scss/content/_manage_files.scss */
+body.template-managefiles .visibility-switch-pill .visibility-switch-label {
   color: #fff;
   font-size: 0.85rem;
   font-weight: 600;
@@ -916,8 +871,8 @@ body.portaltype-genweb-organs-sessio #previewDocModal .li_subgrups .listFiles .f
   z-index: 1;
   user-select: none;
 }
-/* line 72, ../scss/content/_manage_files.scss */
-.visibility-switch-pill .visibility-switch-thumb {
+/* line 75, ../scss/content/_manage_files.scss */
+body.template-managefiles .visibility-switch-pill .visibility-switch-thumb {
   position: absolute;
   width: 1.6rem;
   height: 1.6rem;
@@ -928,38 +883,38 @@ body.portaltype-genweb-organs-sessio #previewDocModal .li_subgrups .listFiles .f
   transition: left 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
-/* line 85, ../scss/content/_manage_files.scss */
-.visibility-switch-pill.visibility-switch-public .visibility-switch-track {
+/* line 88, ../scss/content/_manage_files.scss */
+body.template-managefiles .visibility-switch-pill.visibility-switch-public .visibility-switch-track {
   background-color: #adb5bd;
   justify-content: center;
 }
-/* line 89, ../scss/content/_manage_files.scss */
-.visibility-switch-pill.visibility-switch-public .visibility-switch-thumb {
+/* line 92, ../scss/content/_manage_files.scss */
+body.template-managefiles .visibility-switch-pill.visibility-switch-public .visibility-switch-thumb {
   left: calc(100% - 1.85rem);
 }
-/* line 92, ../scss/content/_manage_files.scss */
-.visibility-switch-pill.visibility-switch-public .visibility-switch:checked ~ .visibility-switch-track {
+/* line 95, ../scss/content/_manage_files.scss */
+body.template-managefiles .visibility-switch-pill.visibility-switch-public .visibility-switch:checked ~ .visibility-switch-track {
   background-color: #198754;
   justify-content: center;
 }
-/* line 96, ../scss/content/_manage_files.scss */
-.visibility-switch-pill.visibility-switch-public .visibility-switch:checked ~ .visibility-switch-track .visibility-switch-thumb {
+/* line 99, ../scss/content/_manage_files.scss */
+body.template-managefiles .visibility-switch-pill.visibility-switch-public .visibility-switch:checked ~ .visibility-switch-track .visibility-switch-thumb {
   left: 0.2rem;
-}
-/* line 102, ../scss/content/_manage_files.scss */
-.visibility-switch-pill.visibility-switch-restringit .visibility-switch-track {
-  background-color: #adb5bd;
 }
 /* line 105, ../scss/content/_manage_files.scss */
-.visibility-switch-pill.visibility-switch-restringit .visibility-switch-thumb {
-  left: 0.2rem;
+body.template-managefiles .visibility-switch-pill.visibility-switch-restringit .visibility-switch-track {
+  background-color: #adb5bd;
 }
 /* line 108, ../scss/content/_manage_files.scss */
-.visibility-switch-pill.visibility-switch-restringit .visibility-switch:checked ~ .visibility-switch-track {
-  background-color: #dc3545;
+body.template-managefiles .visibility-switch-pill.visibility-switch-restringit .visibility-switch-thumb {
+  left: 0.2rem;
 }
 /* line 111, ../scss/content/_manage_files.scss */
-.visibility-switch-pill.visibility-switch-restringit .visibility-switch:checked ~ .visibility-switch-track .visibility-switch-thumb {
+body.template-managefiles .visibility-switch-pill.visibility-switch-restringit .visibility-switch:checked ~ .visibility-switch-track {
+  background-color: #dc3545;
+}
+/* line 114, ../scss/content/_manage_files.scss */
+body.template-managefiles .visibility-switch-pill.visibility-switch-restringit .visibility-switch:checked ~ .visibility-switch-track .visibility-switch-thumb {
   left: calc(100% - 1.85rem);
 }
 
