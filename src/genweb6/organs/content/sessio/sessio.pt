@@ -53,7 +53,7 @@
     </tal:block>
 
     <!-- Barra de acciones -->
-    <div class="mb-4 d-flex justify-content-end flex-wrap column-gap-2 sessionActions" role="toolbar">
+    <div class="mb-4 d-flex flex-wrap sessionActions" role="toolbar">
 
       <!-- Excusar asistencia -->
       <div tal:condition="view/showOrdreDiaIAssistencia">
