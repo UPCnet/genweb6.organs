@@ -33,6 +33,54 @@ logger = logging.getLogger(__name__)
 
 TMP_FOLDER = os.environ.get('TMPDIR', '/tmp')
 
+_PERMISOS_ACTA_FIRMADA = (
+    'Manager', 'Site Administrator', 'WebMaster')
+
+_PERMISOS_ACTA_NO_FIRMADA = (
+    'Manager', 'Site Administrator', 'WebMaster', 'OG1-Secretari', 'OG2-Editor')
+
+_ACTA_LOCAL_PERM_ATTRS = (
+    '_Add_portal_content_Permission',
+    '_Modify_portal_content_Permission',
+    '_Delete_objects_Permission',
+)
+
+
+def _permission_tuple_equals(val, target_tuple):
+    if val is None:
+        return False
+    try:
+        return tuple(val) == target_tuple
+    except TypeError:
+        return False
+
+
+def apply_acta_firma_local_permissions(obj, firmada=True):
+    """Assigna permisos locals _Add/_Modify/_Delete a l'acta segons estat de firma.
+
+    firmada=True: només admins (enviada a firmar / pendent).
+    firmada=False: admins + Secretari/Editor (cancel·lació, reset, reparació).
+    """
+    roles = _PERMISOS_ACTA_FIRMADA if firmada else _PERMISOS_ACTA_NO_FIRMADA
+    roles_t = tuple(roles)
+    changed = False
+    for attr in _ACTA_LOCAL_PERM_ATTRS:
+        cur = getattr(obj, attr, None)
+        if not _permission_tuple_equals(cur, roles_t):
+            setattr(obj, attr, roles)
+            changed = True
+    if changed:
+        try:
+            obj._p_changed = True
+        except Exception:
+            pass
+    return changed
+
+
+def restore_firma_local_permissions(obj):
+    """Restaura permisos locals d'acta després de cancel·lar / reset / vista de reparació."""
+    return apply_acta_firma_local_permissions(obj, firmada=False)
+
 
 class FirmesMixin(object):
     error_message_map = {}
@@ -603,12 +651,7 @@ body, html {
             logger.info(
                 '9.1. S\'ha enviat correctament la petició de la firma al portafirmes')
 
-            self.context._Add_portal_content_Permission = (
-                'Manager', 'Site Administrator', 'WebMaster')
-            self.context._Modify_portal_content_Permission = (
-                'Manager', 'Site Administrator', 'WebMaster')
-            self.context._Delete_objects_Permission = (
-                'Manager', 'Site Administrator', 'WebMaster')
+            apply_acta_firma_local_permissions(self.context, firmada=True)
 
             self.context.acta = None
             for audio_id in self.context:
@@ -781,6 +824,8 @@ class ResetFirm(BrowserView):
                 obj.info_firma = {}
                 obj.id_firma = ''
                 obj.estat_firma = ''
+                if brain.portal_type == 'genweb.organs.acta':
+                    restore_firma_local_permissions(obj)
                 obj.reindexObject()
 
             self.context.plone_utils.addPortalMessage(
@@ -929,6 +974,8 @@ class CancelFirm(BrowserView, FirmesMixin):
                 obj.info_firma = {}
                 obj.id_firma = ''
                 obj.estat_firma = ''
+                if brain.portal_type == 'genweb.organs.acta':
+                    restore_firma_local_permissions(obj)
                 obj.reindexObject()
 
             logger.info(
@@ -949,5 +996,33 @@ class CancelFirm(BrowserView, FirmesMixin):
                          self.context.absolute_url(), str(e))
             logger.error(traceback.format_exc())
             transaction.commit()
+
+        return self.request.response.redirect(self.context.absolute_url())
+
+
+class RestoreActaLocalPermissionsView(BrowserView):
+    """Vista per restablir permisos locals de l'acta després d'enviar a firmar / cancel·lar malament.
+
+    URL: .../acta/@@restoreActaLocalPermissions
+    """
+
+    def __call__(self):
+        alsoProvides(self.request, IDisableCSRFProtection)
+
+        if self.context.portal_type != 'genweb.organs.acta':
+            self.context.plone_utils.addPortalMessage(
+                _(u'Aquesta vista només s\'aplica a un acta'), 'error')
+            return self.request.response.redirect(self.context.absolute_url())
+
+        if restore_firma_local_permissions(self.context):
+            self.context.reindexObject()
+            transaction.commit()
+            self.context.plone_utils.addPortalMessage(
+                _(u'S\'han restablert els permisos d\'edició de l\'acta (Secretari/Editor segons el workflow).'),
+                'success')
+        else:
+            self.context.plone_utils.addPortalMessage(
+                _(u'Aquest acta no tenia restriccions locals de permisos de firma (o ja estaven netes).'),
+                'info')
 
         return self.request.response.redirect(self.context.absolute_url())
