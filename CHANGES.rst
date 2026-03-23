@@ -2,11 +2,11 @@ Changelog
 =========
 
 
-1.18 (unreleased)
+1.18 (2026-03-23)
 -----------------
 
-- Nothing changed yet.
-
+* [UPD] read-only visibilitat fitxers when acta is signed or pending [Clàudia Andreu]
+* [UDP] Estilos manageFiles [Iago López]
 
 1.17 (2026-03-23)
 -----------------
