@@ -2,11 +2,17 @@ Changelog
 =========
 
 
-1.17 (unreleased)
+1.17 (2026-03-23)
 -----------------
 
-- Nothing changed yet.
-
+* [UPD] Devolver permisos edicion al cancelar acta [Iago López]
+* [UPD] visibilitat_fitxers, modificar estilos y definir permiso nuevo [Iago López]
+* [UPD] move visibilitat_fitxers styles to custom stylesheet [Clàudia Andreu]
+* [UPD] sessio styles [Clàudia Andreu]
+* [UPD] Cambio de literal Membres Convidats [Iago López]
+* [UPD] visibilitat_fitxers functionality [Clàudia Andreu]
+* [FIX] Export acords [Iago López]
+* [ADD] docs visibility view [Clàudia Andreu]
 
 1.16 (2026-03-11)
 -----------------
