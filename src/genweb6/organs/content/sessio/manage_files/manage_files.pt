@@ -64,7 +64,7 @@
                       <ul class="listFiles list-unstyled mt-2">
                         <tal:file repeat="file_item files">
                           <li class="filesinTable w-100 mt-2 d-flex align-items-center gap-3" tal:attributes="id file_item/id">
-                            <div class="titleSpan d-flex align-items-center flex-grow-1">
+                            <div class="titleSpan d-flex flex-grow-1 w-100">
                               <i tal:attributes="class string:${file_item/classCSS} me-1"></i>
                               <a tal:attributes="href file_item/absolute_url"
                                  class="text-dark me-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
@@ -120,7 +120,7 @@
                             <ul class="listFiles list-unstyled mt-2" tal:condition="files">
                               <tal:file repeat="file_item files">
                                 <li class="filesinTable w-100 mt-2 d-flex align-items-center gap-3" tal:attributes="id file_item/id">
-                                  <div>
+                                  <div class="w-100 d-flex flex-grow-1">
                                     <i tal:attributes="class string:${file_item/classCSS} me-1"></i>
                                     <a tal:attributes="href file_item/absolute_url"
                                        class="text-dark me-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
