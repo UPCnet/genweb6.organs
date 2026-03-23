@@ -81,18 +81,28 @@
                                                      data-row-id row/row_id;
                                                      data-other-row-id row/other_row_id;
                                                      id row/row_id">
-                                  <label class="visibility-switch-pill mb-0 visibility-switch-wrapper"
-                                         tal:attributes="class string:visibility-switch-pill mb-0 visibility-switch-wrapper ${row/switch_pill_class};
-                                                        for row/row_id">
-                                    <input class="form-check-input visibility-switch" type="checkbox"
-                                           role="switch"
-                                           tal:attributes="checked row/is_active;
-                                                          id row/row_id" />
-                                    <span class="visibility-switch-track">
-                                      <span class="visibility-switch-label" tal:content="row/label">Restringit / Públic</span>
-                                      <span class="visibility-switch-thumb"></span>
+                                  <tal:block tal:condition="row/read_only">
+                                    <span class="visibility-switch-pill visibility-pill-readonly mb-0"
+                                          tal:attributes="class string:visibility-switch-pill visibility-pill-readonly mb-0 ${row/switch_pill_class}">
+                                      <span class="visibility-switch-track">
+                                        <span class="visibility-switch-label" tal:content="row/label">Restringit / Públic</span>
+                                      </span>
                                     </span>
-                                  </label>
+                                  </tal:block>
+                                  <tal:block tal:condition="not:row/read_only">
+                                    <label class="visibility-switch-pill mb-0 visibility-switch-wrapper"
+                                           tal:attributes="class string:visibility-switch-pill mb-0 visibility-switch-wrapper ${row/switch_pill_class};
+                                                          for row/row_id">
+                                      <input class="form-check-input visibility-switch" type="checkbox"
+                                             role="switch"
+                                             tal:attributes="checked row/is_active;
+                                                            id row/row_id" />
+                                      <span class="visibility-switch-track">
+                                        <span class="visibility-switch-label" tal:content="row/label">Restringit / Públic</span>
+                                        <span class="visibility-switch-thumb"></span>
+                                      </span>
+                                    </label>
+                                  </tal:block>
                                 </div>
                               </tal:row>
                             </div>
@@ -137,18 +147,28 @@
                                                            data-row-id row/row_id;
                                                            data-other-row-id row/other_row_id;
                                                            id row/row_id">
-                                        <label class="visibility-switch-pill mb-0 visibility-switch-wrapper"
-                                               tal:attributes="class string:visibility-switch-pill mb-0 visibility-switch-wrapper ${row/switch_pill_class};
-                                                              for row/row_id">
-                                          <input class="form-check-input visibility-switch" type="checkbox"
-                                                 role="switch"
-                                                 tal:attributes="checked row/is_active;
-                                                                id row/row_id" />
-                                          <span class="visibility-switch-track">
-                                            <span class="visibility-switch-label" tal:content="row/label">Restringit / Públic</span>
-                                            <span class="visibility-switch-thumb"></span>
+                                        <tal:block tal:condition="row/read_only">
+                                          <span class="visibility-switch-pill visibility-pill-readonly mb-0"
+                                                tal:attributes="class string:visibility-switch-pill visibility-pill-readonly mb-0 ${row/switch_pill_class}">
+                                            <span class="visibility-switch-track">
+                                              <span class="visibility-switch-label" tal:content="row/label">Restringit / Públic</span>
+                                            </span>
                                           </span>
-                                        </label>
+                                        </tal:block>
+                                        <tal:block tal:condition="not:row/read_only">
+                                          <label class="visibility-switch-pill mb-0 visibility-switch-wrapper"
+                                                 tal:attributes="class string:visibility-switch-pill mb-0 visibility-switch-wrapper ${row/switch_pill_class};
+                                                                for row/row_id">
+                                            <input class="form-check-input visibility-switch" type="checkbox"
+                                                   role="switch"
+                                                   tal:attributes="checked row/is_active;
+                                                                  id row/row_id" />
+                                            <span class="visibility-switch-track">
+                                              <span class="visibility-switch-label" tal:content="row/label">Restringit / Públic</span>
+                                              <span class="visibility-switch-thumb"></span>
+                                            </span>
+                                          </label>
+                                        </tal:block>
                                       </div>
                                     </tal:row>
                                   </div>

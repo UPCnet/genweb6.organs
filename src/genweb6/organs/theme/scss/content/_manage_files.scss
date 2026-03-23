@@ -116,4 +116,28 @@ body.template-managefiles {
       }
     }
   }
+
+  // Pill de només lectura: mateix aspecte que el switch (vermell/verd), sense rodoneta ni interacció
+  .visibility-switch-pill.visibility-pill-readonly {
+    cursor: default;
+    pointer-events: none;
+
+    .visibility-switch-track {
+      justify-content: center;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .visibility-switch-label {
+      text-align: center;
+    }
+
+    &.visibility-switch-public .visibility-switch-track {
+      background-color: #198754 !important;
+    }
+
+    &.visibility-switch-restringit .visibility-switch-track {
+      background-color: #dc3545 !important;
+    }
+  }
 }

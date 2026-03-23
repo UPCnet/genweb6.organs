@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import ast
+import json
 
 from AccessControl import Unauthorized
 from Products.statusmessages.interfaces import IStatusMessage
@@ -19,6 +20,7 @@ from z3c.form.interfaces import NOT_CHANGED
 
 from genweb6.organs import _
 from genweb6.organs import utils
+from genweb6.organs.browser.events.change import estatFirma
 
 import transaction
 
@@ -445,12 +447,35 @@ def _is_ajax_request(request):
     return request.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 
+def _acta_blocks_visibility_change(context):
+    """True si l'acta està signada o enviada a firmar."""
+    sessio = utils.get_session(context)
+    if not sessio:
+        return False
+    estat_firma = estatFirma(sessio)
+    if not estat_firma:
+        return False
+    estat_class = estat_firma.get('class') or ''
+    return estat_class in ('signada', 'pendent', 'pendent_signants')
+
+
 class VisibleToHidden(BrowserView):
     def __call__(self):
         if utils.session_wf_state(self) == 'tancada':
             if _is_ajax_request(self.request):
                 self.request.response.setHeader('Content-Type', 'application/json')
                 return '{"success": false, "message": "Sessió tancada."}'
+            self.request.response.redirect(self.context.absolute_url())
+            return
+
+        if _acta_blocks_visibility_change(self.context):
+            msg = _(
+                u"No es pot canviar la visibilitat perquè l'acta està signada o enviada a firmar."
+            )
+            if _is_ajax_request(self.request):
+                self.request.response.setHeader('Content-Type', 'application/json')
+                return json.dumps({'success': False, 'message': str(msg)})
+            IStatusMessage(self.request).addStatusMessage(msg, 'error')
             self.request.response.redirect(self.context.absolute_url())
             return
 
@@ -496,6 +521,17 @@ class HiddenToVisible(BrowserView):
             if _is_ajax_request(self.request):
                 self.request.response.setHeader('Content-Type', 'application/json')
                 return '{"success": false, "message": "Sessió tancada."}'
+            self.request.response.redirect(self.context.absolute_url())
+            return
+
+        if _acta_blocks_visibility_change(self.context):
+            msg = _(
+                u"No es pot canviar la visibilitat perquè l'acta està signada o enviada a firmar."
+            )
+            if _is_ajax_request(self.request):
+                self.request.response.setHeader('Content-Type', 'application/json')
+                return json.dumps({'success': False, 'message': str(msg)})
+            IStatusMessage(self.request).addStatusMessage(msg, 'error')
             self.request.response.redirect(self.context.absolute_url())
             return
 

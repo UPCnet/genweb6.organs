@@ -918,6 +918,26 @@ body.template-managefiles .visibility-switch-pill.visibility-switch-restringit .
   left: calc(100% - 1.85rem);
 }
 
+/* Pill readonly: vermell/verd, text centrat */
+body.template-managefiles .visibility-switch-pill.visibility-pill-readonly {
+  cursor: default;
+  pointer-events: none;
+}
+body.template-managefiles .visibility-switch-pill.visibility-pill-readonly .visibility-switch-track {
+  justify-content: center;
+  display: inline-flex;
+  align-items: center;
+}
+body.template-managefiles .visibility-switch-pill.visibility-pill-readonly .visibility-switch-label {
+  text-align: center;
+}
+body.template-managefiles .visibility-switch-pill.visibility-pill-readonly.visibility-switch-public .visibility-switch-track {
+  background-color: #198754 !important;
+}
+body.template-managefiles .visibility-switch-pill.visibility-pill-readonly.visibility-switch-restringit .visibility-switch-track {
+  background-color: #dc3545 !important;
+}
+
 /* line 1, ../scss/content/_presentation.scss */
 body.template-presentation {
   padding-left: 0 !important;

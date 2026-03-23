@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 """Vista manageFiles: gestió de visibilitat fitxers (Restringit/Públic).
    Per a totes les seccions (Consell de Govern, Consell Social, etc.): sessió, punt, subpunt i acord.
+   Si l'acta està signada o enviada a firmar, la visibilitat no es pot canviar.
 """
 
 from plone import api
 from zope.component import getMultiAdapter
 
 from genweb6.organs import utils
+from genweb6.organs.browser.events.change import estatFirma
 from Products.Five.browser import BrowserView
 
 
@@ -30,6 +32,19 @@ class ManageFilesView(BrowserView):
             username = api.user.get_current().id
             roles = utils.getUserRoles(self, self.context, username)
         return bool(utils.checkhasRol(['Manager', 'OG1-Secretari', 'OG2-Editor'], roles))
+
+    def canChangeVisibility(self):
+        """False si l'acta està signada o enviada a firmar (pendent, pendent_signants)."""
+        sessio = utils.get_session(self.context)
+        if not sessio:
+            return True
+        estat_firma = estatFirma(sessio)
+        if not estat_firma:
+            return True
+        estat_class = estat_firma.get('class') or ''
+        if estat_class in ('signada', 'pendent', 'pendent_signants'):
+            return False
+        return True
 
     def PuntsInside(self):
         """Items amb files (ordre del dia si context és sessió; un sol bloc si és punt/subpunt/acord)."""
@@ -115,6 +130,7 @@ class ManageFilesView(BrowserView):
         has_visible = bool(getattr(file_obj, 'visiblefile', None))
         has_hidden = bool(getattr(file_obj, 'hiddenfile', None))
         has_both = has_visible and has_hidden
+        read_only = not self.canChangeVisibility()
 
         if has_hidden:
             row_id = file_id + '-visibleToHidden'
@@ -130,6 +146,7 @@ class ManageFilesView(BrowserView):
                 'has_both': has_both,
                 'row_id': row_id,
                 'other_row_id': other_row_id,
+                'read_only': read_only,
             })
         if has_visible:
             row_id = file_id + '-hiddenToVisible'
@@ -145,5 +162,6 @@ class ManageFilesView(BrowserView):
                 'has_both': has_both,
                 'row_id': row_id,
                 'other_row_id': other_row_id,
+                'read_only': read_only,
             })
         return rows
