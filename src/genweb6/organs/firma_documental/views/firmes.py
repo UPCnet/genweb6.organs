@@ -425,24 +425,27 @@ body, html {
             pass
 
     def generateDocumentPDF(self, document, filename, visibility='public'):
-        # CSS para forzar fuentes del sistema
         css_file = self._getSystemFontsCSS()
+        language = self.request.cookies.get('I18N_LANGUAGE', 'ca')
+        title = self.context.title
         options = {
             'cookie': [
                 ('__ac', self.request.cookies['__ac']),
-                ('I18N_LANGUAGE', self.request.cookies.get('I18N_LANGUAGE', 'ca'))
+                ('I18N_LANGUAGE', language)
             ],
-            'user-style-sheet': css_file,     # CSS para forzar fuentes del sistema
-            'page-size': 'A4',                # Tamaño de página A4
-            'margin-top': '10mm',             # Margen superior
-            'margin-bottom': '10mm',           # Margen inferior
-            'margin-left': '0mm',            # Margen izquierdo
-            'margin-right': '10mm',            # Margen derecho reducido
+            'user-style-sheet': css_file,
+            'title': title,
+            'page-size': 'A4',
+            'margin-top': '10mm',
+            'margin-bottom': '10mm',
+            'margin-left': '0mm',
+            'margin-right': '10mm',
         }
         _filename = filename.replace('/', ' ')
         pdfkit.from_url(
             document.absolute_url() + '/printDocument?visibility=' + visibility,
             TMP_FOLDER + '/' + _filename, options=options, verbose=True)
+        self.setPDFMetadata(TMP_FOLDER + '/' + _filename, title, language)
         return open(TMP_FOLDER + '/' + _filename, 'rb')
 
     def removeDocumentPDF(self, filename):
@@ -1044,4 +1047,12 @@ class RestoreActaLocalPermissionsView(BrowserView):
 class TestGenerateActaPDF(SignActa):
 
     def __call__(self):
-        return self.generateActaPDF()
+        pdf_file = self.generateActaPDF()
+        pdf_data = pdf_file.read()
+        pdf_file.close()
+        filename = self.context.id + '.pdf'
+        self.request.response.setHeader('Content-Type', 'application/pdf')
+        self.request.response.setHeader(
+            'Content-Disposition', 'attachment; filename="{}"'.format(filename))
+        self.request.response.setHeader('Content-Length', len(pdf_data))
+        return pdf_data
