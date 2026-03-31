@@ -25,6 +25,7 @@ import json
 import logging
 import os
 import pdfkit
+import pikepdf
 import time
 import transaction
 import traceback
@@ -385,25 +386,37 @@ body, html {
             f.write(css_content)
         return css_file
 
+    def setPDFMetadata(self, pdf_path, title, language):
+        with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
+            with pdf.open_metadata() as meta:
+                meta['dc:title'] = title
+                meta['dc:language'] = language
+            pdf.Root['/Lang'] = pikepdf.String(language)
+            pdf.save(pdf_path)
+
     def generateActaPDF(self):
-        # CSS para forzar fuentes del sistema
         css_file = self._getSystemFontsCSS()
+        language = self.request.cookies.get('I18N_LANGUAGE', 'ca')
+        title = self.context.title
         options = {
             'cookie': [
                 ('__ac', self.request.cookies['__ac']),
-                ('I18N_LANGUAGE', self.request.cookies.get('I18N_LANGUAGE', 'ca'))
+                ('I18N_LANGUAGE', language)
             ],
-            'user-style-sheet': css_file,     # CSS para forzar fuentes del sistema
-            'page-size': 'A4',                # Tamaño de página A4
-            'margin-top': '10mm',             # Margen superior
-            'margin-bottom': '10mm',          # Margen inferior
-            'margin-left': '0mm',            # Margen izquierdo
-            'margin-right': '10mm',            # Margen derecho reducido
+            'user-style-sheet': css_file,
+            'title': title,
+            'page-size': 'A4',
+            'margin-top': '10mm',
+            'margin-bottom': '10mm',
+            'margin-left': '0mm',
+            'margin-right': '10mm',
         }
+        pdf_path = TMP_FOLDER + '/' + self.context.id + '.pdf'
         pdfkit.from_url(
-            self.context.absolute_url() + '/printActa', TMP_FOLDER + '/' + self.context.id +
-            '.pdf', options=options, verbose=True)
-        return open(TMP_FOLDER + '/' + self.context.id + '.pdf', 'rb')
+            self.context.absolute_url() + '/printActa', pdf_path,
+            options=options, verbose=True)
+        self.setPDFMetadata(pdf_path, title, language)
+        return open(pdf_path, 'rb')
 
     def removeActaPDF(self):
         try:
@@ -1026,3 +1039,9 @@ class RestoreActaLocalPermissionsView(BrowserView):
                 'info')
 
         return self.request.response.redirect(self.context.absolute_url())
+
+
+class TestGenerateActaPDF(SignActa):
+
+    def __call__(self):
+        return self.generateActaPDF()

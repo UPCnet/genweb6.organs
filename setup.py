@@ -46,6 +46,7 @@ setup(
         'plone.app.registry',
         'plone.api',
         'pdfkit',
+        'pikepdf',
     ],
     extras_require={
         'test': [

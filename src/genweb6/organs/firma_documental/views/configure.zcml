@@ -131,5 +131,12 @@
     layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
     permission="cmf.ManagePortal" />
 
+  <browser:page
+    name="testGenerateActaPDF"
+    for="genweb6.organs.content.acta.acta.IActa"
+    class=".firmes.TestGenerateActaPDF"
+    layer="genweb6.organs.interfaces.IGenweb6OrgansLayer"
+    permission="cmf.ManagePortal" />
+
 </configure>
 
