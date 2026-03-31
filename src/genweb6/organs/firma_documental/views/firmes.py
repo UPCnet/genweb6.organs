@@ -387,11 +387,26 @@ body, html {
         return css_file
 
     def setPDFMetadata(self, pdf_path, title, language):
+        """Metadatos de accesibilidad: idioma, título, y bandera de etiquetado.
+
+        «Etiquetado para accesibilidad» en visores PDF corresponde al diccionario
+        MarkInfo (/Marked) en el catálogo. wkhtmltopdf no genera un árbol de
+        estructura real (StructTreeRoot); solo marcamos metadatos coherentes con
+        Lang y título. Un PDF plenamente PDF/UA suele requerir motor con salida
+        etiquetada o post-procesado (p. ej. Acrobat «Reconocer texto» / etiquetar).
+        """
         with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
             with pdf.open_metadata() as meta:
                 meta['dc:title'] = title
                 meta['dc:language'] = language
             pdf.Root['/Lang'] = pikepdf.String(language)
+            pdf.Root['/MarkInfo'] = pikepdf.Dictionary(
+                Marked=pikepdf.Boolean(True),
+                Suspects=pikepdf.Boolean(False),
+            )
+            pdf.Root['/ViewerPreferences'] = pikepdf.Dictionary(
+                DisplayDocTitle=pikepdf.Boolean(True),
+            )
             pdf.save(pdf_path)
 
     def generateActaPDF(self):
