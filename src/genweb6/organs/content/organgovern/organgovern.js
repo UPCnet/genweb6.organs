@@ -14,6 +14,14 @@ const CURRENT_YEAR = new Date().getFullYear();
 const PAGE_SIZE = 50;
 
 /**
+ * URL base de la vista sense query string ni hash.
+ * Evita trencar els endpoints en tornar de sharing (?_authenticator=...).
+ */
+function getOrgangovernBaseUrl() {
+  return window.location.origin + window.location.pathname;
+}
+
+/**
  * Generar HTML del selector de años (2016 - año actual i posteriors)
  */
 function generateYearFilterHTML() {
@@ -42,7 +50,7 @@ function loadAcords(page, year = null) {
 
   $.ajax({
     type: 'GET',
-    url: $(location).attr('href') + '/getAcordsOrgangovern?' + params.toString(),
+    url: getOrgangovernBaseUrl() + '/getAcordsOrgangovern?' + params.toString(),
     success: function(result){
       const data = $.parseJSON(result);
 
@@ -106,7 +114,7 @@ function loadSessions(page, year = null) {
 
   $.ajax({
     type: 'GET',
-    url: $(location).attr('href') + '/getSessionsOrgangovern?' + params.toString(),
+    url: getOrgangovernBaseUrl() + '/getSessionsOrgangovern?' + params.toString(),
     success: function(result){
       const data = $.parseJSON(result);
 
@@ -174,7 +182,7 @@ function loadActes(page, year = null) {
 
   $.ajax({
     type: 'GET',
-    url: $(location).attr('href') + '/getActesOrgangovern?' + params.toString(),
+    url: getOrgangovernBaseUrl() + '/getActesOrgangovern?' + params.toString(),
     success: function(result){
       const data = $.parseJSON(result);
 
