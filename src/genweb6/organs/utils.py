@@ -640,3 +640,11 @@ def purge_cache_varnish(self):
     paths = []
     paths.append('_purge_all')
     purge_varnish_paths(self, paths)
+
+
+def normalize_url(url):
+    """ Afegeix https:// si l'enllaç no té esquema (evita enllaços relatius) """
+    url = (url or '').strip()
+    if url and '://' not in url and not url.startswith(('mailto:', 'tel:', '/')):
+        return 'https://' + url
+    return url

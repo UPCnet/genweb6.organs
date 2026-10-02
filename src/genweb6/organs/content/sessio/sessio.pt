@@ -288,7 +288,7 @@
                     <span i18n:translate="">Enllac a la sala</span>
                   </dt>
                   <dd class="col-sm-8 text-md-end" tal:condition="canViewLinkSala">
-                    <a tal:attributes="href linkSala" tal:content="linkSala" target="_blank"></a>
+                    <a tal:attributes="href python:view.normalizeUrl(linkSala)" tal:content="linkSala" target="_blank"></a>
                   </dd>
                 </tal:block>
 

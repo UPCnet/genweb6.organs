@@ -161,7 +161,7 @@ class Message(form.Form):
 
             if session.linkSala is not None:
                 moreData += "<br/>Enllaç a la sessió: <a href='" + \
-                    session.linkSala + "' target='_blank'>" + session.linkSala + "</a>"
+                    utils.normalize_url(session.linkSala) + "' target='_blank'>" + session.linkSala + "</a>"
 
             moreData += "<br/>Data: " + sessiondate + \
                 "<br/>Hora d'inici: " + starthour + \
@@ -188,7 +188,7 @@ class Message(form.Form):
 
             if session.linkSala is not None:
                 moreData += "<br/>Enlace a la sesión: <a href='" + \
-                    session.linkSala + "' target='_blank'>" + session.linkSala + "</a>"
+                    utils.normalize_url(session.linkSala) + "' target='_blank'>" + session.linkSala + "</a>"
 
             moreData += "<br/>Fecha: " + sessiondate + \
                 "<br/>Hora de inicio: " + starthour + \
@@ -214,7 +214,7 @@ class Message(form.Form):
 
             if session.linkSala is not None:
                 moreData += "<br/>Link to the session: <a href='" + \
-                    session.linkSala + "' target='_blank'>" + session.linkSala + "</a>"
+                    utils.normalize_url(session.linkSala) + "' target='_blank'>" + session.linkSala + "</a>"
 
             moreData += "<br/>Date: " + sessiondate + \
                 "<br/>Start date: " + starthour + \

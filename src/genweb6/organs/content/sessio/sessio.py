@@ -1177,6 +1177,9 @@ class View(BrowserView):
             ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre'],
             roles)
 
+    def normalizeUrl(self, url):
+        return utils.normalize_url(url)
+
     def canViewLinkSala(self):
         # OPTIMIZATION: Reutilizar roles cacheados
         roles = getattr(self, '_cached_roles', None)
