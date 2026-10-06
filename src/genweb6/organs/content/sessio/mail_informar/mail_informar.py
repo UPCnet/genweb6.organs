@@ -91,7 +91,7 @@ class Message(form.Form):
             starthour = ''
         else:
             starthour = acc.start.strftime("%H:%M")
-        if acc.end is None:
+        if acc.end is None or getattr(acc, 'open_end', False):
             endHour = ''
         else:
             endHour = acc.end.strftime("%H:%M")
@@ -118,14 +118,14 @@ class Message(form.Form):
             moreData = '<p><strong>' + sessiontitle + \
                 '</strong><br/></p>Lugar: ' + place + "<br/>Data: " + sessiondate + \
                 "<br/>Hora de inicio: " + starthour + \
-                "<br/>Hora de finalización: " + endHour + \
+                ("<br/>Hora de finalización: " + endHour if endHour else "") + \
                 "<br/><br/><p><strong>" + text + "</strong></p>"
 
         if lang == 'en':
             moreData = '<p><strong>' + sessiontitle + \
                 '</strong><br/></p>Place: ' + place + "<br/>Data: " + sessiondate + \
                 "<br/>Start date: " + starthour + \
-                "<br/>End data: " + endHour + \
+                ("<br/>End data: " + endHour if endHour else "") + \
                 '<br/><br/><p><strong> Sesison summary </strong></p>'
         else:
             # lang = ca or another...
@@ -133,7 +133,7 @@ class Message(form.Form):
             moreData = '<p><strong>' + sessiontitle + \
                 "</strong><br/></p>Lloc: " + place + "<br/>Data: " + sessiondate + \
                 "<br/>Hora d'inici: " + starthour + \
-                "<br/>Hora de fi: " + endHour + \
+                ("<br/>Hora de fi: " + endHour if endHour else "") + \
                 "<br/><br/><p><strong>" + text + "</strong></p>"
 
         punts = unicodedata.normalize('NFKD', self.Punts2Acta())

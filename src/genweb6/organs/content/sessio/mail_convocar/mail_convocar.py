@@ -136,7 +136,7 @@ class Message(form.Form):
         else:
             starthour = str(acc.start.strftime("%H:%M"))
 
-        if acc.end is None:
+        if acc.end is None or getattr(acc, 'open_end', False):
             endHour = ''
         else:
             endHour = str(acc.end.strftime("%H:%M"))
@@ -165,7 +165,7 @@ class Message(form.Form):
 
             moreData += "<br/>Data: " + sessiondate + \
                 "<br/>Hora d'inici: " + starthour + \
-                "<br/>Hora de fi: " + endHour + \
+                ("<br/>Hora de fi: " + endHour if endHour else "") + \
                 '<br/>'
             bodyMail = str(moreData) + str(introData)
 
@@ -192,7 +192,7 @@ class Message(form.Form):
 
             moreData += "<br/>Fecha: " + sessiondate + \
                 "<br/>Hora de inicio: " + starthour + \
-                "<br/>Hora de finalización: " + endHour + \
+                ("<br/>Hora de finalización: " + endHour if endHour else "") + \
                 '<br/>'
             bodyMail = str(moreData) + str(introData)
 
@@ -218,7 +218,7 @@ class Message(form.Form):
 
             moreData += "<br/>Date: " + sessiondate + \
                 "<br/>Start date: " + starthour + \
-                "<br/>End date: " + endHour + \
+                ("<br/>End date: " + endHour if endHour else "") + \
                 '<br/>'
             bodyMail = str(moreData) + str(introData)
 
