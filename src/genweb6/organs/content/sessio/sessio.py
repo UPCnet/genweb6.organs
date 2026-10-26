@@ -954,6 +954,17 @@ class View(BrowserView):
             if is_anon:
                 return []
 
+        # Usuaris que només poden veure la part pública (fitxers i documents)
+        show_only_public = False
+        if organ_tipus == 'open_organ':
+            # Anònims i autenticats sense rol a l'òrgan: mai el contingut restringit
+            show_only_public = is_anon or not utils.checkhasRol(
+                ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
+                 'OG4-Afectat', 'OG5-Convidat'], roles)
+        elif organ_tipus == 'restricted_to_affected_organ':
+            show_only_public = not utils.checkhasRol(
+                ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles)
+
         session_path = '/'.join(self.context.getPhysicalPath()) + '/' + item['id']
         portal_catalog = api.portal.get_tool(name='portal_catalog')
 
@@ -967,29 +978,14 @@ class View(BrowserView):
         for obj in values:
             value = obj.getObject()
 
+            # Sense part pública → no es llista
             if obj.portal_type == 'genweb.organs.file':
-                if is_anon and not value.visiblefile:
+                if show_only_public and not value.visiblefile:
                     continue
-
-                if organ_tipus == 'restricted_to_affected_organ':
-                    if not utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles) and not value.visiblefile:
-                        continue
 
             elif obj.portal_type == 'genweb.organs.document':
-                if is_anon and not value.defaultContent:
+                if show_only_public and not value.defaultContent:
                     continue
-
-                if organ_tipus == 'restricted_to_affected_organ':
-                    if not utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles) and not value.defaultContent:
-                        continue
-
-            show_only_public = False
-            if organ_tipus == 'open_organ':
-                if is_anon:
-                    show_only_public = True
-            elif organ_tipus == 'restricted_to_affected_organ':
-                if not utils.checkhasRol(['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles):
-                    show_only_public = True
 
             has_double_content = False
             if obj.portal_type == 'genweb.organs.file':

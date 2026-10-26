@@ -1973,15 +1973,8 @@ class FunctionalTestCase(unittest.TestCase):
                         request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.convocada.punt.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.convocada.punt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(Unauthorized,
-                          Download(
-                              root_path.afectats.convocada.punt['public-restringit'],
-                              request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.convocada.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.convocada.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.convocada.punt['public-restringit'],
@@ -2017,16 +2010,8 @@ class FunctionalTestCase(unittest.TestCase):
                 request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.convocada.punt.subpunt.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.convocada.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.convocada.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.convocada.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.convocada.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.convocada.punt.subpunt
@@ -2058,16 +2043,8 @@ class FunctionalTestCase(unittest.TestCase):
                         request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.convocada.punt.acord.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.convocada.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.convocada.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.convocada.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.convocada.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.convocada.punt.acord
@@ -2095,16 +2072,8 @@ class FunctionalTestCase(unittest.TestCase):
                         request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.convocada.acord.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.convocada.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.convocada.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.convocada.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.convocada.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.convocada.acord['public-restringit'],
@@ -2134,16 +2103,8 @@ class FunctionalTestCase(unittest.TestCase):
                         request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.realitzada.punt.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.realitzada.punt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.realitzada.punt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.realitzada.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.realitzada.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.realitzada.punt['public-restringit'],
@@ -2179,16 +2140,8 @@ class FunctionalTestCase(unittest.TestCase):
                 request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.realitzada.punt.subpunt.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.realitzada.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.realitzada.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.realitzada.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.realitzada.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.realitzada.punt.subpunt
@@ -2220,16 +2173,8 @@ class FunctionalTestCase(unittest.TestCase):
                         request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.realitzada.punt.acord.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.realitzada.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.realitzada.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.realitzada.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.realitzada.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.realitzada.punt.acord
@@ -2257,16 +2202,8 @@ class FunctionalTestCase(unittest.TestCase):
                         request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.realitzada.acord.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.realitzada.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.realitzada.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.realitzada.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.realitzada.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.realitzada.acord['public-restringit'],
@@ -2298,15 +2235,8 @@ class FunctionalTestCase(unittest.TestCase):
                         request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.tancada.punt.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.tancada.punt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(Unauthorized,
-                          Download(
-                              root_path.afectats.tancada.punt['public-restringit'],
-                              request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.tancada.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.tancada.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.tancada.punt['public-restringit'],
@@ -2334,16 +2264,8 @@ class FunctionalTestCase(unittest.TestCase):
                         request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.tancada.punt.subpunt.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.tancada.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.tancada.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.tancada.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.tancada.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.tancada.punt.subpunt
@@ -2375,16 +2297,8 @@ class FunctionalTestCase(unittest.TestCase):
                         request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.tancada.punt.acord.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.tancada.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.tancada.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.tancada.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.tancada.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.tancada.punt.acord
@@ -2414,15 +2328,8 @@ class FunctionalTestCase(unittest.TestCase):
                         request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.tancada.acord.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.tancada.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(Unauthorized,
-                          Download(
-                              root_path.afectats.tancada.acord['public-restringit'],
-                              request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.tancada.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.tancada.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.tancada.acord['public-restringit'],
@@ -2450,15 +2357,8 @@ class FunctionalTestCase(unittest.TestCase):
                         request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.correccio.punt.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.correccio.punt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(Unauthorized,
-                          Download(
-                              root_path.afectats.correccio.punt['public-restringit'],
-                              request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.correccio.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.correccio.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.correccio.punt['public-restringit'],
@@ -2492,16 +2392,8 @@ class FunctionalTestCase(unittest.TestCase):
                 request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.correccio.punt.subpunt.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.correccio.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.correccio.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.correccio.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.correccio.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.correccio.punt.subpunt
@@ -2533,16 +2425,8 @@ class FunctionalTestCase(unittest.TestCase):
                         request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.correccio.punt.acord.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.correccio.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.correccio.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.correccio.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.correccio.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.correccio.punt.acord
@@ -2570,16 +2454,8 @@ class FunctionalTestCase(unittest.TestCase):
                         request).publishTraverse(request, 'hiddenfile')())
         self.assertTrue(Download(root_path.afectats.correccio.acord.restringit,
                         request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.correccio.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.correccio.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.correccio.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.correccio.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.correccio.acord['public-restringit'],
@@ -3346,16 +3222,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.convocada.punt.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.convocada.punt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.convocada.punt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.convocada.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.convocada.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.convocada.punt['public-restringit'],
@@ -3401,16 +3269,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.convocada.punt.subpunt.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.convocada.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.convocada.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.convocada.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.convocada.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.convocada.punt.subpunt['public-restringit'],
@@ -3456,16 +3316,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.convocada.punt.acord.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.convocada.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.convocada.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.convocada.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.convocada.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.convocada.punt.acord['public-restringit'],
@@ -3511,16 +3363,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.convocada.acord.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.convocada.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.convocada.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.convocada.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.convocada.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.convocada.acord['public-restringit'],
@@ -3570,16 +3414,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.realitzada.punt.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.realitzada.punt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.realitzada.punt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.realitzada.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.realitzada.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.realitzada.punt['public-restringit'],
@@ -3625,16 +3461,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.realitzada.punt.subpunt.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.realitzada.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.realitzada.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.realitzada.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.realitzada.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.realitzada.punt.subpunt['public-restringit'],
@@ -3680,16 +3508,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.realitzada.punt.acord.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.realitzada.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.realitzada.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.realitzada.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.realitzada.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.realitzada.punt.acord['public-restringit'],
@@ -3735,16 +3555,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.realitzada.acord.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.realitzada.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.realitzada.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.realitzada.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.realitzada.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.realitzada.acord['public-restringit'],
@@ -3794,16 +3606,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.tancada.punt.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.tancada.punt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.tancada.punt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.tancada.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.tancada.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.tancada.punt['public-restringit'],
@@ -3849,16 +3653,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.tancada.punt.subpunt.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.tancada.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.tancada.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.tancada.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.tancada.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.tancada.punt.subpunt['public-restringit'],
@@ -3904,16 +3700,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.tancada.punt.acord.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.tancada.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.tancada.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.tancada.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.tancada.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.tancada.punt.acord['public-restringit'],
@@ -3959,16 +3747,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.tancada.acord.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.tancada.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.tancada.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.tancada.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.tancada.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.tancada.acord['public-restringit'],
@@ -4018,16 +3798,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.correccio.punt.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.correccio.punt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.correccio.punt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.correccio.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.correccio.punt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.correccio.punt['public-restringit'],
@@ -4073,16 +3845,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.correccio.punt.subpunt.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.correccio.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.correccio.punt.subpunt['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.correccio.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.correccio.punt.subpunt['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.correccio.punt.subpunt['public-restringit'],
@@ -4128,16 +3892,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.correccio.punt.acord.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.correccio.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.correccio.punt.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.correccio.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.correccio.punt.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.correccio.punt.acord['public-restringit'],
@@ -4183,16 +3939,8 @@ class FunctionalTestCase(unittest.TestCase):
             Download(
                 root_path.afectats.correccio.acord.restringit,
                 request).publishTraverse(request, 'hiddenfile')())
-        self.assertRaises(
-            Unauthorized,
-            DisplayFile(
-                root_path.afectats.correccio.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
-        self.assertRaises(
-            Unauthorized,
-            Download(
-                root_path.afectats.correccio.acord['public-restringit'],
-                request).publishTraverse(request, 'visiblefile'))
+        self.assertTrue(DisplayFile(root_path.afectats.correccio.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
+        self.assertTrue(Download(root_path.afectats.correccio.acord['public-restringit'], request).publishTraverse(request, 'visiblefile')())
         self.assertTrue(
             DisplayFile(
                 root_path.afectats.correccio.acord['public-restringit'],

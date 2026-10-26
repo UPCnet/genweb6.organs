@@ -225,17 +225,9 @@ def _get_file_with_perms(view: Download):
                 # Sesiones: Secretari, Editor ven todo
                 if utils.checkhasRol(["OG1-Secretari", "OG2-Editor"], roles):
                     return file
-                # Membre, Convidat: lógica especial con ambos ficheros
+                # Membre, Convidat: ven ambos ficheros
                 elif utils.checkhasRol(["OG3-Membre", "OG5-Convidat"], roles):
-                    if context.visiblefile and context.hiddenfile:
-                        # Si hay ambos: solo ven hiddenfile
-                        if hidden:
-                            return file
-                        else:
-                            raise Unauthorized
-                    else:
-                        # Si hay solo uno: lo ven
-                        return file
+                    return file
                 # Afectat y Anónimo: sin acceso
         elif sessio_state in {"realitzada", "en_correccio"}:
             if is_acta_audio_or_annex:
@@ -249,17 +241,9 @@ def _get_file_with_perms(view: Download):
                 # Sesiones: Secretari, Editor ven todo
                 if utils.checkhasRol(["OG1-Secretari", "OG2-Editor"], roles):
                     return file
-                # Membre, Convidat: lógica especial con ambos ficheros
+                # Membre, Convidat: ven ambos ficheros
                 elif utils.checkhasRol(["OG3-Membre", "OG5-Convidat"], roles):
-                    if context.visiblefile and context.hiddenfile:
-                        # Si hay ambos: solo ven hiddenfile
-                        if hidden:
-                            return file
-                        else:
-                            raise Unauthorized
-                    else:
-                        # Si hay solo uno: lo ven
-                        return file
+                    return file
                 # Afectat: lógica especial
                 elif "OG4-Afectat" in roles:
                     if context.visiblefile and context.hiddenfile:
@@ -286,17 +270,9 @@ def _get_file_with_perms(view: Download):
                 # Sesiones: Secretari, Editor ven todo
                 if utils.checkhasRol(["OG1-Secretari", "OG2-Editor"], roles):
                     return file
-                # Membre, Convidat: lógica especial con ambos ficheros
+                # Membre, Convidat: ven ambos ficheros
                 elif utils.checkhasRol(["OG3-Membre", "OG5-Convidat"], roles):
-                    if context.visiblefile and context.hiddenfile:
-                        # Si hay ambos: solo ven hiddenfile
-                        if hidden:
-                            return file
-                        else:
-                            raise Unauthorized
-                    else:
-                        # Si hay solo uno: lo ven
-                        return file
+                    return file
                 # Afectat: lógica especial (igual que en realitzada/en_correccio)
                 elif "OG4-Afectat" in roles:
                     if context.visiblefile and context.hiddenfile:
