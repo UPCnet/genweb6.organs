@@ -2,11 +2,37 @@ Changelog
 =========
 
 
-1.19 (unreleased)
+1.19 (2026-10-27)
 -----------------
 
-- Nothing changed yet.
-
+* [FIX] En órganos abiertos, OG4-Afectat solo ve la parte pública de ficheros y documentos [Iago López]
+*  [Iago López]
+* Hasta ahora OG4-Afectat veía las dos partes (pública y restringida) en [Iago López]
+* órganos open_organ. Ahora tiene el mismo acceso que un anónimo: solo [Iago López]
+* visiblefile / defaultContent. [Iago López]
+*  [Iago López]
+* - utils.FilesandDocumentsInside y sessio.filesinsidePunt: listados [Iago López]
+* - file.viewReserved y document.viewDocumentReserved: vista del objeto [Iago López]
+* - namedfilebrowser: @@display-file / @@download de hiddenfile -> Unauthorized [Iago López]
+* - firmes.canViewFile: viewFileGDoc / downloadFileGDoc privado [Iago López]
+*  [Iago López]
+* Tests adaptados a la nueva regla. [Iago López]
+* [FIX] OG4-Afectat veía sesiones convocadas en el listado de un órgano restringido a afectados [Iago López]
+*  [Iago López]
+* getSessionsOrgangovern solo filtraba por el workflow (que da View a la [Iago López]
+* sesión convocada), pero SessioView.canView no deja a OG4-Afectat verla [Iago López]
+* en órganos restricted_to_affected_organ. Ahora el listado aplica la misma [Iago López]
+* regla (utils.canViewSessionState / SESSION_VIEW_ROLES) antes de paginar. [Iago López]
+*  [Iago López]
+* Añadidos tests de visibilidad del listado por rol y tipo de órgano. [Iago López]
+* [FIX] Permissions 190013 [Iago López]
+* [UPD] Quitar fecha fin sin no tiene en mail_convocar y mail_informar [Iago López]
+* [FIX] enlaces linkSala no funcionaban bien si no se añadia el http/s [Iago López]
+* [UPD] Mejora consultas con paginacion [Iago López]
+* [UPD] firmes: bandera MarkInfo y DisplayDocTitle en setPDFMetadata [Iago López]
+* [UPD] Descargar directamente el pdf en la nueva vista de testeo [Iago López]
+* [UPD] Añadir title y language al pdf que generamos con pdfkit + vista para hacer pruebas facilmente [Iago López]
+* [UPD] Cambiar enlace Pautes i models per a l'elaboració de documents [Iago López]
 
 1.18 (2026-03-23)
 -----------------
