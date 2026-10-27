@@ -1392,6 +1392,15 @@ class getSessionsOrgangovern(BrowserView):
         # Obtener brains
         sessions_brains = portal_catalog.searchResults(**query_params)
 
+        # El workflow deja ver todas las sesiones no planificadas; aplicamos
+        # la misma regla que la vista de la sesión (p. ej. OG4-Afectat no ve
+        # sesiones convocadas en órganos restringidos a afectados)
+        roles = utils.getUserRoles(self, self.context, api.user.get_current().id)
+        organ_type = self.context.organType
+        sessions_brains = [
+            brain for brain in sessions_brains
+            if utils.canViewSessionState(organ_type, brain.review_state, roles)]
+
         # Calcular años disponibles SOLO cuando no hay filtro
         min_year = None
         max_year = None

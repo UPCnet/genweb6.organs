@@ -94,6 +94,47 @@ def checkhasRol(check_roles, user_roles):
     return False
 
 
+# Rols que poden veure una sessió segons tipus d'òrgan i estat.
+# Ha de coincidir amb SessioView.canView (content/sessio/sessio.py).
+# None = visible per a tothom
+SESSION_VIEW_ROLES = {
+    'open_organ': {
+        'planificada': ['OG1-Secretari', 'OG2-Editor'],
+        'convocada': None,
+        'realitzada': None,
+        'tancada': None,
+        'en_correccio': None,
+    },
+    'restricted_to_members_organ': {
+        'planificada': ['OG1-Secretari', 'OG2-Editor'],
+        'convocada': ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'],
+        'realitzada': ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'],
+        'tancada': ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'],
+        'en_correccio': ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'],
+    },
+    'restricted_to_affected_organ': {
+        'planificada': ['OG1-Secretari', 'OG2-Editor'],
+        'convocada': ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'],
+        'realitzada': ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'],
+        'tancada': ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'],
+        'en_correccio': ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'],
+    },
+}
+
+
+def canViewSessionState(organ_type, session_state, roles):
+    """ Retorna si els rols poden veure una sessió d'aquest estat
+        dins d'un òrgan d'aquest tipus (sense llançar Unauthorized)
+    """
+    if 'Manager' in roles:
+        return True
+    states = SESSION_VIEW_ROLES.get(organ_type, {})
+    if session_state not in states:
+        return False
+    allowed_roles = states[session_state]
+    return allowed_roles is None or checkhasRol(allowed_roles, roles)
+
+
 def isAnon(self):
     """ Return true if user has role OG1-Secretari """
     if api.user.is_anonymous():
