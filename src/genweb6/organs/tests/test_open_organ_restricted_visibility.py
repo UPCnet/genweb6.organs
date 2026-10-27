@@ -2,13 +2,13 @@
 """
 Tests de visibilitat del contingut restringit en òrgans oberts (open_organ).
 
-Un usuari anònim o autenticat sense cap rol a l'òrgan NO pot veure els
+Un usuari afectat (OG4), anònim o autenticat sense cap rol a l'òrgan NO pot veure els
 fitxers (hiddenfile) ni els documents (alternateContent) restringits:
   - ni al llistat de la sessió (filesinsidePunt)
   - ni a la vista del fitxer (viewReserved)
   - ni a la vista del document (viewDocumentReserved / message)
 
-Els rols OG1-OG5 sí que veuen el contingut restringit.
+Els rols OG1, OG2, OG3 i OG5 sí que veuen el contingut restringit.
 """
 
 import unittest
@@ -28,7 +28,7 @@ from genweb6.organs.testing import GENWEB6_ORGANS_FUNCTIONAL_TESTING
 
 STATES = ['convocada', 'realitzada', 'tancada', 'correccio']
 ROLES_WITH_ACCESS = ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
-                     'OG4-Afectat', 'OG5-Convidat']
+                     'OG5-Convidat']
 
 
 class TestOpenOrganRestrictedVisibility(unittest.TestCase):
@@ -130,6 +130,10 @@ class TestOpenOrganRestrictedVisibility(unittest.TestCase):
     def test_authenticated_without_role_cannot_see_restricted(self):
         self._login_as(['Member'])
         self._assert_only_public('Member')
+
+    def test_afectat_cannot_see_restricted(self):
+        self._login_as(['OG4-Afectat'])
+        self._assert_only_public('OG4-Afectat')
 
     def test_roles_with_access_see_restricted(self):
         for role in ROLES_WITH_ACCESS:

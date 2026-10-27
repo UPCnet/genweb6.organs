@@ -174,12 +174,12 @@ def _get_file_with_perms(view: Download):
         elif sessio_state in {
             "convocada", "realitzada", "tancada", "en_correccio"
         }:
-            # Secretaris/editors/membres/convidats/afectats: ven ambos
+            # Secretaris/editors/membres/convidats: ven ambos
             allowed = ["OG1-Secretari", "OG2-Editor", "OG3-Membre",
-                       "OG4-Afectat", "OG5-Convidat"]
+                       "OG5-Convidat"]
             if utils.checkhasRol(allowed, roles):
                 return file
-            # Anónimos: solo ven el visible
+            # Afectats y anónimos: solo ven el visible
             if visible:
                 return file
             # Si intentan acceder al hidden sin rol: Unauthorized

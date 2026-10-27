@@ -957,10 +957,10 @@ class View(BrowserView):
         # Usuaris que només poden veure la part pública (fitxers i documents)
         show_only_public = False
         if organ_tipus == 'open_organ':
-            # Anònims i autenticats sense rol a l'òrgan: mai el contingut restringit
+            # Afectats, anònims i autenticats sense rol a l'òrgan: mai el contingut restringit
             show_only_public = is_anon or not utils.checkhasRol(
                 ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
-                 'OG4-Afectat', 'OG5-Convidat'], roles)
+                 'OG5-Convidat'], roles)
         elif organ_tipus == 'restricted_to_affected_organ':
             show_only_public = not utils.checkhasRol(
                 ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles)

@@ -5,8 +5,8 @@ documents de punts / subpunts / acords).
 
 Regla:
   Òrgans públics:
-    Sec, Ed, Mem, Conv, Afe veuen les dues parts diferenciades.
-    Anònims (i autenticats sense rol) només la pública.
+    Sec, Ed, Mem, Conv veuen les dues parts diferenciades.
+    Afectats i anònims (i autenticats sense rol) només la pública.
   Òrgans restringits a membres:
     Sec, Ed, Mem, Conv veuen les dues parts diferenciades.
     Afectats i anònims no en veuen cap.
@@ -127,10 +127,14 @@ class TestFilesandDocumentsInsideVisibility(unittest.TestCase):
 
     def test_open_roles_see_both(self):
         for role in ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
-                     'OG4-Afectat', 'OG5-Convidat']:
+                     'OG5-Convidat']:
             self._login_as([role])
             self._assert_both_differentiated(self._listing('obert'), 'obert/' + role)
             logout()
+
+    def test_open_afectat_only_public(self):
+        self._login_as(['OG4-Afectat'])
+        self._assert_only_public(self._listing('obert'), 'obert/OG4-Afectat')
 
     def test_open_anonymous_only_public(self):
         logout()

@@ -795,7 +795,8 @@ class ViewFile(BrowserView):
         roles_to_check = ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat']
 
         if organ_tipus == 'open_organ':
-            roles_to_check.append('OG4-Afectat')
+            # OG4 només la part pública (ja retornada a dalt)
+            pass
         elif organ_tipus == 'restricted_to_members_organ':
             # OG4 mai en òrgan restringit a membres
             pass

@@ -344,9 +344,9 @@ class View(BrowserView):
 
         organ_tipus = self.context.organType
         if organ_tipus == 'open_organ':
-            # Anònims i autenticats sense rol a l'òrgan no veuen el restringit
+            # Afectats, anònims i autenticats sense rol a l'òrgan no veuen el restringit
             return utils.checkhasRol(
-                ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG4-Afectat', 'OG5-Convidat'], roles)
+                ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles)
         elif organ_tipus == 'restricted_to_members_organ':
             return utils.checkhasRol(
                 ['OG1-Secretari', 'OG2-Editor', 'OG3-Membre', 'OG5-Convidat'], roles)

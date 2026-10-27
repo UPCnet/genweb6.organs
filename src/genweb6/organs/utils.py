@@ -313,8 +313,8 @@ def addPoint(context, names, title, justification, path):
 def FilesandDocumentsInside(self):
     """ Fitxers i documents d'un punt / subpunt / acord.
 
-        - open_organ: Sec, Ed, Mem, Afe, Conv veuen les dues parts diferenciades;
-          la resta (anònims i autenticats sense rol) només la pública.
+        - open_organ: Sec, Ed, Mem, Conv veuen les dues parts diferenciades;
+          Afe i la resta (anònims i autenticats sense rol) només la pública.
         - restricted_to_members_organ: Sec, Ed, Mem, Conv veuen les dues parts;
           la resta no veu res.
         - restricted_to_affected_organ: Sec, Ed, Mem, Conv veuen les dues parts;
@@ -332,7 +332,7 @@ def FilesandDocumentsInside(self):
 
     if organ_tipus == 'open_organ':
         reserved_roles = ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
-                          'OG4-Afectat', 'OG5-Convidat']
+                          'OG5-Convidat']
         public_roles = None  # tothom
     elif organ_tipus == 'restricted_to_affected_organ':
         reserved_roles = ['Manager', 'OG1-Secretari', 'OG2-Editor', 'OG3-Membre',
