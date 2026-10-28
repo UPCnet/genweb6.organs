@@ -338,7 +338,7 @@ table.table-bordered thead th {
   display: none;
 }
 /* line 230, ../scss/_generic.scss */
-#header .navbar-nav .nav-item:not(.nav-action):first-child {
+#header .navbar-nav .nav-item:not(.nav-action):has(a#personaltools-login-mobile), #header .navbar-nav .nav-item:not(.nav-action):first-child {
   display: block;
 }
 
@@ -917,23 +917,26 @@ body.template-managefiles .visibility-switch-pill.visibility-switch-restringit .
 body.template-managefiles .visibility-switch-pill.visibility-switch-restringit .visibility-switch:checked ~ .visibility-switch-track .visibility-switch-thumb {
   left: calc(100% - 1.85rem);
 }
-
-/* Pill readonly: vermell/verd, text centrat */
+/* line 121, ../scss/content/_manage_files.scss */
 body.template-managefiles .visibility-switch-pill.visibility-pill-readonly {
   cursor: default;
   pointer-events: none;
 }
+/* line 125, ../scss/content/_manage_files.scss */
 body.template-managefiles .visibility-switch-pill.visibility-pill-readonly .visibility-switch-track {
   justify-content: center;
   display: inline-flex;
   align-items: center;
 }
+/* line 131, ../scss/content/_manage_files.scss */
 body.template-managefiles .visibility-switch-pill.visibility-pill-readonly .visibility-switch-label {
   text-align: center;
 }
+/* line 135, ../scss/content/_manage_files.scss */
 body.template-managefiles .visibility-switch-pill.visibility-pill-readonly.visibility-switch-public .visibility-switch-track {
   background-color: #198754 !important;
 }
+/* line 139, ../scss/content/_manage_files.scss */
 body.template-managefiles .visibility-switch-pill.visibility-pill-readonly.visibility-switch-restringit .visibility-switch-track {
   background-color: #dc3545 !important;
 }

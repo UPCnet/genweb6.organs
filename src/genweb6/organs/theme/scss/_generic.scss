@@ -227,6 +227,7 @@ table.table-bordered {
     .nav-item:not(.nav-action) {
       display: none;
 
+      &:has(a#personaltools-login-mobile),
       &:first-child {
         display: block;
       }
