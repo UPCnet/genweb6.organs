@@ -2,7 +2,12 @@
 
 from plone import api
 from Products.CMFPlone.interfaces import INonInstallable
+from Products.PluggableAuthService.interfaces.plugins import IPropertiesPlugin
 from zope.interface import implementer
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 NEW_INDEXES = [('estatAprovacio', 'FieldIndex'),
                ('dataSessio', 'DateIndex'),
@@ -42,6 +47,25 @@ def add_catalog_indexes(catalog):
             indexables.append(name)
     if len(indexables) > 0:
         catalog.manage_reindexIndex(ids=indexables)
+
+
+def setup_ldapupc_properties_plugin(site):
+    """
+    Activa ldapUPC com a IPropertiesPlugin i el posa el primer.
+    Si no, member.getProperty('email') no funciona (correus de votació).
+    Cal perquè la reinstal·lació de genweb6.upc recrea ldapUPC sense
+    aquesta interfície activada.
+    """
+    acl_users = site.acl_users
+    if 'ldapUPC' not in acl_users.objectIds():
+        logger.warning('ldapUPC no existeix: no es configura IPropertiesPlugin')
+        return
+
+    plugins = acl_users.plugins
+    if 'ldapUPC' not in plugins.listPluginIds(IPropertiesPlugin):
+        plugins.activatePlugin(IPropertiesPlugin, 'ldapUPC')
+    plugins.movePluginsTop(IPropertiesPlugin, ['ldapUPC'])
+    logger.info('ldapUPC activat i primer a IPropertiesPlugin')
 
 
 # def disable_acquire_permission(site):
@@ -86,5 +110,6 @@ def setupVarious(context):
 
     catalog = api.portal.get_tool("portal_catalog")
     add_catalog_indexes(catalog)
+    setup_ldapupc_properties_plugin(api.portal.get())
     # site = api.portal.get()
     # disable_acquire_permission(site)
