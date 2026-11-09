@@ -95,3 +95,5 @@ node_modules/
 # macOS
 .DS_Store
 **/.DS_Store
+# Credencials de la bateria manual: firma PRE + vots amb usuari LDAP (plantilla: manual_settings.env.example)
+src/genweb6/organs/tests/manual/manual_settings.env
