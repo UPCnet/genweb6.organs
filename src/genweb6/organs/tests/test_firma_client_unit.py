@@ -200,15 +200,28 @@ class ClientFirmaTestCase(unittest.TestCase):
         self.assertEqual(cm.exception.response, {'error': 'no existeix'})
         self.assertIn('[404]', str(cm.exception))
 
-    @unittest.expectedFailure
     def test_http_error_non_json_body(self):
-        """BUG: si el servicio responde un error con cuerpo no JSON (p. ej.
-        una página HTML de un proxy 502), json.loads lanza JSONDecodeError en
-        vez de ClientFirmaException y los except del flujo de firma no lo
-        capturan."""
+        """Un error con cuerpo no JSON (p. ej. página HTML de un proxy 502)
+        debe llegar como ClientFirmaException, no como JSONDecodeError."""
         self.request.return_value = fake_response(status=502, content=b'<html>Bad Gateway</html>')
-        with self.assertRaises(ClientFirmaException):
+        with self.assertRaises(ClientFirmaException) as cm:
             self.client.getInfoElement(1)
+        self.assertEqual(cm.exception.status, 502)
+        self.assertIsNone(cm.exception.response)
+        self.assertIn('Bad Gateway', str(cm.exception))
+
+    def test_http_error_empty_body(self):
+        self.request.return_value = fake_response(status=504, content=b'')
+        with self.assertRaises(ClientFirmaException) as cm:
+            self.client.timbrarDocumentGdoc('ID')
+        self.assertEqual(cm.exception.status, 504)
+
+    def test_success_non_json_body(self):
+        """Un 200 con cuerpo vacío o HTML no debe dar 'Expecting value'."""
+        for content in (b'', b'<html>ok</html>'):
+            self.request.return_value = fake_response(status=200, content=content)
+            with self.assertRaises(ClientFirmaException):
+                self.client.timbrarDocumentGdoc('ID')
 
     # ------------------------------------------------------------------
     # uploadFileGdoc (helper de alto nivel)

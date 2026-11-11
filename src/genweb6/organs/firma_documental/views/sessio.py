@@ -318,10 +318,17 @@ class SignSessioView(BrowserView, utilsFD.UtilsFirmaDocumental):
                     absolute_url = obj.getURL()
                     if info_firma.get('uploaded', False):
                         absolute_url += '/viewFileGDoc?visibility=' + visibility
+                    # Pujat però amb el timbrat fallit (timbrat == False): es
+                    # mostra com a error i es pot tornar a enviar. Els antics
+                    # sense la marca 'timbrat' es consideren correctes.
                     firma_status = {
                         'sent': bool(info_firma),
-                        'success': info_firma and info_firma.get('uploaded', False),
-                        'failed': info_firma and not info_firma.get('uploaded', False) and not info_firma.get('replaced', False),
+                        'success': info_firma and info_firma.get('uploaded', False)
+                        and info_firma.get('timbrat', True) is not False,
+                        'failed': info_firma and (
+                            not info_firma.get('uploaded', False)
+                            or info_firma.get('timbrat', True) is False
+                        ) and not info_firma.get('replaced', False),
                         'replaced': info_firma and not info_firma.get('uploaded', False) and info_firma.get('replaced', False),
                         'cssClass': 'estatFirmaFile text-success',
                         'message': info_firma.get('error', "")

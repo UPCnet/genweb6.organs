@@ -135,7 +135,7 @@ class Edit(edit.DefaultEditForm):
                 # Si las de organs quieren aquí podemos llamar la función para subir los ficheros a gDOC automáticamente
                 # genweb6.organs.firmadocumental.webservices.uploadFileGDoc
             elif new_visiblefile is None:
-                info_firma.pop('private', None)
+                info_firma.pop('public', None)
 
         if info_firma.get('private', {}).get('uploaded', False):
             old_hiddenfile = getattr(self.context, 'hiddenfile', None)

@@ -15,21 +15,6 @@ $(document).ready(function(){
     })
   });
 
-  $('#send-sign-btn').click(function () {
-    $('#previewDocModal').modal('hide');
-    var data = {};
-    $('input:checked').each(function () {
-      data[this.name] = this.value;
-    });
-    $('.spinner-block').removeClass('d-none');
-    $.ajax({
-      url: 'uploadFiles',
-      type: 'POST',
-      data: data,
-      contentType: 'application/x-www-form-urlencoded; charset=utf-8',
-    }).then(() => window.location.reload());
-  });
-
   // Preview documentacio
   var $btnPreviewDoc = $('#previewDocBtn');
   if ($btnPreviewDoc.length) {
@@ -97,7 +82,14 @@ $(document).ready(function(){
   });
 
   // Enviar ficheros seleccionados a firmar
-  $('#send-sign-btn').click(function () {
+  // Un únic handler: abans n'hi havia dos i cada clic enviava dues peticions
+  // simultànies a uploadFiles (pujades duplicades, conflictes i doble timbrat).
+  var sendingSign = false;
+  $('#send-sign-btn').on('click', function () {
+    if (sendingSign) return;
+    sendingSign = true;
+    $(this).addClass('disabled');
+    $('#previewDocModal').modal('hide');
     $('#send-confirmation').modal('hide');
     var data = {};
     $('input:checked').each(function () {
@@ -109,8 +101,8 @@ $(document).ready(function(){
       type: 'POST',
       data: data,
       contentType: 'application/x-www-form-urlencoded; charset=utf-8',
-    }).then(() => window.location.reload());
-  }); 
+    }).always(() => window.location.reload());
+  });
 
   // Cancelar signatura
   $('#cancelSignatura').on('click', function(){

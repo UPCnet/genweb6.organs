@@ -131,7 +131,7 @@ class UploadFiles(BrowserView, FirmesMixin):
             'console_log': '3.ERROR. Creació de la serie documental en gDOC.',
             'portal_msg': _(u'gDOC: No s\'ha pogut crear la serie documental: Contacta amb algun administrador de la web perquè revisi la configuració.'),
             'portal_msg_noExisteix': _(u'gDOC: No s\'ha pogut crear la serie documental: La serie documental no existeix.'),
-            'choose_portal_msg': lambda resp: 'portal_msg_noExisteix' if resp['codi'] and resp['codi'] == 528 else 'portal_msg'
+            'choose_portal_msg': lambda resp: 'portal_msg_noExisteix' if isinstance(resp, dict) and resp.get('codi') == 528 else 'portal_msg'
         },
         'uploadSessionFiles': {
             'console_log': '7.ERROR. Puja dels fitxers de la sessió al gDOC.',
@@ -174,6 +174,7 @@ class UploadFiles(BrowserView, FirmesMixin):
             info_file = uploadFileGdoc(
                 author, self.context.unitatDocumental, file_content, filename)
             info_file['uploaded'] = True
+            info_file['timbrat'] = False
             info_file['error'] = None
 
         except ClientFirmaException as e:
@@ -199,6 +200,43 @@ class UploadFiles(BrowserView, FirmesMixin):
             file.reindexObject()
 
         return True
+
+    def timbrarFileGdoc(self, client, file, visibility):
+        """Timbra un fitxer ja pujat. Retorna False si falla.
+
+        Només es timbren els fitxers pujats per aquesta petició
+        (timbrat == False). Els pujats abans d'existir la marca es
+        consideren ja timbrats: timbrar dos cops el mateix document
+        fa fallar el servei.
+        """
+        info_firma = file.info_firma
+        if not isinstance(info_firma, dict):
+            info_firma = ast.literal_eval(info_firma)
+        info_file = info_firma.get(visibility) or {}
+        if info_file.get('timbrat', True):
+            return True
+
+        try:
+            res = client.timbrarDocumentGdoc(info_file['id'])
+            info_file['id'] = res['idDocument']
+            info_file['timbrat'] = True
+            info_file['error'] = None
+            logger.info(
+                "1.1 Document timbrat correctament: [%s] %s " %
+                (info_file['id'], info_file.get('filename')))
+            return True
+
+        except Exception as e:
+            logger.error('ERROR. Timbrat del fitxer al gDOC. Exception: %s', str(e))
+            if not isinstance(e, ClientFirmaException):
+                logger.error(traceback.format_exc())
+            info_file['error'] = "No s'ha pogut timbrar el fitxer al gDOC. Torneu a provar-ho més tard."
+            return False
+
+        finally:
+            info_firma[visibility] = info_file
+            file.info_firma = str(info_firma)
+            file.reindexObject()
 
     def __call__(self):
         organ = utils.get_organ(self.context)
@@ -262,21 +300,18 @@ class UploadFiles(BrowserView, FirmesMixin):
                 visibility = 'private' if file_id.startswith('private') else 'public'
                 file_id = file_id.replace(visibility + '-', '', 1)
                 file_obj = uuidToObject(file_id)
-                if file_obj:
-                    success = self.uploadFileGdoc(
-                        organ.author, file_obj, visibility) and success
-                    if not isinstance(file_obj.info_firma, dict):
-                        file_obj.info_firma = ast.literal_eval(file_obj.info_firma)
-                    res = client.timbrarDocumentGdoc(file_obj.info_firma[visibility]['id'])
-                    file_obj.info_firma[visibility]['id'] = res['idDocument']
-                    file_obj.reindexObject()
-                    logger.info(
-                        "1.1 Document timbrat correctament: [%s] %s " %
-                        (file_obj.info_firma[visibility]['id'],
-                         file_obj.info_firma[visibility]['filename']))
-                else:
+                if not file_obj:
                     logger.error(
                         'ERROR. No s\'ha pogut obtenir el fitxer amb id %s', file_id)
+                    continue
+
+                if not self.uploadFileGdoc(organ.author, file_obj, visibility):
+                    # Error ja desat a info_firma; no es pot timbrar
+                    success = False
+                    continue
+
+                if not self.timbrarFileGdoc(client, file_obj, visibility):
+                    success = False
 
         except Exception as e:
             return self.printError(sign_step, e)
@@ -308,7 +343,7 @@ class SignActa(BrowserView, FirmesMixin):
             'console_log': '3.ERROR. Creació de la serie documental en gDOC.',
             'portal_msg': _(u'gDOC: No s\'ha pogut crear la serie documental: Contacta amb algun administrador de la web perquè revisi la configuració.'),
             'portal_msg_noExisteix': _(u'gDOC: No s\'ha pogut crear la serie documental: La serie documental no existeix.'),
-            'choose_portal_msg': lambda resp: 'portal_msg_noExisteix' if resp['codi'] and resp['codi'] == 528 else 'portal_msg'
+            'choose_portal_msg': lambda resp: 'portal_msg_noExisteix' if isinstance(resp, dict) and resp.get('codi') == 528 else 'portal_msg'
         },
         'uploadActaGDoc': {
             'console_log': '4.ERROR. Puja de l\'acta al gDOC.',

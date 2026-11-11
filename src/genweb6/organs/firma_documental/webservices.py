@@ -41,9 +41,7 @@ class ClientFirma(object):
 
     def deleteSerieDocumental(self, unitatDocumental):
         url = self.settings.gdoc_url + '/api/udch/' + unitatDocumental + '/esborrar?fonsId=' + self.settings.gdoc_fons_id + '&hash=' + self.settings.gdoc_hash
-        return json.loads(
-            self._request('DELETE', url, timeout=self.timeout).content
-        )
+        return self._json(self._request('DELETE', url, timeout=self.timeout))
 
     def getCodiExpedient(self, serie):
         url = self.settings.codiexpedient_url + '/api/codi?serie=' + serie
@@ -51,9 +49,7 @@ class ClientFirma(object):
             'X-Api-Key': self.settings.codiexpedient_apikey
         }
 
-        return json.loads(
-            self._request('GET', url, headers=headers).content
-        )
+        return self._json(self._request('GET', url, headers=headers))
 
     def createSerieDocumental(self, serie, expedient, titolPropi):
         url = self.settings.gdoc_url + '/api/serie/' + serie + '/udch?uid=' + self.settings.gdoc_user + '&fonsId=' + self.settings.gdoc_fons_id + '&hash=' + self.settings.gdoc_hash
@@ -61,9 +57,7 @@ class ClientFirma(object):
             'expedient': expedient,
             'titolPropi': titolPropi
         }
-        return json.loads(
-            self._request('POST', url, json_data=data_exp, timeout=self.timeout).content
-            )
+        return self._json(self._request('POST', url, json_data=data_exp, timeout=self.timeout))
 
     def uploadFitxerGDoc(self, author, expedient, fitxer, is_acta=False):
         if not isinstance(fitxer, dict):
@@ -90,15 +84,11 @@ class ClientFirma(object):
             'agentsAmbCodiEsquemaIdentificacio': False,
             'validesaAdministrativa': True
         }
-        return json.loads(
-            self._request('POST', url, data=data, files=fitxer, timeout=60).content
-        )
+        return self._json(self._request('POST', url, data=data, files=fitxer, timeout=60))
 
     def getInfoElement(self, idElement):
         url = self.settings.gdoc_url + '/api/doce/' + str(idElement) + '/consulta?fonsId=' + self.settings.gdoc_fons_id + '&hash=' + self.settings.gdoc_hash
-        return json.loads(
-            self._request('GET', url, timeout=self.timeout).content
-        )
+        return self._json(self._request('GET', url, timeout=self.timeout))
 
     def uploadActaPortafirmes(self, acta_title, acta_uuid, documents_annexos, signants):
         url = self.settings.portafirmes_url
@@ -129,9 +119,7 @@ class ClientFirma(object):
             "documentsAnnexos": documents_annexos,
             "callbackUrl": api.portal.get().absolute_url() + '/updateInfoPortafirmes'
         }
-        return json.loads(
-            self._request('POST', url, json_data=data_sign, headers={'X-Api-Key': self.settings.portafirmes_apikey}, timeout=60).content
-        )
+        return self._json(self._request('POST', url, json_data=data_sign, headers={'X-Api-Key': self.settings.portafirmes_apikey}, timeout=60))
 
     def timbrarDocumentGdoc(self, idDocument, afegirTimbrat=False, idioma="CATALA"):
         url = self.settings.signaturacsv_url + '/api/timbrarDocumentGdc'
@@ -140,9 +128,7 @@ class ClientFirma(object):
             'afegirTimbrat': afegirTimbrat,
             'idioma': idioma
         }
-        return json.loads(
-            self._request('POST', url, json_data=data, headers={'X-Api-Key': self.settings.signaturacsv_apikey}, timeout=self.timeout).content
-        )
+        return self._json(self._request('POST', url, json_data=data, headers={'X-Api-Key': self.settings.signaturacsv_apikey}, timeout=self.timeout))
 
     def cancelPeticioPortafirmes(self, id_peticio):
         """
@@ -175,9 +161,7 @@ class ClientFirma(object):
             'X-Api-Key': self.settings.copiesautentiques_apikey,
             'Accept': 'application/json'
         }
-        return json.loads(
-            self._request('POST', url, headers=headers, timeout=self.timeout).content
-        )
+        return self._json(self._request('POST', url, headers=headers, timeout=self.timeout))
 
     def _request(self, method, url, data=None, json_data=None, headers=None, files=None, timeout=None):
         timeout = timeout or self.timeout
@@ -191,14 +175,46 @@ class ClientFirma(object):
         try:
             res.raise_for_status()
         except HTTPError as e:
+            response = _parse_json(res.content)
+            message = str(e)
+            if response is None and res.content:
+                # Cos no JSON (p. ex. pàgina HTML d'un proxy 502/504)
+                message += ' | Body: %s' % _body_excerpt(res.content)
             raise ClientFirmaException(
                 url,
-                message=str(e),
+                message=message,
                 status=res.status_code,
-                response=json.loads(res.content)
+                response=response
             )
 
         return res
+
+    @staticmethod
+    def _json(res):
+        """Decodifica una resposta correcta; si no és JSON llança ClientFirmaException."""
+        data = _parse_json(res.content)
+        if data is None:
+            raise ClientFirmaException(
+                res.url if isinstance(getattr(res, 'url', None), str) else '',
+                message='Resposta no JSON: %s' % (_body_excerpt(res.content) or '<buida>'),
+                status=res.status_code
+            )
+        return data
+
+
+def _parse_json(content):
+    if not content:
+        return None
+    try:
+        return json.loads(content)
+    except ValueError:
+        return None
+
+
+def _body_excerpt(content, length=200):
+    if isinstance(content, bytes):
+        content = content.decode('utf-8', 'replace')
+    return (content or '').strip()[:length]
 
 
 def uploadFileGdoc(author, expedient, file, filename=None, is_acta=False):
